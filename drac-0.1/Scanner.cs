@@ -1,20 +1,10 @@
 /*
-  Buttercup compiler - This class performs the lexical analysis,
+  Drac compiler - This class performs the lexical analysis,
   (a.k.a. scanning).
-  Copyright (C) 2013-2021 Ariel Ortiz, ITESM CEM
-
-  This program is free software: you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  Alejandro Chavez A01374974
+  Pedro Cortes Soberanes A01374919
+  Eduardo Gallegos Solis A01745776
+  ITESM CEM
 */
 
 using System;
@@ -30,54 +20,35 @@ namespace Drac {
         static readonly Regex regex = new Regex(
             @"
                 (?<MultComment>     ([(][*](\s|.)*?[*][)])  )
-              |  (?<Comment>         [-][-].*)
-              | (?<And>)            and     )
-              | (?<Or>)             or      )
-              | (?<MoreEqual>)      [>][=]  )
-              | (?<LessEqual>)      [<][=]  )
-              | (?<Equal>)          [=][=]  )
-              | (?<Assignation>)    [=]     )
-              | (?<Greater>)        [>]     )
-              | (?<Less>)           [<]     )
-              | (?<Mul>)            [*]     )
-              | (?<Mod>)            [%]     )
-              | (?<Div>)            [/]     )
-              | (?<Plus>)           [+]     )
-              | (?<Neg>             [-]     )
-              | (?<Coma>            [,]     )
-              | (?<Semicolon>       [;]     )
-              | (?<CharLit>         (['].?['])  )
-              | (?<StringLit>       ([""].*?[""])   )
-              
-              | (?<BackSlash>       [\\]    )
-              | (?<ParLeft>         [(]     )
-              | (?<ParRight>        [)]     )
-              | (?<BracketLeft>     [{]     )
-              | (?<BracketRight>    [}]     )
-              | (?<SqrBracketLeft>  [\[]    )
-              | (?<SqrBracketRight> [\]]    )
-              | (?<IntLiteral>      \d+     )
-              | (?<Newline>         \n      )
-              | (?<WhiteSpace>      \s      )     # Must go after Newline.
-              | (?<True>            true    )
-              | (?<False>           false   )
-              | (?<Bool>            bool    )
-              | (?<End>             end     )
-              | (?<If>              if      )
-              | (?<Int>             int     )
-              | (?<Then>            then    )
-              | (?<Break>           break   )
-              | (?<Dec>             dec     )
-              | (?<Prints>          prints  )
-              | (?<Do>              do      )
-              | (?<Elif>            elif    )
-              | (?<Inc>             inc     )
-              | (?<Not>             not     )
-              | (?<Return>          return  )
-              | (?<Var>             var     )
-              | (?<While>           while   )
-              | (?<Identifier>      [a-zA-Z]+ )     # Must go after all keywords
-              | (?<Other>           .       ) 
+              | (?<Comment>         [-][-].*)
+              | (?<Newline>    \n        )
+              | (?<WhiteSpace> \s        )     # Must go after Newline.
+              | (?<And>        and       )
+              | (?<Or>         or        )
+              | (?<Less>       [<]       )
+              | (?<Greater>     [>]      )
+              | (?<MoreEqual>   [>][=]  )
+              | (?<LessEqual>   [<][=]  )
+              | (?<Plus>       [+]       )
+              | (?<Mul>        [*]       )
+              | (?<Neg>        [-]       )
+              | (?<Mod>         [%]     )
+              | (?<Div>         [/]     )
+              | (?<Coma>        [,]     )
+              | (?<Semicolon>   [;]     )
+              | (?<ParLeft>    [(]       )
+              | (?<ParRight>   [)]       )
+              | (?<Assign>     [=]       )
+              | (?<True>       [#]t      )
+              | (?<False>      [#]f      )
+              | (?<IntLiteral> \d+       )
+              | (?<Bool>       bool      )
+              | (?<End>        end       )
+              | (?<If>         if        )
+              | (?<Int>        int       )
+              | (?<Then>       then      )
+              | (?<Identifier> [a-zA-Z]+ )     # Must go after all keywords
+              | (?<Other>      .         )     # Must be last: match any other character.
             ",
             RegexOptions.IgnorePatternWhitespace
                 | RegexOptions.Compiled
@@ -86,10 +57,6 @@ namespace Drac {
 
         static readonly IDictionary<string, TokenCategory> tokenMap =
             new Dictionary<string, TokenCategory>() {
-                {"MultComment", TokenCategory.MULTI_COMMENT},
-                {"Comment", TokenCategory.COMMENT},
-                {"BracketLeft", TokenCategory.BRAKET_OPEN},
-                {"BracketRight", TokenCategory.BRAKET_CLOSE},
                 {"And", TokenCategory.AND},
                 {"Less", TokenCategory.LESS},
                 {"Plus", TokenCategory.PLUS},
@@ -97,6 +64,8 @@ namespace Drac {
                 {"Neg", TokenCategory.NEG},
                 {"ParLeft", TokenCategory.PARENTHESIS_OPEN},
                 {"ParRight", TokenCategory.PARENTHESIS_CLOSE},
+                {"Comment", TokenCategory.COMMENT},
+                {"MultComment", TokenCategory.ML_COMMENT},
                 {"Assign", TokenCategory.ASSIGN},
                 {"True", TokenCategory.TRUE},
                 {"False", TokenCategory.FALSE},
@@ -105,12 +74,16 @@ namespace Drac {
                 {"End", TokenCategory.END},
                 {"If", TokenCategory.IF},
                 {"Int", TokenCategory.INT},
-                {"Prints", TokenCategory.PRINTS},
                 {"Then", TokenCategory.THEN},
                 {"Identifier", TokenCategory.IDENTIFIER},
+                {"Or", TokenCategory.OR},
+                {"Greater", TokenCategory.GREATER},
+                {"MoreEqual", TokenCategory.MORE_EQUAL},
+                {"LessEqual", TokenCategory.LESS_EQUAL},
+                {"Mod", TokenCategory.MOD},
+                {"Div", TokenCategory.DIV},
+                {"Coma", TokenCategory.COMA},
                 {"Semicolon", TokenCategory.SEMICOLON},
-                {"CharLit", TokenCategory.CHAR_LITERAL},
-                {"StringLit", TokenCategory.STRING_LITERAL},
             };
 
         public Scanner(string input) {
