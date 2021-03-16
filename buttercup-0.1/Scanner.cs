@@ -21,7 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
-namespace Buttercup {
+namespace Drac {
 
     class Scanner {
 
@@ -29,44 +29,51 @@ namespace Buttercup {
 
         static readonly Regex regex = new Regex(
             @"
-                (?<Comment>    ;.*       )
-              | (?<Newline>    \n        )
-              | (?<WhiteSpace> \s        )     # Must go after Newline.
-              | (?<And>)       and    )
-              | (?<Or>)       or    )
-              | (?<EqualOrGreater>)       [>][=]    )
-              | (?<LessOrEqual>)       [<][=]    )
-              | (?<EqualComp>)       [=][=]    )
-              | (?<Assignation>)       [=]    )
-              | (?<Greater>)       [>]    )
-              | (?<Less>)       [<]    )
-              | (?<Mul>)       [*]    )
-              | (?<Mod>)       [%]    )
-              | (?<Div>)       [<]    )
-                | (?<Plus>)       [+]    )
-            | (?<Neg>        [-]       )
-            | (?<ParLeft>    [(]       )
-              | (?<ParRight>   [)]       )
-                | (?<BracketLeft>             [{]                                                               )
-              | (?<BracketRight>            [}]  
-            | (?<True>       true      )
-              | (?<False>      false      )
-              | (?<Bool>       bool      )
-              | (?<End>        end       )
-              | (?<If>         if        )
-              | (?<Int>        int       )
-              | (?<Print>      print     )
-              | (?<Then>       then      )
-              | (?<Dec>       dec      )
-              | (?<Do>       do     )
-              | (?<Elif>       elif     )
-              | (?<Inc>       inc     )
-              | (?<Not>       not     )
-              | (?<Return>       return      )
-              | (?<Var>       var     )
-              | (?<While>       while     )
-              | (?<Identifier> [a-zA-Z]+ )     # Must go after all keywords
-              | (?<Other>      .         ) 
+                (?<MultComment>     ([(][*](\s|.)*?[*][)])  )
+              |  (?<Comment>         [-][-].*)
+              | (?<And>)            and     )
+              | (?<Or>)             or      )
+              | (?<MoreEqual>)      [>][=]  )
+              | (?<LessEqual>)      [<][=]  )
+              | (?<Equal>)          [=][=]  )
+              | (?<Assignation>)    [=]     )
+              | (?<Greater>)        [>]     )
+              | (?<Less>)           [<]     )
+              | (?<Mul>)            [*]     )
+              | (?<Mod>)            [%]     )
+              | (?<Div>)            [/]     )
+              | (?<Plus>)           [+]     )
+              | (?<Neg>             [-]     )
+              | (?<Coma>            [,]     )
+              | (?<SemiColo>        [;]     )
+              | (?<BackSlash>       [\\]    )
+              | (?<ParLeft>         [(]     )
+              | (?<ParRight>        [)]     )
+              | (?<BracketLeft>     [{]     )
+              | (?<BracketRight>    [}]     )
+              | (?<SqrBracketLeft>  [\[]    )
+              | (?<SqrBracketRight> [\]]    )
+              | (?<Newline>         \n      )
+              | (?<WhiteSpace>      \s      )     # Must go after Newline.
+              | (?<True>            true    )
+              | (?<False>           false   )
+              | (?<Bool>            bool    )
+              | (?<End>             end     )
+              | (?<If>              if      )
+              | (?<Int>             int     )
+              | (?<Print>           print   )
+              | (?<Then>            then    )
+              | (?<Break>           break   )
+              | (?<Dec>             dec     )
+              | (?<Do>              do      )
+              | (?<Elif>            elif    )
+              | (?<Inc>             inc     )
+              | (?<Not>             not     )
+              | (?<Return>          return  )
+              | (?<Var>             var     )
+              | (?<While>           while   )
+              | (?<Identifier>      [a-zA-Z]+ )     # Must go after all keywords
+              | (?<Other>           .       ) 
             ",
             RegexOptions.IgnorePatternWhitespace
                 | RegexOptions.Compiled

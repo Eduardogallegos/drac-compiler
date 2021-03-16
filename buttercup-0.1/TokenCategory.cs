@@ -16,7 +16,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Buttercup {
+namespace Drac {
 
     enum TokenCategory {
         AND,
@@ -36,6 +36,7 @@ namespace Buttercup {
         PARENTHESIS_CLOSE,
         PLUS,
         PRINT,
+
         THEN,
         TRUE,
         ILLEGAL_CHAR

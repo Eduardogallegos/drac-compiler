@@ -20,7 +20,7 @@ using System;
 using System.IO;
 using System.Text;
 
-namespace Buttercup {
+namespace Drac {
 
     public class Driver {
 
@@ -33,7 +33,7 @@ namespace Buttercup {
 
         //-----------------------------------------------------------
         void PrintAppHeader() {
-            Console.WriteLine("Buttercup compiler, version " + VERSION);
+            Console.WriteLine("Drac compiler, version " + VERSION);
             Console.WriteLine(
                 "Copyright \u00A9 2013-2021 by A. Ortiz, ITESM CEM.");
             Console.WriteLine("This program is free software; you may "
