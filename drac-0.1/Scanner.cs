@@ -25,6 +25,16 @@ namespace Drac {
               | (?<WhiteSpace> [\\s]        )     # Must go after Newline.
               | (?<And>        and       )
               | (?<Or>         or        )
+              | (?<Dec>         dec        )
+              | (?<Inc>         inc       )
+              | (?<Break>         break       )
+               | (?<Do>         do       )
+               | (?<Elif>         elif       )
+                | (?<Else>         else     )
+                | (?<Return>         return     )
+                | (?<While>         while     )
+                 | (?<Not>         not    )
+                  | (?<Var>         var    )
               | (?<Less>       [<]       )
               | (?<Greater>     [>]      )
               | (?<MoreEqual>   [>][=]  )
@@ -65,6 +75,16 @@ namespace Drac {
         static readonly IDictionary<string, TokenCategory> tokenMap =
             new Dictionary<string, TokenCategory>() {
                 {"And", TokenCategory.AND},
+                 {"Dec", TokenCategory.DEC},
+                  {"Inc", TokenCategory.INC},
+                  {"Break", TokenCategory.BREAK},
+                  {"Do", TokenCategory.DO},
+                   {"Elif", TokenCategory.ELIF},
+                   {"Else", TokenCategory.ELSE},
+                   {"Return", TokenCategory.RETURN},
+                   {"While", TokenCategory.WHILE},
+                   {"Not", TokenCategory.NOT},
+                    {"Var", TokenCategory.VAR},
                 {"Less", TokenCategory.LESS},
                 {"Plus", TokenCategory.PLUS},
                 {"Mul", TokenCategory.MUL},
