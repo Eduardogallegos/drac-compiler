@@ -21,8 +21,8 @@ namespace Drac {
             @"
                 (?<MultComment>     ([(][*](\s|.)*?[*][)])  )
               | (?<Comment>         [-][-].*)
-              | (?<Newline>    \n        )
-              | (?<WhiteSpace> \s        )     # Must go after Newline.
+              | (?<Newline>    [\\n]        )
+              | (?<WhiteSpace> [\\s]        )     # Must go after Newline.
               | (?<And>        and       )
               | (?<Or>         or        )
               | (?<Less>       [<]       )
@@ -36,11 +36,18 @@ namespace Drac {
               | (?<Div>         [/]     )
               | (?<Coma>        [,]     )
               | (?<Semicolon>   [;]     )
+              | (?<CharLit>         (['].?['])  )
+              | (?<StringLit>       ([""].*?[""])   )
+              | (?<BackSlash>       [\\]    )
               | (?<ParLeft>    [(]       )
               | (?<ParRight>   [)]       )
+              | (?<BracketLeft>     [{]     )
+              | (?<BracketRight>    [}]     )
+              | (?<SqrBracketLeft>  [\[]    )
+              | (?<SqrBracketRight> [\]]    )
               | (?<Assign>     [=]       )
-              | (?<True>       [#]t      )
-              | (?<False>      [#]f      )
+              | (?<True>       true      )
+              | (?<False>      false      )
               | (?<IntLiteral> \d+       )
               | (?<Bool>       bool      )
               | (?<End>        end       )
@@ -84,6 +91,13 @@ namespace Drac {
                 {"Div", TokenCategory.DIV},
                 {"Coma", TokenCategory.COMA},
                 {"Semicolon", TokenCategory.SEMICOLON},
+                {"CharLit", TokenCategory.CHAR_LIT},
+                {"StringLit", TokenCategory.STRING_LIT},
+                {"BackSlash", TokenCategory.BACK_SLASH},
+                {"BracketLeft", TokenCategory.BRACKET_LEFT},
+                {"BracketRight", TokenCategory.BRACKET_RIGHT},
+                {"SqrBracketLeft", TokenCategory.SQR_BRACKET_LEFT},
+                {"SqrBracketRight", TokenCategory.SQR_BRACKET_RIGHT},
             };
 
         public Scanner(string input) {
