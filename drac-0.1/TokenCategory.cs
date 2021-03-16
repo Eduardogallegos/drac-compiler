@@ -19,8 +19,16 @@
 namespace Drac {
 
     enum TokenCategory {
+        MULTI_COMMENT,
+        COMMENT,
         AND,
+        OR,
+        MORE_EQUAL,
+        LESS_EQUAL,
+        EQUAL,
         ASSIGN,
+        GREATER,
+        MOD,
         BOOL,
         END,
         EOF,
@@ -34,9 +42,13 @@ namespace Drac {
         NEG,
         PARENTHESIS_OPEN,
         PARENTHESIS_CLOSE,
+        BRAKET_OPEN,
+        BRAKET_CLOSE,
+        SEMICOLON,
+        CHAR_LITERAL,
+        STRING_LITERAL,
+        PRINTS,
         PLUS,
-        PRINT,
-
         THEN,
         TRUE,
         ILLEGAL_CHAR

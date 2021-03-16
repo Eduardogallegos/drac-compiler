@@ -45,7 +45,10 @@ namespace Drac {
               | (?<Plus>)           [+]     )
               | (?<Neg>             [-]     )
               | (?<Coma>            [,]     )
-              | (?<SemiColo>        [;]     )
+              | (?<Semicolon>       [;]     )
+              | (?<CharLit>         (['].?['])  )
+              | (?<StringLit>       ([""].*?[""])   )
+              
               | (?<BackSlash>       [\\]    )
               | (?<ParLeft>         [(]     )
               | (?<ParRight>        [)]     )
@@ -53,6 +56,7 @@ namespace Drac {
               | (?<BracketRight>    [}]     )
               | (?<SqrBracketLeft>  [\[]    )
               | (?<SqrBracketRight> [\]]    )
+              | (?<IntLiteral>      \d+     )
               | (?<Newline>         \n      )
               | (?<WhiteSpace>      \s      )     # Must go after Newline.
               | (?<True>            true    )
@@ -61,10 +65,10 @@ namespace Drac {
               | (?<End>             end     )
               | (?<If>              if      )
               | (?<Int>             int     )
-              | (?<Print>           print   )
               | (?<Then>            then    )
               | (?<Break>           break   )
               | (?<Dec>             dec     )
+              | (?<Prints>          prints  )
               | (?<Do>              do      )
               | (?<Elif>            elif    )
               | (?<Inc>             inc     )
@@ -82,6 +86,10 @@ namespace Drac {
 
         static readonly IDictionary<string, TokenCategory> tokenMap =
             new Dictionary<string, TokenCategory>() {
+                {"MultComment", TokenCategory.MULTI_COMMENT},
+                {"Comment", TokenCategory.COMMENT},
+                {"BracketLeft", TokenCategory.BRAKET_OPEN},
+                {"BracketRight", TokenCategory.BRAKET_CLOSE},
                 {"And", TokenCategory.AND},
                 {"Less", TokenCategory.LESS},
                 {"Plus", TokenCategory.PLUS},
@@ -97,9 +105,12 @@ namespace Drac {
                 {"End", TokenCategory.END},
                 {"If", TokenCategory.IF},
                 {"Int", TokenCategory.INT},
-                {"Print", TokenCategory.PRINT},
+                {"Prints", TokenCategory.PRINTS},
                 {"Then", TokenCategory.THEN},
-                {"Identifier", TokenCategory.IDENTIFIER}
+                {"Identifier", TokenCategory.IDENTIFIER},
+                {"Semicolon", TokenCategory.SEMICOLON},
+                {"CharLit", TokenCategory.CHAR_LITERAL},
+                {"StringLit", TokenCategory.STRING_LITERAL},
             };
 
         public Scanner(string input) {
