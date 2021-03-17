@@ -19,7 +19,7 @@ namespace Drac {
 
         static readonly Regex regex = new Regex(
             @"
-                (?<MultComment>     ([(][*](\s|.)*?[*][)])  )
+                (?<MultComment>     ([(][*](\n|.)*?[*][)])  )
               | (?<Comment>         [-][-].*)
               | (?<Newline>    \n        )
               | (?<WhiteSpace> \s        )     # Must go after Newline.
@@ -36,6 +36,11 @@ namespace Drac {
               | (?<While>         while     )
               | (?<Not>         not    )
               | (?<Var>         var    )
+              | (?<True>        true      )
+              | (?<False>       false      )
+              
+              | (?<If>          if        )
+              
               | (?<IntLiteral>  -?\d+       )
               | (?<MoreEqual>   [>][=]  )
               | (?<LessEqual>   [<][=]  )
@@ -51,11 +56,9 @@ namespace Drac {
               | (?<Coma>        [,]     )
               | (?<Semicolon>   [;]     )
               | (?<CharLit>         (['].?['])  )
-              | (?<StringLit>       ([""].*?[""])   )
-              | (?<SingleQuote>     [\']    )
-              | (?<DoubleQuote>     [\""])
-              | (?<Unicode>     [\\][u][0-9a-fA-F]{6})
-              | (?<BackSlash>       [\\]    )
+              | (?<StringLit>       [""]([^\n\\""]|[\\]([nrt\\'""]|u[0-9a-fA-F]{6}))*[""] )
+              | (?<SingleQuote>     [']([^\n\\']|[\\]([nrt\\'""]|u[0-9a-fA-F]{6}))['] )
+              
               | (?<ParLeft>    [(]       )
               | (?<ParRight>   [)]       )
               | (?<BracketLeft>     [{]     )
@@ -63,14 +66,9 @@ namespace Drac {
               | (?<SqrBracketLeft>  [\[]    )
               | (?<SqrBracketRight> [\]]    )
               | (?<Assign>      [=]       )
-              | (?<True>        true      )
-              | (?<False>       false      )
-              | (?<Bool>        bool      )
-              | (?<End>         end       )
-              | (?<If>          if        )
-              | (?<Int>         int       )
-              | (?<Then>        then      )
-              | (?<Identifier>  [a-zA-Z][a-zA-Z0-9_]* )     # Must go after all keywords
+              | (?<Identifier>  [a-zA-Z][a-zA-Z0-9_]* ) 
+              
+                  # Must go after all keywords
               | (?<Other>       .         )     # Must be last: match any other character.
             ",
             RegexOptions.IgnorePatternWhitespace
