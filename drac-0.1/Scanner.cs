@@ -23,7 +23,6 @@ namespace Drac {
               | (?<Comment>         [-][-].*)
               | (?<Newline>    \n        )
               | (?<WhiteSpace> \s        )     # Must go after Newline.
-              | (?<Tab>         \t       )
               | (?<And>        and       )
               | (?<Or>         or        )
               | (?<Dec>         dec        )
@@ -38,9 +37,7 @@ namespace Drac {
               | (?<Var>         var    )
               | (?<True>        true      )
               | (?<False>       false      )
-              
               | (?<If>          if        )
-              
               | (?<IntLiteral>  -?\d+       )
               | (?<MoreEqual>   [>][=]  )
               | (?<LessEqual>   [<][=]  )
@@ -55,10 +52,8 @@ namespace Drac {
               | (?<Div>         [/]     )
               | (?<Coma>        [,]     )
               | (?<Semicolon>   [;]     )
-              | (?<CharLit>         (['].?['])  )
               | (?<StringLit>       [""]([^\n\\""]|[\\]([nrt\\'""]|u[0-9a-fA-F]{6}))*[""] )
-              | (?<SingleQuote>     [']([^\n\\']|[\\]([nrt\\'""]|u[0-9a-fA-F]{6}))['] )
-              
+              | (?<CharLit>     [']([^\n\\']|[\\]([nrt\\'""]|u[0-9a-fA-F]{6}))['] )
               | (?<ParLeft>    [(]       )
               | (?<ParRight>   [)]       )
               | (?<BracketLeft>     [{]     )
@@ -66,9 +61,7 @@ namespace Drac {
               | (?<SqrBracketLeft>  [\[]    )
               | (?<SqrBracketRight> [\]]    )
               | (?<Assign>      [=]       )
-              | (?<Identifier>  [a-zA-Z][a-zA-Z0-9_]* ) 
-              
-                  # Must go after all keywords
+              | (?<Identifier>  [a-zA-Z][a-zA-Z0-9_]* )# Must go after all keywords
               | (?<Other>       .         )     # Must be last: match any other character.
             ",
             RegexOptions.IgnorePatternWhitespace
@@ -82,19 +75,14 @@ namespace Drac {
                 {"Dec", TokenCategory.DEC},
                 {"Inc", TokenCategory.INC},
                 {"Break", TokenCategory.BREAK},
-                {"Do", TokenCategory.DO},
                 {"Elif", TokenCategory.ELIF},
                 {"Else", TokenCategory.ELSE},
                 {"Return", TokenCategory.RETURN},
                 {"While", TokenCategory.WHILE},
-                {"Unicode", TokenCategory.UNICODE},
                 {"Equals", TokenCategory.EQUALS},
-                {"SingleQuote", TokenCategory.SINGLE_QUOTE},
-                {"DoubleQuote", TokenCategory.DOUBLE_QUOTE},
                 {"Not", TokenCategory.NOT},
                 {"Var", TokenCategory.VAR},
                 {"Diff", TokenCategory.DIFF},
-                {"Tab", TokenCategory.TAB},
                 {"Less", TokenCategory.LESS},
                 {"Plus", TokenCategory.PLUS},
                 {"Mul", TokenCategory.MUL},
@@ -107,10 +95,7 @@ namespace Drac {
                 {"True", TokenCategory.TRUE},
                 {"False", TokenCategory.FALSE},
                 {"IntLiteral", TokenCategory.INT_LITERAL},
-                {"Bool", TokenCategory.BOOL},
-                {"End", TokenCategory.END},
                 {"If", TokenCategory.IF},
-                {"Int", TokenCategory.INT},
                 {"Then", TokenCategory.THEN},
                 {"Identifier", TokenCategory.IDENTIFIER},
                 {"Or", TokenCategory.OR},
@@ -123,7 +108,6 @@ namespace Drac {
                 {"Semicolon", TokenCategory.SEMICOLON},
                 {"CharLit", TokenCategory.CHAR_LIT},
                 {"StringLit", TokenCategory.STRING_LIT},
-                {"BackSlash", TokenCategory.BACK_SLASH},
                 {"BracketLeft", TokenCategory.BRACKET_LEFT},
                 {"BracketRight", TokenCategory.BRACKET_RIGHT},
                 {"SqrBracketLeft", TokenCategory.SQR_BRACKET_LEFT},
@@ -143,16 +127,17 @@ namespace Drac {
             foreach (Match m in regex.Matches(input)) {
 
                 if (m.Groups["Newline"].Success) {
-
                     row++;
                     columnStart = m.Index + m.Length;
-
-                } else if (m.Groups["WhiteSpace"].Success
-                    || m.Groups["Comment"].Success) {
-
-                    // Skip white space and comments.
-
-                } else if (m.Groups["Other"].Success) {
+                } else if (m.Groups["WhiteSpace"].Success || m.Groups["Comment"].Success) {
+                    // Skip white space and single line comments.
+                } else if(m.Groups["MultComment"].Success){
+                    foreach (char ch in m.Value){
+                        if (ch == '\n'){
+                            row++;
+                        }
+                    }
+                }else if (m.Groups["Other"].Success) {
 
                     // Found an illegal character.
                     result.AddLast(
