@@ -21,24 +21,28 @@ namespace Drac {
             @"
                 (?<MultComment>     ([(][*](\s|.)*?[*][)])  )
               | (?<Comment>         [-][-].*)
-              | (?<Newline>    [\\n]        )
-              | (?<WhiteSpace> [\\s]        )     # Must go after Newline.
+              | (?<Newline>    \n        )
+              | (?<WhiteSpace> \s        )     # Must go after Newline.
+              | (?<Tab>         \t       )
               | (?<And>        and       )
               | (?<Or>         or        )
               | (?<Dec>         dec        )
               | (?<Inc>         inc       )
               | (?<Break>         break       )
-               | (?<Do>         do       )
-               | (?<Elif>         elif       )
-                | (?<Else>         else     )
-                | (?<Return>         return     )
-                | (?<While>         while     )
-                 | (?<Not>         not    )
-                  | (?<Var>         var    )
-              | (?<Less>       [<]       )
-              | (?<Greater>     [>]      )
+              | (?<Do>         do       )
+              | (?<Elif>         elif       )
+              | (?<Else>         else     )
+              | (?<Return>         return     )
+              | (?<While>         while     )
+              | (?<Not>         not    )
+              | (?<Var>         var    )
+              | (?<IntLiteral>  -?\d+       )
               | (?<MoreEqual>   [>][=]  )
               | (?<LessEqual>   [<][=]  )
+              | (?<Diff>        [<][>] )
+              | (?<Equals>      [=][=])
+              | (?<Less>       [<]       )
+              | (?<Greater>     [>]      )
               | (?<Plus>       [+]       )
               | (?<Mul>        [*]       )
               | (?<Neg>        [-]       )
@@ -48,6 +52,9 @@ namespace Drac {
               | (?<Semicolon>   [;]     )
               | (?<CharLit>         (['].?['])  )
               | (?<StringLit>       ([""].*?[""])   )
+              | (?<SingleQuote>     [\']    )
+              | (?<DoubleQuote>     [\""])
+              | (?<Unicode>     [\\][u][0-9a-fA-F]{6})
               | (?<BackSlash>       [\\]    )
               | (?<ParLeft>    [(]       )
               | (?<ParRight>   [)]       )
@@ -55,17 +62,16 @@ namespace Drac {
               | (?<BracketRight>    [}]     )
               | (?<SqrBracketLeft>  [\[]    )
               | (?<SqrBracketRight> [\]]    )
-              | (?<Assign>     [=]       )
-              | (?<True>       true      )
-              | (?<False>      false      )
-              | (?<IntLiteral> \d+       )
-              | (?<Bool>       bool      )
-              | (?<End>        end       )
-              | (?<If>         if        )
-              | (?<Int>        int       )
-              | (?<Then>       then      )
-              | (?<Identifier> [a-zA-Z]+ )     # Must go after all keywords
-              | (?<Other>      .         )     # Must be last: match any other character.
+              | (?<Assign>      [=]       )
+              | (?<True>        true      )
+              | (?<False>       false      )
+              | (?<Bool>        bool      )
+              | (?<End>         end       )
+              | (?<If>          if        )
+              | (?<Int>         int       )
+              | (?<Then>        then      )
+              | (?<Identifier>  [a-zA-Z][a-zA-Z0-9_]* )     # Must go after all keywords
+              | (?<Other>       .         )     # Must be last: match any other character.
             ",
             RegexOptions.IgnorePatternWhitespace
                 | RegexOptions.Compiled
@@ -75,16 +81,22 @@ namespace Drac {
         static readonly IDictionary<string, TokenCategory> tokenMap =
             new Dictionary<string, TokenCategory>() {
                 {"And", TokenCategory.AND},
-                 {"Dec", TokenCategory.DEC},
-                  {"Inc", TokenCategory.INC},
-                  {"Break", TokenCategory.BREAK},
-                  {"Do", TokenCategory.DO},
-                   {"Elif", TokenCategory.ELIF},
-                   {"Else", TokenCategory.ELSE},
-                   {"Return", TokenCategory.RETURN},
-                   {"While", TokenCategory.WHILE},
-                   {"Not", TokenCategory.NOT},
-                    {"Var", TokenCategory.VAR},
+                {"Dec", TokenCategory.DEC},
+                {"Inc", TokenCategory.INC},
+                {"Break", TokenCategory.BREAK},
+                {"Do", TokenCategory.DO},
+                {"Elif", TokenCategory.ELIF},
+                {"Else", TokenCategory.ELSE},
+                {"Return", TokenCategory.RETURN},
+                {"While", TokenCategory.WHILE},
+                {"Unicode", TokenCategory.UNICODE},
+                {"Equals", TokenCategory.EQUALS},
+                {"SingleQuote", TokenCategory.SINGLE_QUOTE},
+                {"DoubleQuote", TokenCategory.DOUBLE_QUOTE},
+                {"Not", TokenCategory.NOT},
+                {"Var", TokenCategory.VAR},
+                {"Diff", TokenCategory.DIFF},
+                {"Tab", TokenCategory.TAB},
                 {"Less", TokenCategory.LESS},
                 {"Plus", TokenCategory.PLUS},
                 {"Mul", TokenCategory.MUL},

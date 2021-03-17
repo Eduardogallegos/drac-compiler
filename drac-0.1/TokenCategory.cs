@@ -20,7 +20,6 @@ namespace Drac {
 
 enum TokenCategory {
         AND,
-        
         ASSIGN,
         BOOL,
         BREAK,
@@ -65,6 +64,12 @@ enum TokenCategory {
         TRUE,
         ILLEGAL_CHAR,
         WHILE,
-        VAR
+        VAR,
+        DIFF,
+        EQUALS,
+        TAB,
+        SINGLE_QUOTE,
+        DOUBLE_QUOTE,
+        UNICODE
     }
 }
