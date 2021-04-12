@@ -17,41 +17,42 @@
  *      IDList          ::= ID IDListCont
  *      IDListCont      ::= ("," ID)*
  *      FunDef          ::= ID "(" ParamList ")" "{" VarDefList StmtList "}"
- *      ParamList       ::= 
- *      VarDefList      ::= 
- *      StmtList        ::= 
- *      Stmt            ::= 
- *      StmtAssign      ::= 
- *      StmtIncr        ::= 
- *      StmtDecr        ::= 
- *      StmtFunCall     ::= 
- *      FunCall         ::= 
- *      ExprList        ::= 
- *      ExprListCont    ::= 
- *      StmtIf          ::= 
- *      ElseIfList      ::= 
- *      Else            ::= 
- *      StmtWhile       ::= 
- *      StmtDoWhile     ::= 
- *      StmtBreak       ::= 
- *      StmtReturn      ::= 
- *      StmtEmpty       ::= 
- *      Expr            ::= 
- *      ExprOr          ::= 
- *      ExprAnd         ::= 
- *      ExprComp        ::= 
- *      OpComp          ::= 
- *      ExprRel         ::= 
- *      OpRel           ::= 
- *      ExprAdd         ::= 
- *      OpAdd           ::= 
- *      ExprMul         ::= 
- *      OpMul           ::= 
- *      ExprUnary       ::= 
- *      OpUnary         ::= 
- *      ExprPrimary     ::= 
- *      Array           ::= 
- *      Lit             ::= 
+ *      ParamList       ::= IDList*
+ *      VarDefList      ::= VarDef*
+ *      StmtList        ::= Stmt*
+ *      Stmt            ::= StmtAssign | StmtIncr | StmtDecr | StmtFunCall | FunCall | ExprList | ExprListCont |
+ *                       StmtIf | ElseIfList | Else | StmtWhile | StmtDoWhile | StmtBreak | StmtReturn | StmtEmpty
+ *      StmtAssign      ::= ID "=" Expr
+ *      StmtIncr        ::= "inc" ID
+ *      StmtDecr        ::= "dec" ID
+ *      StmtFunCall     ::= FunCall
+ *      FunCall         ::= id "(" ExprList ")"
+ *      ExprList        ::= Expr*
+ *      ExprListCont    ::= (, Expr)*
+ *      StmtIf          ::= "if" "(" Expr ")" "{" StmtList "}" ElseIfList Else
+ *      ElseIfList      ::= ("elif" "(" Expr ")" "{" StmtList "}")*
+ *      Else            ::= ("else" "{" StmtList "}")*
+ *      StmtWhile       ::= "while" "(" Expr ")" "{" StmtList "}" // TODO: Ask if semicolon or StmtEmpty is needed at the end
+ *      StmtDoWhile     ::= "do" "{" StmtList "}" "while" "(" Expr ")" ";"
+ *      StmtBreak       ::= "break" ";"
+ *      StmtReturn      ::= "return" Expr ";"
+ *      StmtEmpty       ::= ";"
+ *      Expr            ::= ExprOr
+ *      ExprOr          ::= ExprAnd ("or" ExprAnd)*
+ *      ExprAnd         ::= ExprComp
+ *      ExprComp        ::= ExprRel
+ *      OpComp          ::= "==" | "<>"
+ *      ExprRel         ::= ExprAdd (OpRel ExprAdd)*
+ *      OpRel           ::= "<" | "<=" | ">" | ">="
+ *      ExprAdd         ::= ExprMul (OpAdd ExprMul)*
+ *      OpAdd           ::= "+" | "-"
+ *      ExprMul         ::= ExprUnary (OpMul ExprUnary)*
+ *      OpMul           ::= "*" | "/" | "%"
+ *      ExprUnary       ::= OpUnary* ExprPrimary
+ *      OpUnary         ::= "+" | "-" | "not"
+ *      ExprPrimary     ::= ID | Expr | Array | Lit
+ *      Array           ::= "[" ExprList "]"
+ *      Lit             ::= BoolLit | IntLit | CharLit | StrLit
  */
 using System;
 using System.Collections.Generic;
