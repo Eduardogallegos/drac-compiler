@@ -20,13 +20,13 @@
  *      ParamList       ::= IDList*
  *      VarDefList      ::= VarDef*
  *      StmtList        ::= Stmt*
- *      Stmt            ::= StmtAssign | StmtIncr | StmtDecr | StmtFunCall | FunCall | ExprList | ExprListCont |
- *                       StmtIf | ElseIfList | Else | StmtWhile | StmtDoWhile | StmtBreak | StmtReturn | StmtEmpty
+ *      Stmt            ::= StmtAssign | StmtIncr | StmtDecr | StmtFunCall | StmtIf |
+                        StmtWhile | StmtDoWhile | StmtBreak | StmtReturn | StmtEmpty
  *      StmtAssign      ::= ID "=" Expr
  *      StmtIncr        ::= "inc" ID
  *      StmtDecr        ::= "dec" ID
  *      StmtFunCall     ::= FunCall
- *      FunCall         ::= id "(" ExprList ")"
+ *      FunCall         ::= ID "(" ExprList ")"
  *      ExprList        ::= Expr*
  *      ExprListCont    ::= (, Expr)*
  *      StmtIf          ::= "if" "(" Expr ")" "{" StmtList "}" ElseIfList Else
@@ -50,7 +50,7 @@
  *      OpMul           ::= "*" | "/" | "%"
  *      ExprUnary       ::= OpUnary* ExprPrimary
  *      OpUnary         ::= "+" | "-" | "not"
- *      ExprPrimary     ::= ID | Expr | Array | Lit
+ *      ExprPrimary     ::= ID | Expr | Array | Lit // TODO: Ask if Lit can be contained here
  *      Array           ::= "[" ExprList "]"
  *      Lit             ::= BoolLit | IntLit | CharLit | StrLit
  */
@@ -63,6 +63,62 @@ namespace Drac{
         static readonly ISet<TokenCategory> firstOfDef =
             new HashSet <TokenCategory>(){
                 // token categories for Def
+                TokenCategory.VAR,
+                TokenCategory.IDENTIFIER
+            };
+        static readonly ISet<TokenCategory> fisrtOfStmt =
+            new HashSet<TokenCategory>(){
+                TokenCategory.IDENTIFIER,
+                TokenCategory.INC,
+                TokenCategory.DEC,
+                TokenCategory.IF,
+                TokenCategory.WHILE,
+                TokenCategory.DO,
+                TokenCategory.BREAK,
+                TokenCategory.RETURN,
+                TokenCategory.SEMICOLON
+            };
+        static readonly ISet<TokenCategory> fisrtOfOpComp =
+            new HashSet<TokenCategory>(){
+                TokenCategory.EQUALS,
+                TokenCategory.DIFF
+            };
+        static readonly ISet<TokenCategory> fisrtOfOpRel =
+            new HashSet<TokenCategory>(){
+                TokenCategory.LESS,
+                TokenCategory.GREATER,
+                TokenCategory.MORE_EQUAL,
+                TokenCategory.LESS_EQUAL
+            };
+        static readonly ISet<TokenCategory> fisrtOfOpAdd =
+            new HashSet<TokenCategory>(){
+                TokenCategory.PLUS,
+                TokenCategory.NEG
+            };
+        static readonly ISet<TokenCategory> fisrtOfOpMul =
+            new HashSet<TokenCategory>(){
+                TokenCategory.MUL,
+                TokenCategory.MOD,
+                TokenCategory.DIV
+            };
+        static readonly ISet<TokenCategory> fisrtOfExprPrimary =
+            new HashSet<TokenCategory>(){
+                TokenCategory.IDENTIFIER,
+                // TokenCategory.NEG,
+                TokenCategory.TokenCategory.SQR_BRACKET_LEFT,
+                TokenCategory.TRUE,
+                TokenCategory.FALSE,
+                TokenCategory.INT_LITERAL,
+                TokenCategory.CHAR_LIT,
+                TokenCategory.STRING_LIT
+            };
+        static readonly ISet<TokenCategory> fisrtOfLit =
+            new HashSet<TokenCategory>(){
+                TokenCategory.TRUE,
+                TokenCategory.FALSE,
+                TokenCategory.INT_LITERAL,
+                TokenCategory.CHAR_LIT,
+                TokenCategory.STRING_LIT
             };
         IEnumerator<Token> tokenStream;
 

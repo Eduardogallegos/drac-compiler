@@ -10,7 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Buttercup {
+namespace Drac {
 
     class SyntaxError: Exception {
 

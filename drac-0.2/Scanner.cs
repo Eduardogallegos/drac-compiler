@@ -79,6 +79,7 @@ namespace Drac {
                 {"Else", TokenCategory.ELSE},
                 {"Return", TokenCategory.RETURN},
                 {"While", TokenCategory.WHILE},
+                {"Do", TokenCategory.DO},
                 {"Equals", TokenCategory.EQUALS},
                 {"Not", TokenCategory.NOT},
                 {"Var", TokenCategory.VAR},
