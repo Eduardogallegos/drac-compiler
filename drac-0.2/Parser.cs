@@ -283,7 +283,11 @@ namespace Drac{
 
         //19
         public int StmtIf(){
-            
+            var result;
+            if(Expr()){
+                StmtIf(result)
+            }
+            return result;
         }
 
 
