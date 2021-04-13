@@ -192,11 +192,11 @@ namespace Drac{
         //6
         public int IDListCont(){
             var result;
-            while(Current == TokenCategory.ParLeft){
-                Expect(TokenCategory.ParLeft);
-                Expect(TokenCategory.Coma);
+            while(Current == TokenCategory.COMA){
+                
+                Expect(TokenCategory.COMA);
                 result+= ID();
-                Expect(TokenCategory.ParRight);
+                
 
             }
             return result;
@@ -242,7 +242,7 @@ namespace Drac{
 
         //13
         public int StmtIncr(){
-            Expect(TokenCategory.Inc);
+            Expect(TokenCategory.INC);
                 var result = ID();
                 return result;
         }
@@ -250,7 +250,7 @@ namespace Drac{
 
         //14
         public int StmtDecr(){
-            Expect(TokenCategory.Dec);
+            Expect(TokenCategory.DEC);
                 var result = ID();
                 return result;
         }
@@ -277,7 +277,11 @@ namespace Drac{
 
         //18 //check
         public int ExprListCont(){
-
+            var result;
+            while(CurrentToken == TokenCategory.COMA ){
+               Expect(TokenCategory.COMA);
+                result+=Expr();
+            }
         }
 
 
@@ -314,19 +318,124 @@ namespace Drac{
         //23
 
         //24
-
+        public int StmBreak(){
+            Expect(TokenCategory.BREAK);
+            Expect(TokenCategory.SEMICOLON);
+        }
         //25
-
+        public int StmtReturn(){
+            Expect(TokenCategory.RETURN);
+            var result= Expr();
+            Expect(TokenCategory.SEMICOLON);
+            return result;
+            }
         //26
+         public int StmtEmpty(){
+            Expect(TokenCategory.SEMICOLON);
+            }
 
         //27
+         public int StmtReturn(){
+            
+            var result= ExprOr();
+            return result;
+            }
+
 
         //28
+        public int ExprOr(){
+            var result = ExprAnd();
+            while(CurrentToken ==TokenCategory.OR){
+               Expect(TokenCategory.OR);
+               result+=ExprAnd(); 
+            }
+            return result;
 
+        }
         //29
+        public int ExprAnd(){
+            var result = ExprComp();
+            return result;
+        }
 
         //30
+        public int ExprComp(){
+            var result= ExprRel();
+            return result;
+        }
 
+        //31
+        public int OpComp(){
+            switch (Current) {
+
+        case TokenCategory.EQUALS:
+            Expect(TokenCategory.EQUALS);
+            
+
+        case TokenCategory.DIFF:
+            Expect(TokenCategory.DIFF);
+            
+
+        default:
+            throw new SyntaxError();
+        }
+        }
+
+        //32
+         public int ExprAdd(){
+            var result = ExprAdd();
+            while(Current ==OpRel()){
+               result+=OpRel();
+               result+=ExprAnd(); 
+            }
+            return result;
+
+        }
+
+        //33
+        public int OpComp(){
+            switch (Current) {
+
+        case TokenCategory.LESS:
+            Expect(TokenCategory.LESS);
+            
+
+        case TokenCategory.LESS_EQUAL:
+            Expect(TokenCategory.LESS_EQUAL);
+
+        case TokenCategory.GREATER:
+            Expect(TokenCategory.GREATER);
+
+        case TokenCategory.MORE_EQUAL:
+            Expect(TokenCategory.MORE_EQUAL);
+            
+
+            
+
+            
+
+        default:
+            throw new SyntaxError();
+        }
+        }
+
+        //34
+
+
+        //35
+
+
+        //36
+
+        //37
+
+
+        //38
+
+        //39
+
+
+        //40
 
 
     }
