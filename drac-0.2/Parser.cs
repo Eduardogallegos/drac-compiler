@@ -9,50 +9,50 @@
 
 /*
  * Drac LL(1) Grammar:
- *      Program         ::= DefList
- *      DefList         ::= Def*
- *      Def             ::= VarDef | FunDef
- *      VarDef          ::= "var" VarList ";"
- *      VarList         ::= IDList
- *      IDList          ::= ID IDListCont
- *      IDListCont      ::= ("," ID)*
- *      FunDef          ::= ID "(" ParamList ")" "{" VarDefList StmtList "}"
- *      ParamList       ::= IDList*
- *      VarDefList      ::= VarDef*
- *      StmtList        ::= Stmt*
- *      Stmt            ::= StmtAssign | StmtIncr | StmtDecr | StmtFunCall | StmtIf |
+ *     (0) Program         ::= DefList
+ *     (1) DefList         ::= Def*
+ *     (2) Def             ::= VarDef | FunDef
+ *     (3) VarDef          ::= "var" VarList ";"
+ *     (4) VarList         ::= IDList
+ *     (5) IDList          ::= ID IDListCont
+ *     (6) IDListCont      ::= ("," ID)*
+ *     (7) FunDef          ::= ID "(" ParamList ")" "{" VarDefList StmtList "}"
+ *     (8) ParamList       ::= IDList*
+ *     (9) VarDefList      ::= VarDef*
+ *     (10) StmtList        ::= Stmt*
+ *     (11) Stmt            ::= StmtAssign | StmtIncr | StmtDecr | StmtFunCall | StmtIf |
                         StmtWhile | StmtDoWhile | StmtBreak | StmtReturn | StmtEmpty
- *      StmtAssign      ::= ID "=" Expr
- *      StmtIncr        ::= "inc" ID
- *      StmtDecr        ::= "dec" ID
- *      StmtFunCall     ::= FunCall
- *      FunCall         ::= ID "(" ExprList ")"
- *      ExprList        ::= Expr*
- *      ExprListCont    ::= (, Expr)*
- *      StmtIf          ::= "if" "(" Expr ")" "{" StmtList "}" ElseIfList Else
- *      ElseIfList      ::= ("elif" "(" Expr ")" "{" StmtList "}")*
- *      Else            ::= ("else" "{" StmtList "}")*
- *      StmtWhile       ::= "while" "(" Expr ")" "{" StmtList "}" // TODO: Ask if semicolon or StmtEmpty is needed at the end
- *      StmtDoWhile     ::= "do" "{" StmtList "}" "while" "(" Expr ")" ";"
- *      StmtBreak       ::= "break" ";"
- *      StmtReturn      ::= "return" Expr ";"
- *      StmtEmpty       ::= ";"
- *      Expr            ::= ExprOr
- *      ExprOr          ::= ExprAnd ("or" ExprAnd)*
- *      ExprAnd         ::= ExprComp
- *      ExprComp        ::= ExprRel
- *      OpComp          ::= "==" | "<>"
- *      ExprRel         ::= ExprAdd (OpRel ExprAdd)*
- *      OpRel           ::= "<" | "<=" | ">" | ">="
- *      ExprAdd         ::= ExprMul (OpAdd ExprMul)*
- *      OpAdd           ::= "+" | "-"
- *      ExprMul         ::= ExprUnary (OpMul ExprUnary)*
- *      OpMul           ::= "*" | "/" | "%"
- *      ExprUnary       ::= OpUnary* ExprPrimary
- *      OpUnary         ::= "+" | "-" | "not"
- *      ExprPrimary     ::= ID | Expr | Array | Lit // TODO: Ask if Lit can be contained here
- *      Array           ::= "[" ExprList "]"
- *      Lit             ::= BoolLit | IntLit | CharLit | StrLit
+ *     (12) StmtAssign      ::= ID "=" Expr
+ *     (13) StmtIncr        ::= "inc" ID
+ *     (14) StmtDecr        ::= "dec" ID
+ *     (15) StmtFunCall     ::= FunCall
+ *     (16) FunCall         ::= ID "(" ExprList ")"
+ *     (17) ExprList        ::= Expr*
+ *     (18) ExprListCont    ::= (, Expr)*
+ *     (19) StmtIf          ::= "if" "(" Expr ")" "{" StmtList "}" ElseIfList Else
+ *     (20) ElseIfList      ::= ("elif" "(" Expr ")" "{" StmtList "}")*
+ *     (21) Else            ::= ("else" "{" StmtList "}")*
+ *     (22) StmtWhile       ::= "while" "(" Expr ")" "{" StmtList "}" // TODO: Ask if semicolon or StmtEmpty is needed at the end
+ *     (23) StmtDoWhile     ::= "do" "{" StmtList "}" "while" "(" Expr ")" ";"
+ *     (24) StmtBreak       ::= "break" ";"
+ *     (25) StmtReturn      ::= "return" Expr ";"
+ *     (26) StmtEmpty       ::= ";"
+ *     (27) Expr            ::= ExprOr
+ *     (28) ExprOr          ::= ExprAnd ("or" ExprAnd)*
+ *     (29) ExprAnd         ::= ExprComp
+ *     (30) ExprComp        ::= ExprRel
+ *     (31) OpComp          ::= "==" | "<>"
+ *     (32) ExprRel         ::= ExprAdd (OpRel ExprAdd)*
+ *     (33) OpRel           ::= "<" | "<=" | ">" | ">="
+ *     (34) ExprAdd         ::= ExprMul (OpAdd ExprMul)*
+ *     (35) OpAdd           ::= "+" | "-"
+ *     (36) ExprMul         ::= ExprUnary (OpMul ExprUnary)*
+ *     (37) OpMul           ::= "*" | "/" | "%"
+ *     (38) ExprUnary       ::= OpUnary* ExprPrimary
+ *     (39) OpUnary         ::= "+" | "-" | "not"
+ *     (40) ExprPrimary     ::= ID | Expr | Array | Lit // TODO: Ask if Lit can be contained here
+ *     (41) Array           ::= "[" ExprList "]"
+ *     (42) Lit             ::= BoolLit | IntLit | CharLit | StrLit
  */
 using System;
 using System.Collections.Generic;
@@ -141,6 +141,139 @@ namespace Drac{
             }
         }
 
+        //0
+        public int Program(){
+            var result = DefList();
+            return result; 
+
+        }
+
+        //1
+        public int DefList(){
+            var result;
+            while(Current == Def()){
+                result=+Def();
+            }
+            return result;
+        }
+
+        //2
+        public int Def(){
+            switch (Current){
+                case VarDef():
+                    var result = VarDef();
+                    return result;
+                case FunDef():
+                var result = FunDef();
+                    return result;
+                default:
+                    throw new SyntaxError();
+            }
+        }
+
+        //3
+        public int VarDef(){
+            Expect(TokenCategory.VAR);
+            var result = VarList();
+            Expect(TokenCategory.SEMICOLON);
+            return result;
+        }
+
+        //4
+        public int VarList(){
+            var result= IDList();
+            return result;
+        }
         
+
+        //5
+
+
+        //6
+        public int IDListCont(){
+            var result;
+            while(Current == TokenCategory.ParLeft){
+                Expect(TokenCategory.ParLeft);
+                Expect(TokenCategory.Coma);
+                result+= ID();
+                Expect(TokenCategory.ParRight);
+
+            }
+            return result;
+        }
+
+        //7
+
+
+        //8
+        public int ParamList(){
+            var result;
+            while(Current == IDList()){
+                    result +=IDList();
+            }
+            return result;
+        }
+
+        //9
+        public int VarDefList(){
+            var result;
+            while(Current == VarDef()){
+                    result +=VarDef();
+            }
+            return result;
+        }
+
+
+        //10
+         public int StmtList(){
+            var result;
+            while(Current == Stmt()){
+                    result +=Stmt();
+            }
+            return result;
+        }
+
+
+        //11
+
+
+        //12
+        
+
+        //13
+        public int StmtIncr(){
+            Expect(TokenCategory.Inc);
+                var result = ID();
+                return result;
+        }
+
+
+        //14
+        public int StmtDecr(){
+            Expect(TokenCategory.Dec);
+                var result = ID();
+                return result;
+        }
+
+        //15
+        public int StmtFunCall(){
+            var result = FunCall();
+            return result;
+        }
+
+
+        //16
+
+
+        //17
+        public int Expr(){
+            var result;
+            while(Current == Expr()){
+                    result+=Expr();
+
+            }
+            return result;
+        }
+
     }
 }
