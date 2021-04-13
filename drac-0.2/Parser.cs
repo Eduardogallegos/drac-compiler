@@ -286,8 +286,6 @@ namespace Drac{
             if(Expr()){
                 StmtIf()
             }ElseIfList() Else()
-            
-        
         }
 
 
@@ -304,18 +302,30 @@ namespace Drac{
             Else(){
                 StmtList()
             }
-
         }
 
-        //22
-
+        //22 //check
+        public int StmtWhile(){
+            while(Expr()){
+                StmtList()
+            }
+        }
 
         //23
 
         //24
 
-
         //25
+
+        //26
+
+        //27
+
+        //28
+
+        //29
+
+        //30
 
 
 
