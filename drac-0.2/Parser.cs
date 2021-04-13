@@ -410,25 +410,69 @@ namespace Drac{
             Expect(TokenCategory.MORE_EQUAL);
             
 
-            
-
-            
-
         default:
             throw new SyntaxError();
         }
         }
 
         //34
-
+        public int ExprAdd(){
+            var result= ExprAdd();
+            while(Current == OpAdd()){
+                result+=OpAdd();
+                result+=ExprMul();
+            }
+            return result;
+        }
 
         //35
+        public int OpAdd(){
+           switch (Current) {
 
+        case TokenCategory.NEG:
+            Expect(TokenCategory.NEG);
+            
+
+        case TokenCategory.PLUS:
+            Expect(TokenCategory.PLUS);
+
+       
+
+        default:
+            throw new SyntaxError();
+        } 
+        }
 
         //36
-
+        public int ExprMul(){
+            var result= ExprUnuary();
+            while(Current == OpMul()){
+                result+=OpMul();
+                result+=ExprUnuary();
+            }
+            return result;
+        }
         //37
+        public int OpMul(){
+           switch (Current) {
 
+        case TokenCategory.MUL:
+            Expect(TokenCategory.MUL);
+            
+
+        case TokenCategory.DIV:
+            Expect(TokenCategory.DIV);
+
+        case TokenCategory.MOD:
+            Expect(TokenCategory.MOD);
+
+
+       
+
+        default:
+            throw new SyntaxError();
+        } 
+        }
 
         //38
 
@@ -436,6 +480,11 @@ namespace Drac{
 
 
         //40
+
+
+        //42
+
+        //42
 
 
     }
