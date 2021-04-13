@@ -275,26 +275,37 @@ namespace Drac{
             return result;
         }
 
-        //18
+        //18 //check
         public int ExprListCont(){
 
         }
 
 
-        //19
+        //19 //check
         public int StmtIf(){
-            var result;
             if(Expr()){
-                StmtIf(result)
-            }
-            return result;
+                StmtIf()
+            }ElseIfList() Else()
+            
+        
         }
 
 
-        //20
+        //20 //check
+        public int ElseIfList(){
+            ElseIfList(){
+                Expr()
+            }StmtList()
 
-        //21
+        }
 
+        //21 //check
+        public int Else(){
+            Else(){
+                StmtList()
+            }
+
+        }
 
         //22
 
