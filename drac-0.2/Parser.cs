@@ -19,7 +19,7 @@
                         StmtWhile | StmtDoWhile | StmtBreak | StmtReturn | StmtEmpty
  *     (7)  IdReduced       ::= ID ("=" ExprOr | FunCallCont )
  *     (8)  FunCallCont     ::= "(" ExprList ")"
- *     (9) StmtIncr         ::= "inc" ID
+ *     (9)  StmtIncr         ::= "inc" ID
  *     (10) StmtDecr        ::= "dec" ID
  *     (11) ExprList        ::= (ExprOr ("," ExprOr )*)?
  *     (12) StmtIf          ::= "if" "(" ExprOr ")" "{" StmtList "}" ElseIfList Else
@@ -268,8 +268,15 @@ namespace Drac
         public void FunCallCont()
         {
             Expect(TokenCategory.PARENTHESIS_OPEN);
-            ExprList();
-            Expect(TokenCategory.PARENTHESIS_CLOSE);
+            if (CurrentToken != TokenCategory.PARENTHESIS_CLOSE)
+            {
+                ExprList();
+                Expect(TokenCategory.PARENTHESIS_CLOSE);
+            }
+            else
+            {
+                Expect(TokenCategory.PARENTHESIS_CLOSE);
+            }
         }
 
         //9
@@ -289,13 +296,11 @@ namespace Drac
         //11
         public void ExprList()
         {
-            if (ExprOr())
+            ExprOr();
+            while (CurrentToken == TokenCategory.COMA)
             {
-                while (CurrentToken == TokenCategory.COMA)
-                {
-                    Expect(TokenCategory.COMA);
-                    ExprOr();
-                }
+                Expect(TokenCategory.COMA);
+                ExprOr();
             }
         }
 
@@ -560,8 +565,12 @@ namespace Drac
                     break;
                 case TokenCategory.SQR_BRACKET_LEFT:
                     Expect(TokenCategory.SQR_BRACKET_LEFT);
-                    ExprList();
-                    Expect(TokenCategory.SQR_BRACKET_RIGHT);
+                    if(CurrentToken != TokenCategory.SQR_BRACKET_RIGHT){
+                        ExprList();
+                        Expect(TokenCategory.SQR_BRACKET_RIGHT);
+                    }else{
+                        Expect(TokenCategory.SQR_BRACKET_RIGHT);
+                    }
                     break;
                 case TokenCategory.TRUE:
                     Expect(TokenCategory.TRUE);
