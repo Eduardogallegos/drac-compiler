@@ -72,7 +72,7 @@ namespace Drac
             new HashSet<TokenCategory>(){
                 TokenCategory.ASSIGN,
                 TokenCategory.PARENTHESIS_OPEN
-            };  
+            };
         static readonly ISet<TokenCategory> fisrtOfOpComp =
             new HashSet<TokenCategory>(){
                 TokenCategory.EQUALS,
@@ -173,7 +173,8 @@ namespace Drac
         }
 
         //3
-        public void IDList(){
+        public void IDList()
+        {
             Expect(TokenCategory.IDENTIFIER);
             while (CurrentToken == TokenCategory.COMA)
             {
@@ -187,10 +188,11 @@ namespace Drac
         {
             Expect(TokenCategory.IDENTIFIER);
             Expect(TokenCategory.PARENTHESIS_OPEN);
-            if(CurrentToken == TokenCategory.IDENTIFIER) IDList();
+            if (CurrentToken == TokenCategory.IDENTIFIER) IDList();
             Expect(TokenCategory.PARENTHESIS_CLOSE);
             Expect(TokenCategory.BRACKET_LEFT);
-            while(CurrentToken == TokenCategory.VAR){
+            while (CurrentToken == TokenCategory.VAR)
+            {
                 VarDef();
             }
             StmtList();
@@ -207,7 +209,8 @@ namespace Drac
         }
 
         //6
-        public void Stmt(){
+        public void Stmt()
+        {
             switch (CurrentToken)
             {
                 case TokenCategory.IDENTIFIER:
@@ -243,14 +246,20 @@ namespace Drac
         }
 
         //7
-        public void IdReduced(){
+        public void IdReduced()
+        {
             Expect(TokenCategory.IDENTIFIER);
-            if(CurrentToken == TokenCategory.ASSIGN){
+            if (CurrentToken == TokenCategory.ASSIGN)
+            {
                 Expect(TokenCategory.ASSIGN);
                 ExprOr();
-            }else if(CurrentToken == TokenCategory.PARENTHESIS_OPEN){
+            }
+            else if (CurrentToken == TokenCategory.PARENTHESIS_OPEN)
+            {
                 FunCallCont();
-            }else{
+            }
+            else
+            {
                 throw new SyntaxError(fisrtOfIdentifier, tokenStream.Current);
             }
         }
@@ -280,7 +289,8 @@ namespace Drac
         //11
         public void ExprList()
         {
-            if(ExprOr()){
+            if (ExprOr())
+            {
                 while (CurrentToken == TokenCategory.COMA)
                 {
                     Expect(TokenCategory.COMA);
@@ -306,7 +316,8 @@ namespace Drac
         //13
         public void ElseIfList()
         {
-            while(CurrentToken == TokenCategory.ELIF){
+            while (CurrentToken == TokenCategory.ELIF)
+            {
                 Expect(TokenCategory.ELIF);
                 Expect(TokenCategory.PARENTHESIS_OPEN);
                 ExprOr();
@@ -320,7 +331,8 @@ namespace Drac
         //14
         public void Else()
         {
-            if(CurrentToken == TokenCategory.ELSE){
+            if (CurrentToken == TokenCategory.ELSE)
+            {
                 Expect(TokenCategory.ELSE);
                 Expect(TokenCategory.BRACKET_LEFT);
                 StmtList();
@@ -509,7 +521,8 @@ namespace Drac
             }
         }
         //30
-        public void ExprUnary(){
+        public void ExprUnary()
+        {
             while (firstOfOpUnary.Contains(CurrentToken))
             {
                 OpUnary();
@@ -518,7 +531,8 @@ namespace Drac
         }
 
         //31
-        public void OpUnary(){
+        public void OpUnary()
+        {
             switch (CurrentToken)
             {
                 case TokenCategory.PLUS:
@@ -536,12 +550,13 @@ namespace Drac
         }
 
         //32
-        public void ExprPrimary(){
+        public void ExprPrimary()
+        {
             switch (CurrentToken)
             {
                 case TokenCategory.IDENTIFIER:
                     Expect(TokenCategory.IDENTIFIER);
-                    if(CurrentToken == TokenCategory.PARENTHESIS_OPEN) FunCallCont();
+                    if (CurrentToken == TokenCategory.PARENTHESIS_OPEN) FunCallCont();
                     break;
                 case TokenCategory.SQR_BRACKET_LEFT:
                     Expect(TokenCategory.SQR_BRACKET_LEFT);
