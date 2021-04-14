@@ -9,42 +9,40 @@
 
 /*
  * Drac LL(1) Grammar:
- *     (0) Program          ::= DefList
- *     (1) DefList          ::= Def*
- *     (2) Def              ::= VarDef | FunDef
- *     (3) VarDef           ::= "var" IDList ";"
- *     (5) IDList           ::= ID ("," ID)*
- *     (7) FunDef           ::= ID "(" IDList? ")" "{" VarDefList StmtList "}"
- *     (9) VarDefList       ::= VarDef*
- *     (10) StmtList        ::= Stmt*
- *     (11) Stmt            ::= ID ("=" Expr | "(" ExprList ")") | StmtIncr | StmtDecr | StmtIf |
+ *     (0) Program          ::= Def*
+ *     (1) Def              ::= VarDef | FunDef
+ *     (2) VarDef           ::= "var" IDList ";"
+ *     (3) IDList           ::= ID ("," ID)*
+ *     (4) FunDef           ::= ID "(" IDList? ")" "{" VarDef* StmtList "}"
+ *     (5) StmtList         ::= Stmt*
+ *     (6) Stmt             ::= IdReduced | StmtIncr | StmtDecr | StmtIf |
                         StmtWhile | StmtDoWhile | StmtBreak | StmtReturn | StmtEmpty
- *     (13) StmtIncr        ::= "inc" ID
- *     (14) StmtDecr        ::= "dec" ID
- *     (17) ExprList        ::= (Expr ("," Expr )*)?
- *     (19) StmtIf          ::= "if" "(" Expr ")" "{" StmtList "}" ElseIfList Else
- *     (20) ElseIfList      ::= ("elif" "(" Expr ")" "{" StmtList "}")*
- *     (21) Else            ::= ("else" "{" StmtList "}")?
- *     (22) StmtWhile       ::= "while" "(" Expr ")" "{" StmtList "}"
- *     (23) StmtDoWhile     ::= "do" "{" StmtList "}" "while" "(" Expr ")" ";"
- *     (24) StmtBreak       ::= "break" ";"
- *     (25) StmtReturn      ::= "return" Expr ";"
- *     (26) StmtEmpty       ::= ";"
- *     (27) Expr            ::= ExprOr
- *     (28) ExprOr          ::= ExprAnd ("or" ExprAnd)*
- *     (29) ExprAnd         ::= ExprComp ("and" ExprComp)*
- *     (30) ExprComp        ::= ExprRel (OpComp ExprRel)* // TODO: use OpComp
- *     (31) OpComp          ::= "==" | "<>"
- *     (32) ExprRel         ::= ExprAdd (OpRel ExprAdd)*
- *     (33) OpRel           ::= "<" | "<=" | ">" | ">="
- *     (34) ExprAdd         ::= ExprMul (OpAdd ExprMul)*
- *     (35) OpAdd           ::= "+" | "-"
- *     (36) ExprMul         ::= ExprUnary (OpMul ExprUnary)*
- *     (37) OpMul           ::= "*" | "/" | "%"
- *     (38) ExprUnary       ::= OpUnary* ExprPrimary
- *     (39) OpUnary         ::= "+" | "-" | "not"
- *     (40) ExprPrimary     ::= ID ("(" ExprList ")"|Empty) | "[" ExprList "]" | BoolLit | IntLit | CharLit | StrLit
- // TODO: break en switch case
+ *     (7)  IdReduced       ::= ID ("=" ExprOr | FunCallCont )
+ *     (8)  FunCallCont     ::= "(" ExprList ")"
+ *     (9) StmtIncr         ::= "inc" ID
+ *     (10) StmtDecr        ::= "dec" ID
+ *     (11) ExprList        ::= (ExprOr ("," ExprOr )*)?
+ *     (12) StmtIf          ::= "if" "(" ExprOr ")" "{" StmtList "}" ElseIfList Else
+ *     (13) ElseIfList      ::= ("elif" "(" ExprOr ")" "{" StmtList "}")*
+ *     (14) Else            ::= ("else" "{" StmtList "}")?
+ *     (15) StmtWhile       ::= "while" "(" ExprOr ")" "{" StmtList "}"
+ *     (16) StmtDoWhile     ::= "do" "{" StmtList "}" "while" "(" ExprOr ")" ";"
+ *     (17) StmtBreak       ::= "break" ";"
+ *     (18) StmtReturn      ::= "return" ExprOr ";"
+ *     (19) StmtEmpty       ::= ";"
+ *     (20) ExprOr          ::= ExprAnd ("or" ExprAnd)*
+ *     (21) ExprAnd         ::= ExprComp ("and" ExprComp)*
+ *     (22) ExprComp        ::= ExprRel (OpComp ExprRel)*
+ *     (23) OpComp          ::= "==" | "<>"
+ *     (24) ExprRel         ::= ExprAdd (OpRel ExprAdd)*
+ *     (25) OpRel           ::= "<" | "<=" | ">" | ">="
+ *     (26) ExprAdd         ::= ExprMul (OpAdd ExprMul)*
+ *     (27) OpAdd           ::= "+" | "-"
+ *     (28) ExprMul         ::= ExprUnary (OpMul ExprUnary)*
+ *     (29) OpMul           ::= "*" | "/" | "%"
+ *     (30) ExprUnary       ::= OpUnary* ExprPrimary
+ *     (31) OpUnary         ::= "+" | "-" | "not"
+ *     (32) ExprPrimary     ::= ID ( FunCallCont | Empty ) | "[" ExprList "]" | BoolLit | IntLit | CharLit | StrLit
  */
 using System;
 using System.Collections.Generic;
@@ -55,7 +53,6 @@ namespace Drac
     {
         static readonly ISet<TokenCategory> firstOfDef =
             new HashSet<TokenCategory>(){
-                // token categories for Def
                 TokenCategory.VAR,
                 TokenCategory.IDENTIFIER
             };
@@ -71,6 +68,11 @@ namespace Drac
                 TokenCategory.RETURN,
                 TokenCategory.SEMICOLON
             };
+        static readonly ISet<TokenCategory> fisrtOfIdentifier =
+            new HashSet<TokenCategory>(){
+                TokenCategory.ASSIGN,
+                TokenCategory.PARENTHESIS_OPEN
+            };  
         static readonly ISet<TokenCategory> fisrtOfOpComp =
             new HashSet<TokenCategory>(){
                 TokenCategory.EQUALS,
@@ -97,21 +99,18 @@ namespace Drac
         static readonly ISet<TokenCategory> fisrtOfExprPrimary =
             new HashSet<TokenCategory>(){
                 TokenCategory.IDENTIFIER,
-                // TokenCategory.NEG,
-                TokenCategory.TokenCategory.SQR_BRACKET_LEFT,
+                TokenCategory.SQR_BRACKET_LEFT,
                 TokenCategory.TRUE,
                 TokenCategory.FALSE,
                 TokenCategory.INT_LITERAL,
                 TokenCategory.CHAR_LIT,
                 TokenCategory.STRING_LIT
             };
-        static readonly ISet<TokenCategory> fisrtOfLit =
+        static readonly ISet<TokenCategory> firstOfOpUnary =
             new HashSet<TokenCategory>(){
-                TokenCategory.TRUE,
-                TokenCategory.FALSE,
-                TokenCategory.INT_LITERAL,
-                TokenCategory.CHAR_LIT,
-                TokenCategory.STRING_LIT
+                TokenCategory.PLUS,
+                TokenCategory.NEG,
+                TokenCategory.NOT
             };
         IEnumerator<Token> tokenStream;
 
@@ -143,169 +142,159 @@ namespace Drac
         //0
         public void Program()
         {
-            DefList();
-        }
-
-        //1
-        public void DefList()
-        {
-            while (Current == Def())
+            while (firstOfDef.Contains(CurrentToken))
             {
                 Def();
             }
         }
 
-        //2
+        //1
         public void Def()
         {
-            switch (Current)
+            switch (CurrentToken)
             {
-                case VarDef():
+                case TokenCategory.VAR:
                     VarDef();
                     break;
-                case FunDef():
+                case TokenCategory.IDENTIFIER:
                     FunDef();
                     break;
                 default:
                     throw new SyntaxError(firstOfDef, tokenStream.Current);
-                    break;
             }
         }
 
-        //3
+        //2
         public void VarDef()
         {
             Expect(TokenCategory.VAR);
-            VarList();
+            IDList();
             Expect(TokenCategory.SEMICOLON);
         }
 
-        //4
-        public void VarList()
-        {
-            IDList();
-        }
-
-        //5
-
-
-        //6
-        public void IDListCont()
-        {
-            while (Current == TokenCategory.COMA)
+        //3
+        public void IDList(){
+            Expect(TokenCategory.IDENTIFIER);
+            while (CurrentToken == TokenCategory.COMA)
             {
                 Expect(TokenCategory.COMA);
                 Expect(TokenCategory.IDENTIFIER);
             }
         }
 
-        //7
+        //4
         public void FunDef()
         {
             Expect(TokenCategory.IDENTIFIER);
             Expect(TokenCategory.PARENTHESIS_OPEN);
-            ParamList();
+            if(CurrentToken == TokenCategory.IDENTIFIER) IDList();
             Expect(TokenCategory.PARENTHESIS_CLOSE);
             Expect(TokenCategory.BRACKET_LEFT);
-            VarDefList();
+            while(CurrentToken == TokenCategory.VAR){
+                VarDef();
+            }
             StmtList();
             Expect(TokenCategory.BRACKET_RIGHT);
         }
 
-        //8
-        public void ParamList()
-        {
-            while (Current == IDList())
-            {
-                IDList();
-            }
-        }
-
-        //9
-        public void VarDefList()
-        {
-            while (Current == VarDef())
-            {
-                VarDef();
-            }
-        }
-
-        //10
+        //5
         public void StmtList()
         {
-            while (Current == Stmt())
+            while (fisrtOfStmt.Contains(CurrentToken))
             {
                 Stmt();
             }
         }
 
-
-        //11
-
-
-        //12
-        public void StmtAssign()
-        {
-            Expect(TokenCategory.IDENTIFIER);
-            Expect(TokenCategory.EQUALS);
+        //6
+        public void Stmt(){
+            switch (CurrentToken)
+            {
+                case TokenCategory.IDENTIFIER:
+                    IdReduced();
+                    break;
+                case TokenCategory.INC:
+                    StmtIncr();
+                    break;
+                case TokenCategory.DEC:
+                    StmtDecr();
+                    break;
+                case TokenCategory.IF:
+                    StmtIf();
+                    break;
+                case TokenCategory.WHILE:
+                    StmtWhile();
+                    break;
+                case TokenCategory.DO:
+                    StmtDoWhile();
+                    break;
+                case TokenCategory.BREAK:
+                    StmBreak();
+                    break;
+                case TokenCategory.RETURN:
+                    StmtReturn();
+                    break;
+                case TokenCategory.SEMICOLON:
+                    StmtEmpty();
+                    break;
+                default:
+                    throw new SyntaxError(fisrtOfStmt, tokenStream.Current);
+            }
         }
 
-        //13
+        //7
+        public void IdReduced(){
+            Expect(TokenCategory.IDENTIFIER);
+            if(CurrentToken == TokenCategory.ASSIGN){
+                Expect(TokenCategory.ASSIGN);
+                ExprOr();
+            }else if(CurrentToken == TokenCategory.PARENTHESIS_OPEN){
+                FunCallCont();
+            }else{
+                throw new SyntaxError(fisrtOfIdentifier, tokenStream.Current);
+            }
+        }
+
+        //8
+        public void FunCallCont()
+        {
+            Expect(TokenCategory.PARENTHESIS_OPEN);
+            ExprList();
+            Expect(TokenCategory.PARENTHESIS_CLOSE);
+        }
+
+        //9
         public void StmtIncr()
         {
             Expect(TokenCategory.INC);
             Expect(TokenCategory.IDENTIFIER);
         }
 
-
-        //14
+        //10
         public void StmtDecr()
         {
             Expect(TokenCategory.DEC);
             Expect(TokenCategory.IDENTIFIER);
         }
 
-        //15
-        public void StmtFunCall()
-        {
-            return FunCall();
-        }
-
-        //16
-        public void FunCall(){
-            Expect(TokenCategory.IDENTIFIER);
-            Expect(TokenCategoty.PARENTHESIS_OPEN);
-            ExprList();
-            Expect(TokenCategoty.PARENTHESIS_CLOSE);
-        }
-
-        //17
+        //11
         public void ExprList()
         {
-            while (Current == Expr())
-            {
-                Expr();
-
+            if(ExprOr()){
+                while (CurrentToken == TokenCategory.COMA)
+                {
+                    Expect(TokenCategory.COMA);
+                    ExprOr();
+                }
             }
         }
 
-        //18
-        public void ExprListCont()
-        {
-            while (CurrentToken == TokenCategory.COMA)
-            {
-                Expect(TokenCategory.COMA);
-                Expr();
-            }
-        }
-
-
-        //19
+        //12
         public void StmtIf()
         {
             Expect(TokenCategory.IF);
             Expect(TokenCategory.PARENTHESIS_OPEN);
-            Expr();
+            ExprOr();
             Expect(TokenCategory.PARENTHESIS_CLOSE);
             Expect(TokenCategory.BRACKET_LEFT);
             StmtList();
@@ -314,14 +303,13 @@ namespace Drac
             Else();
         }
 
-
-        //20
+        //13
         public void ElseIfList()
         {
             while(CurrentToken == TokenCategory.ELIF){
                 Expect(TokenCategory.ELIF);
                 Expect(TokenCategory.PARENTHESIS_OPEN);
-                Expr();
+                ExprOr();
                 Expect(TokenCategory.PARENTHESIS_CLOSE);
                 Expect(TokenCategory.BRACKET_LEFT);
                 StmtList();
@@ -329,7 +317,7 @@ namespace Drac
             }
         }
 
-        //21
+        //14
         public void Else()
         {
             if(CurrentToken == TokenCategory.ELSE){
@@ -340,19 +328,19 @@ namespace Drac
             }
         }
 
-        //22
+        //15
         public void StmtWhile()
         {
             Expect(TokenCategory.WHILE);
             Expect(TokenCategory.PARENTHESIS_OPEN);
-            Expr();
+            ExprOr();
             Expect(TokenCategory.PARENTHESIS_CLOSE);
             Expect(TokenCategory.BRACKET_LEFT);
             StmtList();
             Expect(TokenCategory.BRACKET_RIGHT);
         }
 
-        //23
+        //16
         public void StmtDoWhile()
         {
             Expect(TokenCategory.DO);
@@ -361,37 +349,30 @@ namespace Drac
             Expect(TokenCategory.BRACKET_RIGHT);
             Expect(TokenCategory.WHILE);
             Expect(TokenCategory.PARENTHESIS_OPEN);
-            Expr();
+            ExprOr();
             Expect(TokenCategory.PARENTHESIS_CLOSE);
             Expect(TokenCategory.SEMICOLON);
         }
-        //24
+        //17
         public void StmBreak()
         {
             Expect(TokenCategory.BREAK);
             Expect(TokenCategory.SEMICOLON);
         }
-        //25
+        //18
         public void StmtReturn()
         {
             Expect(TokenCategory.RETURN);
-            Expr();
+            ExprOr();
             Expect(TokenCategory.SEMICOLON);
         }
-        //26
+        //19
         public void StmtEmpty()
         {
             Expect(TokenCategory.SEMICOLON);
         }
 
-        //27
-        public void Expr()
-        {
-            return ExprOr();
-        }
-
-
-        //28
+        //20
         public void ExprOr()
         {
             ExprAnd();
@@ -401,7 +382,7 @@ namespace Drac
                 ExprAnd();
             }
         }
-        //29
+        //21
         public void ExprAnd()
         {
             ExprComp();
@@ -412,7 +393,7 @@ namespace Drac
             }
         }
 
-        //30
+        //22
         public void ExprComp()
         {
             ExprRel();
@@ -423,10 +404,10 @@ namespace Drac
             }
         }
 
-        //31
+        //23
         public void OpComp()
         {
-            switch (Current)
+            switch (CurrentToken)
             {
                 case TokenCategory.EQUALS:
                     Expect(TokenCategory.EQUALS);
@@ -436,25 +417,24 @@ namespace Drac
                     break;
                 default:
                     throw new SyntaxError(fisrtOfOpComp, tokenStream.Current);
-                    break;
             }
         }
 
-        //32
-        public void ExprAdd()
+        //24
+        public void ExprRel()
         {
             ExprAdd();
-            while (Current == OpRel())
+            while (fisrtOfOpRel.Contains(CurrentToken))
             {
                 OpRel();
                 ExprAnd();
             }
         }
 
-        //33
+        //25
         public void OpRel()
         {
-            switch (Current)
+            switch (CurrentToken)
             {
                 case TokenCategory.LESS:
                     Expect(TokenCategory.LESS);
@@ -470,25 +450,24 @@ namespace Drac
                     break;
                 default:
                     throw new SyntaxError(fisrtOfOpRel, tokenStream.Current);
-                    break;
             }
         }
 
-        //34
+        //26
         public void ExprAdd()
         {
-            ExprAdd();
-            while (Current == OpAdd())
+            ExprMul();
+            while (fisrtOfOpAdd.Contains(CurrentToken))
             {
                 OpAdd();
                 ExprMul();
             }
         }
 
-        //35
+        //27
         public void OpAdd()
         {
-            switch (Current)
+            switch (CurrentToken)
             {
                 case TokenCategory.NEG:
                     Expect(TokenCategory.NEG);
@@ -498,24 +477,23 @@ namespace Drac
                     break;
                 default:
                     throw new SyntaxError(fisrtOfOpAdd, tokenStream.Current);
-                    break;
             }
         }
 
-        //36
+        //28
         public void ExprMul()
         {
-            ExprUnuary();
-            while (Current == OpMul())
+            ExprUnary();
+            while (fisrtOfOpMul.Contains(CurrentToken))
             {
                 OpMul();
-                ExprUnuary();
+                ExprUnary();
             }
         }
-        //37
+        //29
         public void OpMul()
         {
-            switch (Current)
+            switch (CurrentToken)
             {
                 case TokenCategory.MUL:
                     Expect(TokenCategory.MUL);
@@ -528,22 +506,66 @@ namespace Drac
                     break;
                 default:
                     throw new SyntaxError(fisrtOfOpMul, tokenStream.Current);
+            }
+        }
+        //30
+        public void ExprUnary(){
+            while (firstOfOpUnary.Contains(CurrentToken))
+            {
+                OpUnary();
+            }
+            ExprPrimary();
+        }
+
+        //31
+        public void OpUnary(){
+            switch (CurrentToken)
+            {
+                case TokenCategory.PLUS:
+                    Expect(TokenCategory.PLUS);
                     break;
+                case TokenCategory.NEG:
+                    Expect(TokenCategory.NEG);
+                    break;
+                case TokenCategory.NOT:
+                    Expect(TokenCategory.NOT);
+                    break;
+                default:
+                    throw new SyntaxError(firstOfOpUnary, tokenStream.Current);
             }
         }
 
-        //38
-
-        //39
-
-
-        //40
-
-
-        //41
-
-        //42
-
-
+        //32
+        public void ExprPrimary(){
+            switch (CurrentToken)
+            {
+                case TokenCategory.IDENTIFIER:
+                    Expect(TokenCategory.IDENTIFIER);
+                    if(CurrentToken == TokenCategory.PARENTHESIS_OPEN) FunCallCont();
+                    break;
+                case TokenCategory.SQR_BRACKET_LEFT:
+                    Expect(TokenCategory.SQR_BRACKET_LEFT);
+                    ExprList();
+                    Expect(TokenCategory.SQR_BRACKET_RIGHT);
+                    break;
+                case TokenCategory.TRUE:
+                    Expect(TokenCategory.TRUE);
+                    break;
+                case TokenCategory.FALSE:
+                    Expect(TokenCategory.FALSE);
+                    break;
+                case TokenCategory.INT_LITERAL:
+                    Expect(TokenCategory.INT_LITERAL);
+                    break;
+                case TokenCategory.CHAR_LIT:
+                    Expect(TokenCategory.CHAR_LIT);
+                    break;
+                case TokenCategory.STRING_LIT:
+                    Expect(TokenCategory.STRING_LIT);
+                    break;
+                default:
+                    throw new SyntaxError(fisrtOfExprPrimary, tokenStream.Current);
+            }
+        }
     }
 }
