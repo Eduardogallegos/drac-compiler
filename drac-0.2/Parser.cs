@@ -42,7 +42,7 @@
  *     (29) OpMul           ::= "*" | "/" | "%"
  *     (30) ExprUnary       ::= OpUnary* ExprPrimary
  *     (31) OpUnary         ::= "+" | "-" | "not"
- *     (32) ExprPrimary     ::= ID ( FunCallCont | Empty ) | "[" ExprList "]" | BoolLit | IntLit | CharLit | StrLit
+ *     (32) ExprPrimary     ::= ID FunCallCont? | "[" ExprList "]" | BoolLit | IntLit | CharLit | StrLit | "(" ExprOr ")"
  */
 using System;
 using System.Collections.Generic;
@@ -581,6 +581,11 @@ namespace Drac
                     break;
                 case TokenCategory.STRING_LIT:
                     Expect(TokenCategory.STRING_LIT);
+                    break;
+                case TokenCategory.PARENTHESIS_OPEN:
+                    Expect(TokenCategory.PARENTHESIS_OPEN);
+                    ExprOr();
+                    Expect(TokenCategory.PARENTHESIS_CLOSE);
                     break;
                 default:
                     throw new SyntaxError(fisrtOfExprPrimary, tokenStream.Current);
