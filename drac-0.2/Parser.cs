@@ -271,12 +271,8 @@ namespace Drac
             if (CurrentToken != TokenCategory.PARENTHESIS_CLOSE)
             {
                 ExprList();
-                Expect(TokenCategory.PARENTHESIS_CLOSE);
             }
-            else
-            {
-                Expect(TokenCategory.PARENTHESIS_CLOSE);
-            }
+            Expect(TokenCategory.PARENTHESIS_CLOSE);
         }
 
         //9
@@ -565,12 +561,11 @@ namespace Drac
                     break;
                 case TokenCategory.SQR_BRACKET_LEFT:
                     Expect(TokenCategory.SQR_BRACKET_LEFT);
-                    if(CurrentToken != TokenCategory.SQR_BRACKET_RIGHT){
+                    if (CurrentToken != TokenCategory.SQR_BRACKET_RIGHT)
+                    {
                         ExprList();
-                        Expect(TokenCategory.SQR_BRACKET_RIGHT);
-                    }else{
-                        Expect(TokenCategory.SQR_BRACKET_RIGHT);
                     }
+                    Expect(TokenCategory.SQR_BRACKET_RIGHT);
                     break;
                 case TokenCategory.TRUE:
                     Expect(TokenCategory.TRUE);
