@@ -17,10 +17,10 @@
  *     (5) StmtList         ::= Stmt*
  *     (6) Stmt             ::= IdReduced | StmtIncr | StmtDecr | StmtIf |
                         StmtWhile | StmtDoWhile | StmtBreak | StmtReturn | StmtEmpty
- *     (7)  IdReduced       ::= ID ("=" ExprOr | FunCallCont )
+ *     (7)  IdReduced       ::= ID ("=" ExprOr | FunCallCont ) ";"
  *     (8)  FunCallCont     ::= "(" ExprList ")"
- *     (9)  StmtIncr         ::= "inc" ID
- *     (10) StmtDecr        ::= "dec" ID
+ *     (9)  StmtIncr         ::= "inc" ID ";"
+ *     (10) StmtDecr        ::= "dec" ID ";"
  *     (11) ExprList        ::= (ExprOr ("," ExprOr )*)?
  *     (12) StmtIf          ::= "if" "(" ExprOr ")" "{" StmtList "}" ElseIfList Else
  *     (13) ElseIfList      ::= ("elif" "(" ExprOr ")" "{" StmtList "}")*
@@ -253,10 +253,12 @@ namespace Drac
             {
                 Expect(TokenCategory.ASSIGN);
                 ExprOr();
+                Expect(TokenCategory.SEMICOLON);
             }
             else if (CurrentToken == TokenCategory.PARENTHESIS_OPEN)
             {
                 FunCallCont();
+                Expect(TokenCategory.SEMICOLON);
             }
             else
             {
@@ -280,6 +282,7 @@ namespace Drac
         {
             Expect(TokenCategory.INC);
             Expect(TokenCategory.IDENTIFIER);
+            Expect(TokenCategory.SEMICOLON);
         }
 
         //10
@@ -287,6 +290,7 @@ namespace Drac
         {
             Expect(TokenCategory.DEC);
             Expect(TokenCategory.IDENTIFIER);
+            Expect(TokenCategory.SEMICOLON);
         }
 
         //11
