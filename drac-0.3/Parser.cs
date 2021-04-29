@@ -140,16 +140,19 @@ namespace Drac
         }
 
         //0
-        public void Program()
+        public Node Program()
         {
+            var program = new Program();
+
             while (firstOfDef.Contains(CurrentToken))
             {
-                Def();
+                program.Add(Def());
             }
+            return program;
         }
 
         //1
-        public void Def()
+        public Node Def()
         {
             switch (CurrentToken)
             {

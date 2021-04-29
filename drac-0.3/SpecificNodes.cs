@@ -11,7 +11,7 @@ namespace Drac {
 
     class Program: Node {}
 
-    class DeclarationList: Node {}
+    class DefList: Node {}
 
     class Declaration: Node {}
 
