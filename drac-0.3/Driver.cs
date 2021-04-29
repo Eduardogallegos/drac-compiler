@@ -24,13 +24,14 @@ namespace Drac {
 
     public class Driver {
 
-        const string VERSION = "0.2";
+        const string VERSION = "0.3";
         const string AUTHORS = "Eduardo Gallegos, Alejandro Chavez, Pedro Cortes";
 
         //-----------------------------------------------------------
         static readonly string[] ReleaseIncludes = {
             "Lexical analysis",
-            "Syntactic analysis"
+            "Syntactic analysis",
+            "AST construction"
         };
 
         //-----------------------------------------------------------
@@ -73,8 +74,8 @@ namespace Drac {
                 var input = File.ReadAllText(inputPath);
 
                 var parser = new Parser(new Scanner(input).Scan().GetEnumerator());
-                parser.Program();
-                Console.WriteLine("Syntax OK.");
+                var program = parser.Program();
+                Console.WriteLine(program.ToStringTree());
 
             } catch (Exception e) {
                 if(e is FileNotFoundException || e is SyntaxError){
