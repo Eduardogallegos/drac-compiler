@@ -157,10 +157,10 @@ namespace Drac
             switch (CurrentToken)
             {
                 case TokenCategory.VAR:
-                    VarDef();
+                    return VarDef();
                     break;
                 case TokenCategory.IDENTIFIER:
-                    FunDef();
+                    return FunDef();
                     break;
                 default:
                     throw new SyntaxError(firstOfDef, tokenStream.Current);

@@ -11,36 +11,6 @@ namespace Drac {
 
     class Program: Node {}
 
-    class DefList: Node {}
-
-    class Declaration: Node {}
-
-    class StatementList: Node {}
-
-    class Assignment: Node {}
-
-    class Print: Node {}
-
-    class If: Node {}
-
-    class Identifier: Node {}
-
-    class IntLiteral: Node {}
-
-    class True: Node {}
-
-    class False: Node {}
-
-    class Neg: Node {}
-
-    class And: Node {}
-
-    class Less: Node {}
-
-    class Plus: Node {}
-
-    class Mul: Node {}
-
     //2
     class VarDef:Node{}
     //3
