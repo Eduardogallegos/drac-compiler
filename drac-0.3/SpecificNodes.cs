@@ -40,4 +40,18 @@ namespace Drac {
     class Plus: Node {}
 
     class Mul: Node {}
+
+    //2
+    class VarDef:Node{}
+    //3
+    class IDList: Node{}
+
+    //4
+    class StmtList: Node{}
+
+    //6
+    class Stmt: Node{}
+
+    //7
+    
 }

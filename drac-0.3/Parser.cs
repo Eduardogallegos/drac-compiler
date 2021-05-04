@@ -168,11 +168,14 @@ namespace Drac
         }
 
         //2
-        public void VarDef()
+        public Node VarDef()
         {
             Expect(TokenCategory.VAR);
-            IDList();
+            var idlist = IDList();
             Expect(TokenCategory.SEMICOLON);
+            var result = new VarDef() { idlist};
+            result.AnchorToken = idlist;
+            return result;
         }
 
         //3
@@ -184,9 +187,12 @@ namespace Drac
                 Expect(TokenCategory.COMA);
                 Expect(TokenCategory.IDENTIFIER);
             }
+            return new IDList() {
+                AnchorToken = Expect(TokenCategory.IDENTIFIER)
+            };
         }
 
-        //4
+        //4 TOCHECK
         public void FunDef()
         {
             Expect(TokenCategory.IDENTIFIER);
@@ -203,46 +209,48 @@ namespace Drac
         }
 
         //5
-        public void StmtList()
+        public Node StmtList()
         {
+            var stmt;
             while (fisrtOfStmt.Contains(CurrentToken))
             {
-                Stmt();
+                stmt.add(Stmt());
             }
+            return stmt;
         }
 
         //6
-        public void Stmt()
+        public Node Stmt()
         {
             switch (CurrentToken)
             {
                 case TokenCategory.IDENTIFIER:
-                    IdReduced();
-                    break;
+                    return IdReduced();
+                    
                 case TokenCategory.INC:
-                    StmtIncr();
-                    break;
+                    return StmtIncr();
+                    
                 case TokenCategory.DEC:
-                    StmtDecr();
-                    break;
+                    return StmtDecr();
+                   
                 case TokenCategory.IF:
-                    StmtIf();
-                    break;
+                    return StmtIf();
+                    
                 case TokenCategory.WHILE:
-                    StmtWhile();
-                    break;
+                    return StmtWhile();
+                    
                 case TokenCategory.DO:
-                    StmtDoWhile();
-                    break;
+                    return StmtDoWhile();
+                    
                 case TokenCategory.BREAK:
-                    StmBreak();
+                    return StmBreak();
                     break;
                 case TokenCategory.RETURN:
-                    StmtReturn();
-                    break;
+                    return StmtReturn();
+                    
                 case TokenCategory.SEMICOLON:
-                    StmtEmpty();
-                    break;
+                    return StmtEmpty();
+                    
                 default:
                     throw new SyntaxError(fisrtOfStmt, tokenStream.Current);
             }
