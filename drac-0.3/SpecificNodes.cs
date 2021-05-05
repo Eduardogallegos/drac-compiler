@@ -41,4 +41,5 @@ namespace Drac
     class Div : Node { }
     class Mod : Node { }
     class Not : Node { }
+    class exprPrimary : Node { }
 }

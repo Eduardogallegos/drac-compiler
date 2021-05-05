@@ -626,14 +626,16 @@ namespace Drac
             }
         }
 
-        //30 CHECK
+        //30
         public Node ExprUnary()
         {
+            var exprPrimary = new exprPrimary();
             while (firstOfOpUnary.Contains(CurrentToken))
             {
-                OpUnary();
+                exprPrimary.Add(OpUnary());
             }
-            ExprPrimary();
+            exprPrimary.Add(ExprPrimary());
+            return exprPrimary;
         }
 
         //31
@@ -658,7 +660,7 @@ namespace Drac
             }
         }
 
-        //32
+        //32 CHECK
         public void ExprPrimary()
         {
             switch (CurrentToken)
