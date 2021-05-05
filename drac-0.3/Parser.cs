@@ -202,7 +202,7 @@ namespace Drac
 
             var idToken = Expect(TokenCategory.IDENTIFIER);
             Expect(TokenCategory.PARENTHESIS_OPEN);
-            if (CurrentToken == TokenCategory.IDENTIFIER) var idList = IDList();
+            if (CurrentToken == TokenCategory.IDENTIFIER){ var idList = IDList();}
             Expect(TokenCategory.PARENTHESIS_CLOSE);
             Expect(TokenCategory.BRACKET_LEFT);
             var varDefLst = new VarDefList();
@@ -223,7 +223,7 @@ namespace Drac
             var stmtList = new StmtList();
             while (fisrtOfStmt.Contains(CurrentToken))
             {
-                stmtList.add(Stmt());
+                stmtList.Add(Stmt());
             }
             return stmtList;
         }
@@ -639,7 +639,7 @@ namespace Drac
         }
 
         //31
-        public void OpUnary()
+        public Node OpUnary()
         {
             switch (CurrentToken)
             {
@@ -661,7 +661,7 @@ namespace Drac
         }
 
         //32 CHECK
-        public void ExprPrimary()
+        public Node ExprPrimary()
         {
             switch (CurrentToken)
             {
@@ -671,14 +671,14 @@ namespace Drac
                     return result;
                     
                 case TokenCategory.SQR_BRACKET_LEFT:
-                    
+                    var result2;
                     Expect(TokenCategory.SQR_BRACKET_LEFT);
                     if (CurrentToken != TokenCategory.SQR_BRACKET_RIGHT)
                     {
-                        var result = ExprList();
+                        result2 = ExprList();
                     }
                     Expect(TokenCategory.SQR_BRACKET_RIGHT);
-                    return result;
+                    return result2;
                 case TokenCategory.TRUE:
                     return new True() {AnchorToken = Expect(TokenCategory.TRUE)};
                     
@@ -694,9 +694,9 @@ namespace Drac
                     return new String_lit() {AnchorToken = Expect(TokenCategory.STRING_LIT)};
                 case TokenCategory.PARENTHESIS_OPEN:
                     Expect(TokenCategory.PARENTHESIS_OPEN);
-                    var result= ExprOr();
+                    var result3= ExprOr();
                     Expect(TokenCategory.PARENTHESIS_CLOSE);
-                    return result;
+                    return result3;
                     
                 default:
                     throw new SyntaxError(fisrtOfExprPrimary, tokenStream.Current);
