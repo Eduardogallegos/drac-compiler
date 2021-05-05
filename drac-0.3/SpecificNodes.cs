@@ -42,4 +42,18 @@ namespace Drac
     class Mod : Node { }
     class Not : Node { }
     class exprPrimary : Node { }
+
+    class True: Node{}
+
+    class False: Node{}
+
+    class Int_literal: Node{}
+
+    class Char_lit:Node{}
+
+    class String_lit: Node{}
+
+    
+
+
 }
