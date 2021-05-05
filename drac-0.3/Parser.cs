@@ -311,7 +311,7 @@ namespace Drac
         }
 
         //10
-        public void StmtDecr()
+        public Node StmtDecr()
         {
             var result = new Decrease()
             {
@@ -450,150 +450,184 @@ namespace Drac
             return result;
 
         }
-        //19 TODO: Check if this needs a token
-        public void StmtEmpty()
+        //19
+        public Node StmtEmpty()
         {
-            Expect(TokenCategory.SEMICOLON);
+            return new StmtEmpty(){
+                AnchorToken = Expect(TokenCategory.SEMICOLON)
+            };
         }
 
-        //20
-        public void ExprOr()
+        //20 CHECK
+        public Node ExprOr()
         {
-            ExprAnd();
+            var result = ExprAnd();
             while (CurrentToken == TokenCategory.OR)
             {
-                Expect(TokenCategory.OR);
-                ExprAnd();
+                var orToken = Expect(TokenCategory.OR);
+                var newResult = ExprAnd();
+                newResult.Add(result);
+                newResult.Add(orToken);
+                result = newResult;
             }
+            return result;
         }
         //21
-        public void ExprAnd()
+        public Node ExprAnd()
         {
-            ExprComp();
+            var result = ExprComp();
             while (CurrentToken == TokenCategory.AND)
             {
-                Expect(TokenCategory.AND);
-                ExprComp();
+                var andToken = Expect(TokenCategory.AND);
+                var newResult = ExprComp();
+                newResult.Add(result);
+                newResult.Add(andToken);
+                result = newResult;
             }
+            return result;
         }
 
         //22
-        public void ExprComp()
+        public Node ExprComp()
         {
-            ExprRel();
+            var result = ExprRel();
             while (fisrtOfOpComp.Contains(CurrentToken))
             {
-                OpComp();
-                ExprRel();
+                var newResult = OpComp();
+                newResult.Add(result);
+                newResult.Add(ExprRel());
+                result = newResult;
             }
+            return result;
         }
 
         //23
-        public void OpComp()
+        public Node OpComp()
         {
             switch (CurrentToken)
             {
                 case TokenCategory.EQUALS:
-                    Expect(TokenCategory.EQUALS);
-                    break;
+                    return new Equals(){
+                        AnchorToken = Expect(TokenCategory.EQUALS)
+                    };
                 case TokenCategory.DIFF:
-                    Expect(TokenCategory.DIFF);
-                    break;
+                    return new Diff(){
+                        AnchorToken = Expect(TokenCategory.DIFF)
+                    };
                 default:
                     throw new SyntaxError(fisrtOfOpComp, tokenStream.Current);
             }
         }
 
         //24
-        public void ExprRel()
+        public Node ExprRel()
         {
-            ExprAdd();
+            var result = ExprAdd();
             while (fisrtOfOpRel.Contains(CurrentToken))
             {
-                OpRel();
-                ExprAnd();
+                var newResult = OpRel();
+                newResult.Add(result);
+                newResult.Add(ExprAdd());
+                result = newResult;
             }
+            return result;
         }
 
         //25
-        public void OpRel()
+        public Node OpRel()
         {
             switch (CurrentToken)
             {
                 case TokenCategory.LESS:
-                    Expect(TokenCategory.LESS);
-                    break;
+                    return new Less(){
+                        AnchorToken = Expect(TokenCategory.LESS)
+                    };
                 case TokenCategory.LESS_EQUAL:
-                    Expect(TokenCategory.LESS_EQUAL);
-                    break;
+                    return new LessEqual(){
+                        AnchorToken = Expect(TokenCategory.LESS_EQUAL)
+                    };
                 case TokenCategory.GREATER:
-                    Expect(TokenCategory.GREATER);
-                    break;
+                    return new Greater(){
+                        AnchorToken = Expect(TokenCategory.GREATER)
+                    };
                 case TokenCategory.MORE_EQUAL:
-                    Expect(TokenCategory.MORE_EQUAL);
-                    break;
+                    return new MoreEqual(){
+                        AnchorToken = Expect(TokenCategory.MORE_EQUAL)
+                    };
                 default:
                     throw new SyntaxError(fisrtOfOpRel, tokenStream.Current);
             }
         }
 
         //26
-        public void ExprAdd()
+        public Node ExprAdd()
         {
-            ExprMul();
+            var result = ExprMul();
             while (fisrtOfOpAdd.Contains(CurrentToken))
             {
-                OpAdd();
-                ExprMul();
+                var newResult = OpAdd();
+                newResult.Add(result);
+                newResult.Add(ExprMul());
+                result = newResult;
             }
+            return result;
         }
 
         //27
-        public void OpAdd()
+        public Node OpAdd()
         {
             switch (CurrentToken)
             {
                 case TokenCategory.NEG:
-                    Expect(TokenCategory.NEG);
-                    break;
+                    return new Neg(){
+                        AnchorToken = Expect(TokenCategory.NEG)
+                    };
                 case TokenCategory.PLUS:
-                    Expect(TokenCategory.PLUS);
-                    break;
+                    return new Plus(){
+                        AnchorToken = Expect(TokenCategory.PLUS)
+                    };
                 default:
                     throw new SyntaxError(fisrtOfOpAdd, tokenStream.Current);
             }
         }
 
         //28
-        public void ExprMul()
+        public Node ExprMul()
         {
-            ExprUnary();
+            var result = ExprUnary();
             while (fisrtOfOpMul.Contains(CurrentToken))
             {
-                OpMul();
-                ExprUnary();
+                var newResult = OpMul();
+                newResult.Add(result);
+                newResult.Add(ExprUnary());
+                result = newResult;
             }
+            return result;
         }
         //29
-        public void OpMul()
+        public Node OpMul()
         {
             switch (CurrentToken)
             {
                 case TokenCategory.MUL:
-                    Expect(TokenCategory.MUL);
-                    break;
+                    return new Mul(){
+                        AnchorToken = Expect(TokenCategory.MUL)
+                    };
                 case TokenCategory.DIV:
-                    Expect(TokenCategory.DIV);
-                    break;
+                    return new Div(){
+                        AnchorToken = Expect(TokenCategory.DIV)
+                    };
                 case TokenCategory.MOD:
-                    Expect(TokenCategory.MOD);
-                    break;
+                    return new Mod(){
+                        AnchorToken = Expect(TokenCategory.MOD)
+                    };
                 default:
                     throw new SyntaxError(fisrtOfOpMul, tokenStream.Current);
             }
         }
-        //30
-        public void ExprUnary()
+
+        //30 CHECK
+        public Node ExprUnary()
         {
             while (firstOfOpUnary.Contains(CurrentToken))
             {
@@ -608,14 +642,17 @@ namespace Drac
             switch (CurrentToken)
             {
                 case TokenCategory.PLUS:
-                    Expect(TokenCategory.PLUS);
-                    break;
+                    return new Plus(){
+                        AnchorToken = Expect(TokenCategory.PLUS)
+                    };
                 case TokenCategory.NEG:
-                    Expect(TokenCategory.NEG);
-                    break;
+                    return new Neg(){
+                        AnchorToken = Expect(TokenCategory.NEG)
+                    };
                 case TokenCategory.NOT:
-                    Expect(TokenCategory.NOT);
-                    break;
+                    return new Not(){
+                        AnchorToken = Expect(TokenCategory.NOT)
+                    };
                 default:
                     throw new SyntaxError(firstOfOpUnary, tokenStream.Current);
             }

@@ -27,4 +27,18 @@ namespace Drac
     class StmtWhile : Node { }
     class StmtDoWhile : Node { }
     class StmtBreak : Node { }
+    class StmtReturn : Node { }
+    class StmtEmpty : Node { }
+    class Equals : Node { }
+    class Diff : Node { }
+    class Less : Node { }
+    class LessEqual : Node { }
+    class Greater : Node { }
+    class MoreEqual : Node { }
+    class Neg : Node { }
+    class Plus : Node { }
+    class Mul : Node { }
+    class Div : Node { }
+    class Mod : Node { }
+    class Not : Node { }
 }
