@@ -179,23 +179,25 @@ namespace Drac
         //3
         public Node IDList()
         {
-            
-            var expr1 = new Identifier()
+            var idList = new IdList();
+            if (CurrentToken == TokenCategory.IDENTIFIER)
             {
-                AnchorToken = Expect(TokenCategory.IDENTIFIER)
-            };
-            var result = new IdList(){expr1};
-            while (CurrentToken == TokenCategory.COMA)
-            {
-                Expect(TokenCategory.COMA);
-                var expr2 = new Identifier()
+                var expr1 = new Identifier()
                 {
                     AnchorToken = Expect(TokenCategory.IDENTIFIER)
                 };
-                result.Add(expr2);
+                idList.Add(expr1);
+                while (CurrentToken == TokenCategory.COMA)
+                {
+                    Expect(TokenCategory.COMA);
+                    var expr2 = new Identifier()
+                    {
+                        AnchorToken = Expect(TokenCategory.IDENTIFIER)
+                    };
+                    idList.Add(expr2);
+                }
             }
-            
-            return result;
+            return idList;
         }
 
         //4 
@@ -203,11 +205,7 @@ namespace Drac
         {
             var idToken = Expect(TokenCategory.IDENTIFIER);
             Expect(TokenCategory.PARENTHESIS_OPEN);
-            var idList = new IdList();
-            if (CurrentToken == TokenCategory.IDENTIFIER)
-            {
-                idList.Add(IDList()); // check
-            }
+            var idList = IDList(); // check
             Expect(TokenCategory.PARENTHESIS_CLOSE);
             Expect(TokenCategory.BRACKET_LEFT);
             var varDefLst = new VarDefList();
