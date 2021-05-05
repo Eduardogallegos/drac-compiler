@@ -13,6 +13,7 @@ namespace Drac
     class Program : Node { }
     class VarDef : Node { }
     class Identifier : Node { }
+    class IdList : Node { }
     class Funcion : Node { }
     class VarDefList : Node { }
     class StmtList : Node { }
@@ -42,18 +43,11 @@ namespace Drac
     class Mod : Node { }
     class Not : Node { }
     class exprPrimary : Node { }
-
-    class True: Node{}
-
-    class False: Node{}
-
-    class Int_literal: Node{}
-
-    class Char_lit:Node{}
-
-    class String_lit: Node{}
-
-    
-
-
+    class True : Node { }
+    class False : Node { }
+    class Int_literal : Node { }
+    class Char_lit : Node { }
+    class String_lit : Node { }
+    class Or : Node { }
+    class And : Node { }
 }

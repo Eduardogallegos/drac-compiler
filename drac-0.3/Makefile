@@ -19,7 +19,7 @@
 drac.exe: Driver.cs Scanner.cs Token.cs TokenCategory.cs Parser.cs \
 	SyntaxError.cs Node.cs SpecificNodes.cs
 
-	mcs -out:buttercup.exe Driver.cs Scanner.cs Token.cs TokenCategory.cs \
+	mcs -out:drac.exe Driver.cs Scanner.cs Token.cs TokenCategory.cs \
 	Parser.cs SyntaxError.cs Node.cs SpecificNodes.cs
 
 clean:

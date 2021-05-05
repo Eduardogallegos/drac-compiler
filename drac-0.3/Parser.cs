@@ -179,10 +179,12 @@ namespace Drac
         //3
         public Node IDList()
         {
+            
             var expr1 = new Identifier()
             {
                 AnchorToken = Expect(TokenCategory.IDENTIFIER)
             };
+            var result = new IdList(){expr1};
             while (CurrentToken == TokenCategory.COMA)
             {
                 Expect(TokenCategory.COMA);
@@ -190,10 +192,10 @@ namespace Drac
                 {
                     AnchorToken = Expect(TokenCategory.IDENTIFIER)
                 };
-                expr2.Add(expr1);
-                expr1 = expr2;
+                result.Add(expr2);
             }
-            return expr1;
+            
+            return result;
         }
 
         //4 TOCHECK
@@ -202,7 +204,11 @@ namespace Drac
 
             var idToken = Expect(TokenCategory.IDENTIFIER);
             Expect(TokenCategory.PARENTHESIS_OPEN);
-            if (CurrentToken == TokenCategory.IDENTIFIER){ var idList = IDList();}
+            var idList = new IdList();
+            if (CurrentToken == TokenCategory.IDENTIFIER)
+            {
+                idList.Add(IDList());
+            }
             Expect(TokenCategory.PARENTHESIS_CLOSE);
             Expect(TokenCategory.BRACKET_LEFT);
             var varDefLst = new VarDefList();
@@ -212,7 +218,7 @@ namespace Drac
             }
             var stmtList = StmtList();
             Expect(TokenCategory.BRACKET_RIGHT);
-            var result = new Funcion() { varDefLst, stmtList };
+            var result = new Funcion() { idList, varDefLst, stmtList };
             result.AnchorToken = idToken;
             return result;
         }
@@ -453,7 +459,8 @@ namespace Drac
         //19
         public Node StmtEmpty()
         {
-            return new StmtEmpty(){
+            return new StmtEmpty()
+            {
                 AnchorToken = Expect(TokenCategory.SEMICOLON)
             };
         }
@@ -464,11 +471,14 @@ namespace Drac
             var result = ExprAnd();
             while (CurrentToken == TokenCategory.OR)
             {
-                var orToken = Expect(TokenCategory.OR);
+                var orStmt = new Or()
+                {
+                    AnchorToken = Expect(TokenCategory.OR)
+                };
                 var newResult = ExprAnd();
-                newResult.Add(result);
-                newResult.Add(orToken);
-                result = newResult;
+                orStmt.Add(result);
+                orStmt.Add(newResult);
+                result = orStmt;
             }
             return result;
         }
@@ -478,11 +488,14 @@ namespace Drac
             var result = ExprComp();
             while (CurrentToken == TokenCategory.AND)
             {
-                var andToken = Expect(TokenCategory.AND);
+                var andStmt = new And()
+                {
+                    AnchorToken = Expect(TokenCategory.AND)
+                };
                 var newResult = ExprComp();
-                newResult.Add(result);
-                newResult.Add(andToken);
-                result = newResult;
+                andStmt.Add(result);
+                andStmt.Add(newResult);
+                result = andStmt;
             }
             return result;
         }
@@ -507,11 +520,13 @@ namespace Drac
             switch (CurrentToken)
             {
                 case TokenCategory.EQUALS:
-                    return new Equals(){
+                    return new Equals()
+                    {
                         AnchorToken = Expect(TokenCategory.EQUALS)
                     };
                 case TokenCategory.DIFF:
-                    return new Diff(){
+                    return new Diff()
+                    {
                         AnchorToken = Expect(TokenCategory.DIFF)
                     };
                 default:
@@ -539,19 +554,23 @@ namespace Drac
             switch (CurrentToken)
             {
                 case TokenCategory.LESS:
-                    return new Less(){
+                    return new Less()
+                    {
                         AnchorToken = Expect(TokenCategory.LESS)
                     };
                 case TokenCategory.LESS_EQUAL:
-                    return new LessEqual(){
+                    return new LessEqual()
+                    {
                         AnchorToken = Expect(TokenCategory.LESS_EQUAL)
                     };
                 case TokenCategory.GREATER:
-                    return new Greater(){
+                    return new Greater()
+                    {
                         AnchorToken = Expect(TokenCategory.GREATER)
                     };
                 case TokenCategory.MORE_EQUAL:
-                    return new MoreEqual(){
+                    return new MoreEqual()
+                    {
                         AnchorToken = Expect(TokenCategory.MORE_EQUAL)
                     };
                 default:
@@ -579,11 +598,13 @@ namespace Drac
             switch (CurrentToken)
             {
                 case TokenCategory.NEG:
-                    return new Neg(){
+                    return new Neg()
+                    {
                         AnchorToken = Expect(TokenCategory.NEG)
                     };
                 case TokenCategory.PLUS:
-                    return new Plus(){
+                    return new Plus()
+                    {
                         AnchorToken = Expect(TokenCategory.PLUS)
                     };
                 default:
@@ -610,15 +631,18 @@ namespace Drac
             switch (CurrentToken)
             {
                 case TokenCategory.MUL:
-                    return new Mul(){
+                    return new Mul()
+                    {
                         AnchorToken = Expect(TokenCategory.MUL)
                     };
                 case TokenCategory.DIV:
-                    return new Div(){
+                    return new Div()
+                    {
                         AnchorToken = Expect(TokenCategory.DIV)
                     };
                 case TokenCategory.MOD:
-                    return new Mod(){
+                    return new Mod()
+                    {
                         AnchorToken = Expect(TokenCategory.MOD)
                     };
                 default:
@@ -644,15 +668,18 @@ namespace Drac
             switch (CurrentToken)
             {
                 case TokenCategory.PLUS:
-                    return new Plus(){
+                    return new Plus()
+                    {
                         AnchorToken = Expect(TokenCategory.PLUS)
                     };
                 case TokenCategory.NEG:
-                    return new Neg(){
+                    return new Neg()
+                    {
                         AnchorToken = Expect(TokenCategory.NEG)
                     };
                 case TokenCategory.NOT:
-                    return new Not(){
+                    return new Not()
+                    {
                         AnchorToken = Expect(TokenCategory.NOT)
                     };
                 default:
@@ -666,38 +693,44 @@ namespace Drac
             switch (CurrentToken)
             {
                 case TokenCategory.IDENTIFIER:
-                    var result= new Identifier (){AnchorToken = Expect(TokenCategory.IDENTIFIER)};
-                    if (CurrentToken == TokenCategory.PARENTHESIS_OPEN) result.Add(FunCallCont());
+                    var result = new Identifier()
+                    {
+                        AnchorToken = Expect(TokenCategory.IDENTIFIER)
+                    };
+                    if (CurrentToken == TokenCategory.PARENTHESIS_OPEN)
+                    {
+                        result.Add(FunCallCont());
+                    }
                     return result;
-                    
+
                 case TokenCategory.SQR_BRACKET_LEFT:
-                    var result2;
+                    var result2 = new FunCallCont();
                     Expect(TokenCategory.SQR_BRACKET_LEFT);
                     if (CurrentToken != TokenCategory.SQR_BRACKET_RIGHT)
                     {
-                        result2 = ExprList();
+                        result2.Add(ExprList());
                     }
                     Expect(TokenCategory.SQR_BRACKET_RIGHT);
                     return result2;
                 case TokenCategory.TRUE:
-                    return new True() {AnchorToken = Expect(TokenCategory.TRUE)};
-                    
+                    return new True() { AnchorToken = Expect(TokenCategory.TRUE) };
+
                 case TokenCategory.FALSE:
-                    return new False() {AnchorToken = Expect(TokenCategory.FALSE)};
-                    
+                    return new False() { AnchorToken = Expect(TokenCategory.FALSE) };
+
                 case TokenCategory.INT_LITERAL:
-                    return new Int_literal() {AnchorToken = Expect(TokenCategory.INT_LITERAL)};
-                    
+                    return new Int_literal() { AnchorToken = Expect(TokenCategory.INT_LITERAL) };
+
                 case TokenCategory.CHAR_LIT:
-                    return new Char_lit() {AnchorToken = Expect(TokenCategory.CHAR_LIT)};
+                    return new Char_lit() { AnchorToken = Expect(TokenCategory.CHAR_LIT) };
                 case TokenCategory.STRING_LIT:
-                    return new String_lit() {AnchorToken = Expect(TokenCategory.STRING_LIT)};
+                    return new String_lit() { AnchorToken = Expect(TokenCategory.STRING_LIT) };
                 case TokenCategory.PARENTHESIS_OPEN:
                     Expect(TokenCategory.PARENTHESIS_OPEN);
-                    var result3= ExprOr();
+                    var result3 = ExprOr();
                     Expect(TokenCategory.PARENTHESIS_CLOSE);
                     return result3;
-                    
+
                 default:
                     throw new SyntaxError(fisrtOfExprPrimary, tokenStream.Current);
             }
