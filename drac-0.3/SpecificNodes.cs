@@ -18,7 +18,7 @@ namespace Drac
     class VarDefList : Node { }
     class StmtList : Node { }
     class Assignment : Node { }
-    class FuntionCall : Node { }
+    class FunctionCall : Node { }
     class Increase : Node { }
     class Decrease : Node { }
     class StmtIf : Node { }

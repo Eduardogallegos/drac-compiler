@@ -288,16 +288,13 @@ namespace Drac
         //8
         public Node FunCallCont()
         {
-            var result = new FuntionCall();
-            if (CurrentToken == TokenCategory.PARENTHESIS_OPEN)
+            Expect(TokenCategory.PARENTHESIS_OPEN);
+            var result = new FunctionCall();
+            if (CurrentToken != TokenCategory.PARENTHESIS_CLOSE)
             {
-                Expect(TokenCategory.PARENTHESIS_OPEN);
-                if (CurrentToken != TokenCategory.PARENTHESIS_CLOSE)
-                {
-                    result.Add(ExprList());
-                }
-                Expect(TokenCategory.PARENTHESIS_CLOSE);
+                result.Add(ExprList());
             }
+            Expect(TokenCategory.PARENTHESIS_CLOSE);
             return result;
         }
 
@@ -691,9 +688,19 @@ namespace Drac
             {
                 case TokenCategory.IDENTIFIER:
                     var id = Expect(TokenCategory.IDENTIFIER);
-                    var result = FunCallCont();
-                    result.AnchorToken = id;
-                    return result;
+                    if (CurrentToken == TokenCategory.PARENTHESIS_OPEN)
+                    {
+                        var functionCall = FunCallCont();
+                        functionCall.AnchorToken = id;
+                        return functionCall;
+                    }
+                    else
+                    {
+                        return new Identifier()
+                        {
+                            AnchorToken = id
+                        };
+                    }
 
                 case TokenCategory.SQR_BRACKET_LEFT:
                     var result2 = new Array();
