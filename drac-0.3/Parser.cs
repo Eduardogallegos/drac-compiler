@@ -294,7 +294,7 @@ namespace Drac
         }
 
         //9
-        public void StmtIncr()
+        public Node StmtIncr()
         {
             var result = new Increase(){
                 AnchorToken = Expect(TokenCategory.INC)
@@ -303,6 +303,7 @@ namespace Drac
                 AnchorToken = Expect(TokenCategory.IDENTIFIER)
             });
             Expect(TokenCategory.SEMICOLON);
+            return result;
         }
 
         //10
@@ -315,6 +316,7 @@ namespace Drac
                 AnchorToken = Expect(TokenCategory.IDENTIFIER)
             });
             Expect(TokenCategory.SEMICOLON);
+            return result;
         }
 
         //11
