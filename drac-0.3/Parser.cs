@@ -244,7 +244,7 @@ namespace Drac
                 case TokenCategory.DO:
                     return StmtDoWhile();
                 case TokenCategory.BREAK:
-                    return StmBreak();
+                    return StmtBreak();
                 case TokenCategory.RETURN:
                     return StmtReturn();
                 case TokenCategory.SEMICOLON:
@@ -320,94 +320,129 @@ namespace Drac
         }
 
         //11
-        public void ExprList()
+        public Node ExprList()
         {
-            ExprOr();
+            var expr1 = ExprOr();
             while (CurrentToken == TokenCategory.COMA)
             {
                 Expect(TokenCategory.COMA);
-                ExprOr();
+                var expr2 = ExprOr();
+                expr2.Add(expr1);
+                expr1=expr2;
             }
+            return expr1;
         }
 
         //12
-        public void StmtIf()
+        public Node StmtIf()
         {
-            Expect(TokenCategory.IF);
+            var iftoken = Expect(TokenCategory.IF);
             Expect(TokenCategory.PARENTHESIS_OPEN);
-            ExprOr();
+            var expr1 =  ExprOr();
             Expect(TokenCategory.PARENTHESIS_CLOSE);
             Expect(TokenCategory.BRACKET_LEFT);
-            StmtList();
+            var expr2= StmtList();
             Expect(TokenCategory.BRACKET_RIGHT);
-            ElseIfList();
-            Else();
+            var expr3 = ElseIfList();
+            var expr4 = Else();
+
+            var result= new StmtIf(){expr1, expr2, expr3, expr4 };
+            result.AnchorToken = iftoken;
+            return result;
+            
+            
         }
 
         //13
-        public void ElseIfList()
+        public Node ElseIfList()
         {
+            var result=new ElseIfList();
             while (CurrentToken == TokenCategory.ELIF)
             {
-                Expect(TokenCategory.ELIF);
+                var elifToken = Expect(TokenCategory.ELIF);
                 Expect(TokenCategory.PARENTHESIS_OPEN);
-                ExprOr();
+                var expr3 = ExprOr();
                 Expect(TokenCategory.PARENTHESIS_CLOSE);
                 Expect(TokenCategory.BRACKET_LEFT);
-                StmtList();
+                var expr4 = StmtList();
                 Expect(TokenCategory.BRACKET_RIGHT);
+                
+                var elif=new ElseIf(){expr3, expr4 };
+
+                elif.AnchorToken = elifToken;
+                
+                result.Add(elif);
             }
+            
+            return result;
         }
 
         //14
-        public void Else()
+        public Node Else()
         {
+            var result= new Else();
             if (CurrentToken == TokenCategory.ELSE)
             {
-                Expect(TokenCategory.ELSE);
+                var elseToken = Expect(TokenCategory.ELSE);
                 Expect(TokenCategory.BRACKET_LEFT);
-                StmtList();
+                var expr = StmtList();
                 Expect(TokenCategory.BRACKET_RIGHT);
+                result.Add(expr);
+                result.AnchorToken= elseToken;
             }
+            return result;
+
         }
 
         //15
-        public void StmtWhile()
+        public Node StmtWhile()
         {
-            Expect(TokenCategory.WHILE);
+            
+            var whileToken = Expect(TokenCategory.WHILE);
             Expect(TokenCategory.PARENTHESIS_OPEN);
-            ExprOr();
+            var expr1 =ExprOr();
             Expect(TokenCategory.PARENTHESIS_CLOSE);
             Expect(TokenCategory.BRACKET_LEFT);
-            StmtList();
+            var expr2 = StmtList();
             Expect(TokenCategory.BRACKET_RIGHT);
+            var result= new StmtWhile(){expr1, expr2};
+            result.AnchorToken= whileToken;
+            return result;
         }
 
         //16
-        public void StmtDoWhile()
+        public Node StmtDoWhile()
         {
-            Expect(TokenCategory.DO);
+            var doToken =Expect(TokenCategory.DO);
             Expect(TokenCategory.BRACKET_LEFT);
-            StmtList();
+            var expr1 = StmtList();
             Expect(TokenCategory.BRACKET_RIGHT);
             Expect(TokenCategory.WHILE);
             Expect(TokenCategory.PARENTHESIS_OPEN);
-            ExprOr();
+            var expr2= ExprOr();
             Expect(TokenCategory.PARENTHESIS_CLOSE);
             Expect(TokenCategory.SEMICOLON);
+            var result = new StmtDoWhile(){expr1, expr2};
+            result.AnchorToken= doToken;
+            return result;
         }
         //17
-        public void StmBreak()
+        public Node StmtBreak()
         {
-            Expect(TokenCategory.BREAK);
+            var result = new StmtBreak(){AnchorToken =Expect(TokenCategory.BREAK)};
             Expect(TokenCategory.SEMICOLON);
+            return result;
         }
         //18
         public void StmtReturn()
         {
-            Expect(TokenCategory.RETURN);
-            ExprOr();
+            var returnToken= Expect(TokenCategory.RETURN);
+            var expr1= ExprOr();
             Expect(TokenCategory.SEMICOLON);
+            var result = new StmtReturn(){expr1};
+            result.AnchorToken= returnToken;
+            return result;
+
         }
         //19
         public void StmtEmpty()

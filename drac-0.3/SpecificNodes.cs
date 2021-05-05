@@ -19,4 +19,20 @@ namespace Drac {
     class FunCallCont: Node {}
     class Increase: Node {}
     class Decrease: Node {}
+
+    class StmtIf: Node{}
+
+    class ElseIfList: Node{}
+
+    class ElseIf: Node{}
+
+    class Else: Node{}
+
+    class StmtWhile:Node{}
+
+    class StmtDoWhile: Node{}
+
+    class StmtBreak: Node{}
+
+    
 }
