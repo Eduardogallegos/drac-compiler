@@ -440,7 +440,7 @@ namespace Drac
             return result;
         }
         //18
-        public void StmtReturn()
+        public Node StmtReturn()
         {
             var returnToken = Expect(TokenCategory.RETURN);
             var expr1 = ExprOr();
@@ -450,7 +450,7 @@ namespace Drac
             return result;
 
         }
-        //19
+        //19 TODO: Check if this needs a token
         public void StmtEmpty()
         {
             Expect(TokenCategory.SEMICOLON);
