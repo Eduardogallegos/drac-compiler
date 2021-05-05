@@ -198,16 +198,15 @@ namespace Drac
             return result;
         }
 
-        //4 TOCHECK
+        //4 
         public Node FunDef()
         {
-
             var idToken = Expect(TokenCategory.IDENTIFIER);
             Expect(TokenCategory.PARENTHESIS_OPEN);
             var idList = new IdList();
             if (CurrentToken == TokenCategory.IDENTIFIER)
             {
-                idList.Add(IDList());
+                idList.Add(IDList()); // check
             }
             Expect(TokenCategory.PARENTHESIS_CLOSE);
             Expect(TokenCategory.BRACKET_LEFT);
@@ -687,7 +686,7 @@ namespace Drac
             }
         }
 
-        //32 CHECK
+        //32
         public Node ExprPrimary()
         {
             switch (CurrentToken)

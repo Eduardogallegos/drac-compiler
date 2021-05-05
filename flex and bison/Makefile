@@ -3,7 +3,7 @@ calc:  calc_lex.l calc.y
 	flex -o calc_lex.c calc_lex.l
 
 	# In Linux:
-	gcc -o calc calc.c calc_lex.c -lfl
+	gcc -o calc calc.c calc_lex.c -lfl -lm
 
 	# In macOS:
 	# gcc -o calc calc.c calc_lex.c -ll

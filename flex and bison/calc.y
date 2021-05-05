@@ -13,12 +13,12 @@ extern int yylineno;
 %}
 
 /* Declare tokens */
-%token ADD MUL NEG INT PAR_LEFT PAR_RIGHT EOL EXP
+%token ADD MUL NEG INT PAR_LEFT PAR_RIGHT EOL POW
 
 /* Specify operator precedence and associativity */
 %left ADD
 %left MUL
-%right EXP
+%right POW
 %nonassoc NEG
 
 %%
@@ -31,7 +31,7 @@ calclist:
 exp:
       exp ADD exp            { $$ = $1 + $3; }
     | exp MUL exp            { $$ = $1 * $3; }
-    | exp EXP exp            { $$ = pow($1, $3); } 
+    | exp POW exp            { $$ = pow($1, $3); } 
     | NEG exp                { $$ = -$2; }
     | PAR_LEFT exp PAR_RIGHT { $$ = $2; }
     | INT

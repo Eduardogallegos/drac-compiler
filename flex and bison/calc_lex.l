@@ -10,7 +10,7 @@ void yyerror(char *s, ...);
 
 "+"    { return ADD; }
 "-"    { return NEG; }
-"**"   { return EXP; }
+"**"   { return POW; }
 "*"    { return MUL; }
 "("    { return PAR_LEFT; }
 ")"    { return PAR_RIGHT; }
