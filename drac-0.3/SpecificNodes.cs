@@ -10,18 +10,13 @@
 namespace Drac {
 
     class Program: Node {}
-
-    //2
     class VarDef:Node{}
-    //3
-    class IDList: Node{}
-
-    //4
+    class Identifier: Node{}
+    class Funcion: Node{}
+    class VarDefList: Node{}
     class StmtList: Node{}
-
-    //6
-    class Stmt: Node{}
-
-    //7
-    
+    class Assignment: Node {}
+    class FunCallCont: Node {}
+    class Increase: Node {}
+    class Decrease: Node {}
 }

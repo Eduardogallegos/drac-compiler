@@ -158,10 +158,8 @@ namespace Drac
             {
                 case TokenCategory.VAR:
                     return VarDef();
-                    break;
                 case TokenCategory.IDENTIFIER:
                     return FunDef();
-                    break;
                 default:
                     throw new SyntaxError(firstOfDef, tokenStream.Current);
             }
@@ -170,53 +168,62 @@ namespace Drac
         //2
         public Node VarDef()
         {
-            Expect(TokenCategory.VAR);
+            var varToken = Expect(TokenCategory.VAR);
             var idlist = IDList();
             Expect(TokenCategory.SEMICOLON);
-            var result = new VarDef() { idlist};
-            result.AnchorToken = idlist;
+            var result = new VarDef() { idlist };
+            result.AnchorToken = varToken;
             return result;
         }
 
         //3
-        public void IDList()
+        public Node IDList()
         {
-            Expect(TokenCategory.IDENTIFIER);
+            var expr1 = new Identifier() {
+                AnchorToken = Expect(TokenCategory.IDENTIFIER)
+            };
             while (CurrentToken == TokenCategory.COMA)
             {
                 Expect(TokenCategory.COMA);
-                Expect(TokenCategory.IDENTIFIER);
+                var expr2 = new Identifier(){
+                    AnchorToken = Expect(TokenCategory.IDENTIFIER)
+                };
+                expr2.Add(expr1);
+                expr1 = expr2;
             }
-            return new IDList() {
-                AnchorToken = Expect(TokenCategory.IDENTIFIER)
-            };
+            return expr1;
         }
 
         //4 TOCHECK
-        public void FunDef()
+        public Node FunDef()
         {
-            Expect(TokenCategory.IDENTIFIER);
+            
+            var idToken = Expect(TokenCategory.IDENTIFIER);
             Expect(TokenCategory.PARENTHESIS_OPEN);
-            if (CurrentToken == TokenCategory.IDENTIFIER) IDList();
+            if (CurrentToken == TokenCategory.IDENTIFIER) var idList = IDList();
             Expect(TokenCategory.PARENTHESIS_CLOSE);
             Expect(TokenCategory.BRACKET_LEFT);
+            var varDefLst = new VarDefList();
             while (CurrentToken == TokenCategory.VAR)
             {
-                VarDef();
+                varDefLst.Add(VarDef());
             }
-            StmtList();
+            var stmtList = StmtList();
             Expect(TokenCategory.BRACKET_RIGHT);
+            var result = new Funcion(){ varDefLst, stmtList };
+            result.AnchorToken = idToken;
+            return result;
         }
 
         //5
         public Node StmtList()
         {
-            var stmt;
+            var stmtList = new StmtList();
             while (fisrtOfStmt.Contains(CurrentToken))
             {
-                stmt.add(Stmt());
+                stmtList.add(Stmt());
             }
-            return stmt;
+            return stmtList;
         }
 
         //6
@@ -226,50 +233,46 @@ namespace Drac
             {
                 case TokenCategory.IDENTIFIER:
                     return IdReduced();
-                    
                 case TokenCategory.INC:
                     return StmtIncr();
-                    
                 case TokenCategory.DEC:
                     return StmtDecr();
-                   
                 case TokenCategory.IF:
                     return StmtIf();
-                    
                 case TokenCategory.WHILE:
                     return StmtWhile();
-                    
                 case TokenCategory.DO:
                     return StmtDoWhile();
-                    
                 case TokenCategory.BREAK:
                     return StmBreak();
-                    break;
                 case TokenCategory.RETURN:
                     return StmtReturn();
-                    
                 case TokenCategory.SEMICOLON:
                     return StmtEmpty();
-                    
                 default:
                     throw new SyntaxError(fisrtOfStmt, tokenStream.Current);
             }
         }
 
         //7
-        public void IdReduced()
+        public Node IdReduced()
         {
-            Expect(TokenCategory.IDENTIFIER);
+            var idToken = Expect(TokenCategory.IDENTIFIER);
             if (CurrentToken == TokenCategory.ASSIGN)
             {
                 Expect(TokenCategory.ASSIGN);
-                ExprOr();
+                var exprOr = ExprOr();
                 Expect(TokenCategory.SEMICOLON);
+                var result = new Assignment(){ exprOr };
+                result.AnchorToken = idToken;
+                return result;
             }
             else if (CurrentToken == TokenCategory.PARENTHESIS_OPEN)
             {
-                FunCallCont();
+                var funCallCont = FunCallCont();
                 Expect(TokenCategory.SEMICOLON);
+                funCallCont.AnchorToken = idToken;
+                return funCallCont;
             }
             else
             {
@@ -278,29 +281,39 @@ namespace Drac
         }
 
         //8
-        public void FunCallCont()
+        public Node FunCallCont()
         {
             Expect(TokenCategory.PARENTHESIS_OPEN);
+            var result = new FunCallCont();
             if (CurrentToken != TokenCategory.PARENTHESIS_CLOSE)
             {
-                ExprList();
+                result.Add(ExprList());
             }
             Expect(TokenCategory.PARENTHESIS_CLOSE);
+            return result;
         }
 
         //9
         public void StmtIncr()
         {
-            Expect(TokenCategory.INC);
-            Expect(TokenCategory.IDENTIFIER);
+            var result = new Increase(){
+                AnchorToken = Expect(TokenCategory.INC)
+            };
+            result.Add(new Identifier(){
+                AnchorToken = Expect(TokenCategory.IDENTIFIER)
+            });
             Expect(TokenCategory.SEMICOLON);
         }
 
         //10
         public void StmtDecr()
         {
-            Expect(TokenCategory.DEC);
-            Expect(TokenCategory.IDENTIFIER);
+            var result = new Decrease(){
+                AnchorToken = Expect(TokenCategory.DEC)
+            };
+            result.Add(new Identifier(){
+                AnchorToken = Expect(TokenCategory.IDENTIFIER)
+            });
             Expect(TokenCategory.SEMICOLON);
         }
 
