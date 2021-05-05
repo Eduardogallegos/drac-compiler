@@ -38,11 +38,9 @@
  *     (25) OpRel           ::= "<" | "<=" | ">" | ">="
  *     (26) ExprAdd         ::= ExprMul (OpAdd ExprMul)*
  *     (27) OpAdd           ::= "+" | "-"
- *     (28) ExprMul         ::= ExprUnary (OpMul ExprUnary)*
+ *     (28) ExprMul         ::= ExprPrimary (OpMul ExprPrimary)*
  *     (29) OpMul           ::= "*" | "/" | "%"
- *     (30) ExprUnary       ::= OpUnary* ExprPrimary
- *     (31) OpUnary         ::= "+" | "-" | "not"
- *     (32) ExprPrimary     ::= ID FunCallCont? | "[" ExprList "]" | BoolLit | IntLit | CharLit | StrLit | "(" ExprOr ")"
+ *     (30) ExprPrimary     ::= ID FunCallCont? | "[" ExprList "]" | BoolLit | IntLit | CharLit | StrLit | "(" ExprOr ")" | "-" ExprPrimary | "+" ExprPrimary | "not" ExprPrimary
  */
 using System;
 using System.Collections.Generic;
@@ -104,10 +102,7 @@ namespace Drac
                 TokenCategory.FALSE,
                 TokenCategory.INT_LITERAL,
                 TokenCategory.CHAR_LIT,
-                TokenCategory.STRING_LIT
-            };
-        static readonly ISet<TokenCategory> firstOfOpUnary =
-            new HashSet<TokenCategory>(){
+                TokenCategory.STRING_LIT,
                 TokenCategory.PLUS,
                 TokenCategory.NEG,
                 TokenCategory.NOT
@@ -609,12 +604,12 @@ namespace Drac
         //28
         public Node ExprMul()
         {
-            var result = ExprUnary();
+            var result = ExprPrimary();
             while (fisrtOfOpMul.Contains(CurrentToken))
             {
                 var newResult = OpMul();
                 newResult.Add(result);
-                newResult.Add(ExprUnary());
+                newResult.Add(ExprPrimary());
                 result = newResult;
             }
             return result;
@@ -645,43 +640,6 @@ namespace Drac
         }
 
         //30
-        public Node ExprUnary()
-        {
-            var exprPrimary = new exprPrimary();
-            while (firstOfOpUnary.Contains(CurrentToken))
-            {
-                exprPrimary.Add(OpUnary());
-            }
-            exprPrimary.Add(ExprPrimary());
-            return exprPrimary;
-        }
-
-        //31
-        public Node OpUnary()
-        {
-            switch (CurrentToken)
-            {
-                case TokenCategory.PLUS:
-                    return new Plus()
-                    {
-                        AnchorToken = Expect(TokenCategory.PLUS)
-                    };
-                case TokenCategory.NEG:
-                    return new Neg()
-                    {
-                        AnchorToken = Expect(TokenCategory.NEG)
-                    };
-                case TokenCategory.NOT:
-                    return new Not()
-                    {
-                        AnchorToken = Expect(TokenCategory.NOT)
-                    };
-                default:
-                    throw new SyntaxError(firstOfOpUnary, tokenStream.Current);
-            }
-        }
-
-        //32
         public Node ExprPrimary()
         {
             switch (CurrentToken)
@@ -729,7 +687,24 @@ namespace Drac
                     var result3 = ExprOr();
                     Expect(TokenCategory.PARENTHESIS_CLOSE);
                     return result3;
-
+                case TokenCategory.PLUS:
+                    var plusToken = Expect(TokenCategory.PLUS);
+                    var expr1 = ExprPrimary();
+                    var result4 = new Positive(){ expr1 };
+                    result4.AnchorToken = plusToken;
+                    return result4;
+                case TokenCategory.NEG:
+                    var negToken = Expect(TokenCategory.NEG);
+                    var expr2 = ExprPrimary();
+                    var result5 = new Negative(){ expr2 };
+                    result5.AnchorToken = negToken;
+                    return result5;
+                case TokenCategory.NOT:
+                    var notToken = Expect(TokenCategory.NOT);
+                    var expr3 = ExprPrimary();
+                    var result6 = new Not(){ expr3 };
+                    result6.AnchorToken = notToken;
+                    return result6;
                 default:
                     throw new SyntaxError(fisrtOfExprPrimary, tokenStream.Current);
             }

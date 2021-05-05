@@ -42,6 +42,8 @@ namespace Drac
     class Div : Node { }
     class Mod : Node { }
     class Not : Node { }
+    class Positive : Node { }
+    class Negative : Node { }
     class exprPrimary : Node { }
     class True : Node { }
     class False : Node { }
