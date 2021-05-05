@@ -666,37 +666,38 @@ namespace Drac
             switch (CurrentToken)
             {
                 case TokenCategory.IDENTIFIER:
-                    Expect(TokenCategory.IDENTIFIER);
-                    if (CurrentToken == TokenCategory.PARENTHESIS_OPEN) FunCallCont();
-                    break;
+                    var result= new Identifier (){AnchorToken = Expect(TokenCategory.IDENTIFIER)};
+                    if (CurrentToken == TokenCategory.PARENTHESIS_OPEN) result.Add(FunCallCont());
+                    return result;
+                    
                 case TokenCategory.SQR_BRACKET_LEFT:
+                    
                     Expect(TokenCategory.SQR_BRACKET_LEFT);
                     if (CurrentToken != TokenCategory.SQR_BRACKET_RIGHT)
                     {
-                        ExprList();
+                        var result = ExprList();
                     }
                     Expect(TokenCategory.SQR_BRACKET_RIGHT);
-                    break;
+                    return result;
                 case TokenCategory.TRUE:
-                    Expect(TokenCategory.TRUE);
-                    break;
+                    return new True() {AnchorToken = Expect(TokenCategory.TRUE)};
+                    
                 case TokenCategory.FALSE:
-                    Expect(TokenCategory.FALSE);
-                    break;
+                    return new False() {AnchorToken = Expect(TokenCategory.FALSE)};
+                    
                 case TokenCategory.INT_LITERAL:
-                    Expect(TokenCategory.INT_LITERAL);
-                    break;
+                    return new Int_literal() {AnchorToken = Expect(TokenCategory.INT_LITERAL)};
+                    
                 case TokenCategory.CHAR_LIT:
-                    Expect(TokenCategory.CHAR_LIT);
-                    break;
+                    return new Char_lit() {AnchorToken = Expect(TokenCategory.CHAR_LIT)};
                 case TokenCategory.STRING_LIT:
-                    Expect(TokenCategory.STRING_LIT);
-                    break;
+                    return new String_lit() {AnchorToken = Expect(TokenCategory.STRING_LIT)};
                 case TokenCategory.PARENTHESIS_OPEN:
                     Expect(TokenCategory.PARENTHESIS_OPEN);
-                    ExprOr();
+                    var result= ExprOr();
                     Expect(TokenCategory.PARENTHESIS_CLOSE);
-                    break;
+                    return result;
+                    
                 default:
                     throw new SyntaxError(fisrtOfExprPrimary, tokenStream.Current);
             }
