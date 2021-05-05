@@ -288,13 +288,16 @@ namespace Drac
         //8
         public Node FunCallCont()
         {
-            Expect(TokenCategory.PARENTHESIS_OPEN);
-            var result = new FunCallCont();
-            if (CurrentToken != TokenCategory.PARENTHESIS_CLOSE)
+            var result = new FuntionCall();
+            if (CurrentToken == TokenCategory.PARENTHESIS_OPEN)
             {
-                result.Add(ExprList());
+                Expect(TokenCategory.PARENTHESIS_OPEN);
+                if (CurrentToken != TokenCategory.PARENTHESIS_CLOSE)
+                {
+                    result.Add(ExprList());
+                }
+                Expect(TokenCategory.PARENTHESIS_CLOSE);
             }
-            Expect(TokenCategory.PARENTHESIS_CLOSE);
             return result;
         }
 
@@ -358,8 +361,6 @@ namespace Drac
             var result = new StmtIf() { expr1, expr2, expr3, expr4 };
             result.AnchorToken = iftoken;
             return result;
-
-
         }
 
         //13
@@ -400,7 +401,6 @@ namespace Drac
                 result.AnchorToken = elseToken;
             }
             return result;
-
         }
 
         //15
@@ -690,18 +690,13 @@ namespace Drac
             switch (CurrentToken)
             {
                 case TokenCategory.IDENTIFIER:
-                    var result = new Identifier()
-                    {
-                        AnchorToken = Expect(TokenCategory.IDENTIFIER)
-                    };
-                    if (CurrentToken == TokenCategory.PARENTHESIS_OPEN)
-                    {
-                        result.Add(FunCallCont());
-                    }
+                    var id = Expect(TokenCategory.IDENTIFIER);
+                    var result = FunCallCont();
+                    result.AnchorToken = id;
                     return result;
 
                 case TokenCategory.SQR_BRACKET_LEFT:
-                    var result2 = new FunCallCont();
+                    var result2 = new Array();
                     Expect(TokenCategory.SQR_BRACKET_LEFT);
                     if (CurrentToken != TokenCategory.SQR_BRACKET_RIGHT)
                     {
