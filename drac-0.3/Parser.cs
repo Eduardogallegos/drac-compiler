@@ -327,14 +327,14 @@ namespace Drac
         public Node ExprList()
         {
             var expr1 = ExprOr();
+            var result = new ExprList() { expr1 };
             while (CurrentToken == TokenCategory.COMA)
             {
                 Expect(TokenCategory.COMA);
                 var expr2 = ExprOr();
-                expr2.Add(expr1);
-                expr1 = expr2;
+                result.Add(expr2);
             }
-            return expr1;
+            return result;
         }
 
         //12
@@ -690,19 +690,19 @@ namespace Drac
                 case TokenCategory.PLUS:
                     var plusToken = Expect(TokenCategory.PLUS);
                     var expr1 = ExprPrimary();
-                    var result4 = new Positive(){ expr1 };
+                    var result4 = new Positive() { expr1 };
                     result4.AnchorToken = plusToken;
                     return result4;
                 case TokenCategory.NEG:
                     var negToken = Expect(TokenCategory.NEG);
                     var expr2 = ExprPrimary();
-                    var result5 = new Negative(){ expr2 };
+                    var result5 = new Negative() { expr2 };
                     result5.AnchorToken = negToken;
                     return result5;
                 case TokenCategory.NOT:
                     var notToken = Expect(TokenCategory.NOT);
                     var expr3 = ExprPrimary();
-                    var result6 = new Not(){ expr3 };
+                    var result6 = new Not() { expr3 };
                     result6.AnchorToken = notToken;
                     return result6;
                 default:

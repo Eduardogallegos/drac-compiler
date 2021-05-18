@@ -53,4 +53,5 @@ namespace Drac
     class Or : Node { }
     class And : Node { }
     class Array : Node { }
+    class ExprList : Node { }
 }
