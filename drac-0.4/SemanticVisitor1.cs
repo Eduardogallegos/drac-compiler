@@ -38,7 +38,7 @@ namespace Drac
             private set;
         }
 
-        private void SetAPIFunction(string functionName, bool functionPrimitive = true, int functionArity, ISet<string> functionSymbolTable = null){
+        private void SetAPIFunction(string functionName, int functionArity, bool functionPrimitive = true, ISet<string> functionSymbolTable = null){
             Function newFunction = new Function(primitive: functionPrimitive, arity: functionArity, symbolTable: functionSymbolTable);
             GlobalFunctionsTable.Add(functionName, newFunction);
         }
@@ -85,7 +85,7 @@ namespace Drac
                 var variableName = childNode.AnchorToken.Lexeme;
                 if (GlobalVariablesTable.Contains(variableName))
                 {
-                    throw new SemanticError("Duplicated variable: " + variableName, childNode);
+                    throw new SemanticError("Duplicated variable: " + variableName, childNode.AnchorToken);
                 }
                 else
                 {
@@ -100,7 +100,7 @@ namespace Drac
             var functionName = node.AnchorToken.Lexeme;
             if (GlobalFunctionsTable.Contains(functionName))
             {
-                throw new SemanticError("Duplicated function: " + functionName, node);
+                throw new SemanticError("Duplicated function: " + functionName, node.AnchorToken);
             }
             else
             {
@@ -108,7 +108,7 @@ namespace Drac
                 GlobalFunctionsTable.Add(functionName, newFunction);
             }
         }
-
+// son necesarias?
         public void Visit(VarDefList node)
         {
             VisitChildren(node);

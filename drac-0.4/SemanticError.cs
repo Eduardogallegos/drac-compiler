@@ -8,7 +8,7 @@
 */
 using System;
 
-namespace Buttercup {
+namespace Drac {
 
     class SemanticError: Exception {
 
