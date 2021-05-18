@@ -90,9 +90,16 @@ namespace Drac
 
                 Console.WriteLine("Semantics OK.");
                 Console.WriteLine();
-                Console.WriteLine("Symbol Table");
+                Console.WriteLine("Functions Table");
                 Console.WriteLine("============");
-                foreach (var entry in semantic1.Table) {
+                foreach (var entry in semantic1.GlobalFunctionsTable) {
+                    Console.WriteLine(entry);
+                }
+
+                Console.WriteLine();
+                Console.WriteLine("Global Variables Table");
+                Console.WriteLine("============");
+                foreach (var entry in semantic1.GlobalVariablesTable) {
                     Console.WriteLine(entry);
                 }
 
