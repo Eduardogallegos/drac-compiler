@@ -20,25 +20,29 @@ using System;
 using System.IO;
 using System.Text;
 
-namespace Drac {
+namespace Drac
+{
 
-    public class Driver {
+    public class Driver
+    {
 
-        const string VERSION = "0.3";
+        const string VERSION = "0.4";
         const string AUTHORS = "Eduardo Gallegos, Alejandro Chavez, Pedro Cortes";
 
         //-----------------------------------------------------------
         static readonly string[] ReleaseIncludes = {
             "Lexical analysis",
             "Syntactic analysis",
-            "AST construction"
+            "AST construction",
+            "Sematic Analysis"
         };
 
         //-----------------------------------------------------------
-        void PrintAppHeader() {
+        void PrintAppHeader()
+        {
             Console.WriteLine("Drac compiler, version " + VERSION);
             Console.WriteLine(
-                "Copyright \u00A9 2021 by:" + AUTHORS +", ITESM CEM."
+                "Copyright \u00A9 2021 by:" + AUTHORS + ", ITESM CEM."
                 + "\n Compiler Design course. Professor Ariel Ortiz.");
             Console.WriteLine("This program is free software; you may "
                 + "redistribute it under the terms of");
@@ -48,47 +52,68 @@ namespace Drac {
         }
 
         //-----------------------------------------------------------
-        void PrintReleaseIncludes() {
+        void PrintReleaseIncludes()
+        {
             Console.WriteLine("Included in this release:");
-            foreach (var phase in ReleaseIncludes) {
+            foreach (var phase in ReleaseIncludes)
+            {
                 Console.WriteLine("   * " + phase);
             }
         }
 
         //-----------------------------------------------------------
-        void Run(string[] args) {
+        void Run(string[] args)
+        {
 
             PrintAppHeader();
             Console.WriteLine();
             PrintReleaseIncludes();
             Console.WriteLine();
 
-            if (args.Length != 1) {
+            if (args.Length != 1)
+            {
                 Console.Error.WriteLine(
                     "Please specify the name of the input file.");
                 Environment.Exit(1);
             }
 
-            try {
+            try
+            {
                 var inputPath = args[0];
                 var input = File.ReadAllText(inputPath);
 
                 var parser = new Parser(new Scanner(input).Scan().GetEnumerator());
                 var program = parser.Program();
-                Console.WriteLine(program.ToStringTree());
 
-            } catch (Exception e) {
-                if(e is FileNotFoundException || e is SyntaxError){
+                var semantic1 = new SemanticVisitor1();
+                semantic1.Visit((dynamic) program);
+
+                Console.WriteLine("Semantics OK.");
+                Console.WriteLine();
+                Console.WriteLine("Symbol Table");
+                Console.WriteLine("============");
+                foreach (var entry in semantic1.Table) {
+                    Console.WriteLine(entry);
+                }
+
+            }
+            catch (Exception e)
+            {
+                if (e is FileNotFoundException
+                    || e is SyntaxError
+                    || e is SemanticError)
+                {
                     Console.Error.WriteLine(e.Message);
                     Environment.Exit(1);
                 }
-                
+
                 throw;
             }
         }
 
         //-----------------------------------------------------------
-        public static void Main(string[] args) {
+        public static void Main(string[] args)
+        {
             new Driver().Run(args);
         }
     }
