@@ -18,7 +18,7 @@ namespace Drac
         {
             bool IsPrimitive { get; set; }
             int Arity { get; set; }
-            ISet<string> SymbolTable { get; set; }
+            ISet<string>? SymbolTable { get; set; }
             public Function(bool primitive, int arity, ISet<string> symbolTable)
             {
                 this.IsPrimitive = primitive;
@@ -38,10 +38,29 @@ namespace Drac
             private set;
         }
 
+        private void SetAPIFunction(string functionName, bool functionPrimitive = true, int functionArity, ISet<string> functionSymbolTable = null){
+            Function newFunction = new Function(primitive: functionPrimitive, arity: functionArity, symbolTable: functionSymbolTable);
+            GlobalFunctionsTable.Add(functionName, newFunction);
+        }
+        private void SetAPIFunctions(){
+            SetAPIFunction(functionName:"printi", functionArity:1);
+            SetAPIFunction(functionName:"printc", functionArity:1);
+            SetAPIFunction(functionName:"prints", functionArity:1);
+            SetAPIFunction(functionName:"println", functionArity:0);
+            SetAPIFunction(functionName:"readi", functionArity:0);
+            SetAPIFunction(functionName:"reads", functionArity:0);
+            SetAPIFunction(functionName:"new", functionArity:1);
+            SetAPIFunction(functionName:"size", functionArity:1);
+            SetAPIFunction(functionName:"add", functionArity:2);
+            SetAPIFunction(functionName:"get", functionArity:2);
+            SetAPIFunction(functionName:"set", functionArity:3);
+        }
+
         public SemanticVisitor1()
         {
             GlobalFunctionsTable = new IDictionary<string, Function>();
             GlobalVariablesTable = new ISet<string>();
+            SetAPIFunctions();
         }
 
         public void Visit(Program node)
