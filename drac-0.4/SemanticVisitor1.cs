@@ -14,7 +14,7 @@ namespace Drac
 {
     class SemanticVisitor1
     {
-        public struct Function
+        public class Function
         {
             bool IsPrimitive { get; set; }
             public int Arity { get; set; }
@@ -25,7 +25,17 @@ namespace Drac
                 this.Arity = arity;
                 this.SymbolTable = symbolTable;
             }
-            public override string ToString() => $"\t| {IsPrimitive} \t | {Arity}  \t | {SymbolTable} \t |";
+            public override string ToString() {
+                var toString = $"\t| {IsPrimitive} \t | {Arity}  \t | [";
+                if(SymbolTable != null){
+                    foreach (var symbol in SymbolTable.Keys)
+                    {
+                        toString += $"{symbol},";
+                    }
+                }
+                toString += "]\t |";
+                return toString;
+            } 
         }
         public IDictionary<string, Function> GlobalFunctionsTable
         {
@@ -109,7 +119,7 @@ namespace Drac
                 GlobalFunctionsTable.Add(functionName, newFunction);
             }
         }
-// ASK: Las siguientes funciones son necesarias?
+// ASK: Las siguientes funciones son necesarias? No es necesario
         public void Visit(VarDefList node)
         {
             VisitChildren(node);

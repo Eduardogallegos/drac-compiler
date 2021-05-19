@@ -17,6 +17,7 @@ namespace Drac
         public SemanticVisitor1 visitor1
         {
             get;
+            private set;
         }
 
         public IDictionary<string, bool> SymbolTable
@@ -123,7 +124,7 @@ namespace Drac
             {
                 throw new SemanticError("Incorrect number of parameters" + functionName, node.AnchorToken);
             }
-            //VisitChildren(node); ASK: Es necesario visitar a los nodos hijos de nuevo?
+            VisitChildren(node);
         }
         public void Visit(Increase node)
         {
@@ -289,16 +290,6 @@ namespace Drac
         }
         public void Visit(Or node)
         {
-
-            var lit_Str = node.AnchorToken.Lexeme;
-            int value;
-
-            if (!Int32.TryParse(lit_Str, out value))
-            {
-                throw new SemanticError(
-                    $"String literal too large: {lit_Str}",
-                    node.AnchorToken);
-            }
             VisitChildren(node);
         }
         public void Visit(And node)
@@ -311,15 +302,6 @@ namespace Drac
         }
         public void Visit(ExprList node)
         {
-            var lit_Str = node.AnchorToken.Lexeme;
-            int value;
-
-            if (!Int32.TryParse(lit_Str, out value))
-            {
-                throw new SemanticError(
-                    $"String literal too large: {lit_Str}",
-                    node.AnchorToken);
-            }
             VisitChildren(node);
         }
 
