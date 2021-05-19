@@ -18,7 +18,7 @@ namespace Drac
         {
             bool IsPrimitive { get; set; }
             int Arity { get; set; }
-            ISet<string>? SymbolTable { get; set; }
+            ISet<string> SymbolTable { get; set; }
             public Function(bool primitive, int arity, ISet<string> symbolTable)
             {
                 this.IsPrimitive = primitive;
@@ -38,7 +38,7 @@ namespace Drac
             private set;
         }
 
-        private void SetAPIFunction(string functionName, bool functionPrimitive = true, int functionArity, ISet<string> functionSymbolTable = null){
+        private void SetAPIFunction(string functionName, int functionArity, bool functionPrimitive = true, ISet<string> functionSymbolTable = null){
             Function newFunction = new Function(primitive: functionPrimitive, arity: functionArity, symbolTable: functionSymbolTable);
             GlobalFunctionsTable.Add(functionName, newFunction);
         }
@@ -58,8 +58,8 @@ namespace Drac
 
         public SemanticVisitor1()
         {
-            GlobalFunctionsTable = new IDictionary<string, Function>();
-            GlobalVariablesTable = new ISet<string>();
+            GlobalFunctionsTable = new SortedDictionary<string, Function>();
+            GlobalVariablesTable = new HashSet<string>();
             SetAPIFunctions();
         }
 
@@ -75,7 +75,7 @@ namespace Drac
 
         public void Visit(Identifier node)
         {
-            // VisitChildren(node); No tiene hijos, aun asi se debe consultar?
+            // VisitChildren(node); ASK No tiene hijos, aun asi se debe consultar?
         }
 
         public void Visit(IdList node)
@@ -85,7 +85,7 @@ namespace Drac
                 var variableName = childNode.AnchorToken.Lexeme;
                 if (GlobalVariablesTable.Contains(variableName))
                 {
-                    throw new SemanticError("Duplicated variable: " + variableName, childNode);
+                    throw new SemanticError("Duplicated variable: " + variableName, childNode.AnchorToken);
                 }
                 else
                 {
@@ -96,19 +96,24 @@ namespace Drac
 
         public void Visit(Funcion node)
         {
-            // VisitChildren(node); No se debe visitar los hijos en la primer iteracion, cierto?
+            // VisitChildren(node); ASK: No se debe visitar los hijos en la primer iteracion, cierto?
             var functionName = node.AnchorToken.Lexeme;
-            if (GlobalFunctionsTable.Contains(functionName))
+            if (GlobalFunctionsTable.ContainsKey(functionName))
             {
-                throw new SemanticError("Duplicated function: " + functionName, node);
+                throw new SemanticError("Duplicated function: " + functionName, node.AnchorToken);
             }
             else
             {
-                Function newFunction = new Function(primitive: false, arity: node[0].Length, symbolTable: null);
+                var functionArity = 0;
+                foreach (var n in node[0])
+                {
+                    functionArity ++;
+                }
+                Function newFunction = new Function(primitive: false, arity: functionArity, symbolTable: null);
                 GlobalFunctionsTable.Add(functionName, newFunction);
             }
         }
-
+// ASK: Las siguientes funciones son necesarias?
         public void Visit(VarDefList node)
         {
             VisitChildren(node);
