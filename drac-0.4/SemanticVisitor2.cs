@@ -14,6 +14,7 @@ namespace Drac
 {
     class SemanticVisitor2
     {
+        int loop_level = 0;
         public SemanticVisitor1 visitor1
         {
             get;
@@ -49,19 +50,23 @@ namespace Drac
 
         public void Visit(IdList node)
         {
-            foreach (var childNode in node)
+            if (node != null)
             {
-                var variableName = childNode.AnchorToken.Lexeme;
-                if (SymbolTable.ContainsKey(variableName))
+                foreach (var childNode in node)
                 {
-                    throw new SemanticError("Duplicated parameter: " + variableName, childNode.AnchorToken);
-                }
-                else
-                {
-                    SymbolTable.Add(variableName, true);
-                }
+                    var variableName = childNode.AnchorToken.Lexeme;
+                    if (SymbolTable.ContainsKey(variableName))
+                    {
+                        throw new SemanticError("Duplicated parameter: " + variableName, childNode.AnchorToken);
+                    }
+                    else
+                    {
+                        SymbolTable.Add(variableName, true);
+                    }
+                
             }
             VisitChildren(node);
+            }
         }
 
         public void Visit(Funcion node)
@@ -69,30 +74,36 @@ namespace Drac
             SymbolTable = new SortedDictionary<string, bool>();
             VisitChildren(node);
             visitor1.GlobalFunctionsTable[node.AnchorToken.Lexeme].SymbolTable = SymbolTable;
-            
+
         }
         public void Visit(VarDefList node)
         {
-            foreach (var variableNode in node)
+            
+            if (node != null)
             {
-                var variable = variableNode.AnchorToken.Lexeme;
-                if (SymbolTable.ContainsKey(variable))
+                foreach (var variableNode in node)
                 {
-                    throw new SemanticError("Duplicated local variable" + variable, variableNode.AnchorToken);
+                    var variable = variableNode.AnchorToken.Lexeme;
+                    if (SymbolTable.ContainsKey(variable))
+                    {
+                        throw new SemanticError("Duplicated local variable" + variable, variableNode.AnchorToken);
+                    }
+                    SymbolTable.Add(variable, false);
                 }
-                SymbolTable.Add(variable, false);
-            }
-            VisitChildren(node);
+            
+            VisitChildren(node);}
         }
 
         public void Visit(StmtList node)
         {
+            
             VisitChildren(node);
         }
 
         // CHECK
         public void Visit(Assignment node)
         {
+            if(node!=null){
             var variableName = node.AnchorToken.Lexeme;
 
             if (SymbolTable.ContainsKey(variableName))
@@ -110,10 +121,12 @@ namespace Drac
             }
 
             VisitChildren(node);
+            }
         }
 
         public void Visit(FunctionCall node)
         {
+            if(node!=null){
             var functionName = node.AnchorToken.Lexeme;
 
             if (!visitor1.GlobalFunctionsTable.ContainsKey(functionName))
@@ -124,7 +137,8 @@ namespace Drac
             {
                 throw new SemanticError("Incorrect number of parameters" + functionName, node.AnchorToken);
             }
-            VisitChildren(node);
+            
+            VisitChildren(node);}
         }
         public void Visit(Increase node)
         {
@@ -158,30 +172,29 @@ namespace Drac
 
         public void Visit(StmtWhile node)
         {
+            loop_level++;
             VisitChildren(node);
         }
 
         public void Visit(StmtDoWhile node)
         {
+            loop_level++;
             VisitChildren(node);
         }
 
         public void Visit(StmtBreak node)
         {
+            loop_level--;
+            if(loop_level<0){
+                throw new SemanticError("The break statement isn't inside the while and the do-while"+ node.AnchorToken.Lexeme, node.AnchorToken);
+            }
+            
             VisitChildren(node);
         }
 
         public void Visit(StmtReturn node)
         {
-            var returnStr = node[0].AnchorToken.Lexeme;
-            int value;
 
-            if (!Int32.TryParse(returnStr, out value))
-            {
-                throw new SemanticError(
-                    $"Return literal too large: {returnStr}",
-                    node.AnchorToken);
-            }
             VisitChildren(node);
 
 
@@ -290,6 +303,7 @@ namespace Drac
         }
         public void Visit(Or node)
         {
+          
             VisitChildren(node);
         }
         public void Visit(And node)
@@ -307,10 +321,16 @@ namespace Drac
 
         void VisitChildren(Node node)
         {
-            foreach (var n in node)
+
+           
+                foreach (var n in node)
             {
+                
                 Visit((dynamic)n);
             }
+            
+            
+            
         }
     }
 }
