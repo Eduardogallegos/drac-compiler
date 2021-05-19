@@ -68,6 +68,7 @@ namespace Drac
             SymbolTable = new SortedDictionary<string, bool>();
             VisitChildren(node);
             visitor1.GlobalFunctionsTable[node.AnchorToken.Lexeme].SymbolTable = SymbolTable;
+            
         }
         public void Visit(VarDefList node)
         {
