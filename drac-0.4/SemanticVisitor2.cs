@@ -71,12 +71,12 @@ namespace Drac
         {
             LocalVariablesTable = new HashSet<string>();
             LocalParametersTable = new HashSet<string>();
-            var functionName = node.AnchorToken.Lexeme;
-            if (visitor1.GlobalFunctionsTable.ContainsKey(functionName))
-            {
+            // var functionName = node.AnchorToken.Lexeme;
+            // if (visitor1.GlobalFunctionsTable.ContainsKey(functionName))
+            // {
 
-                throw new SemanticError("Duplicate function" + functionName, node.AnchorToken);
-            }
+            //     throw new SemanticError("Duplicate function" + functionName, node.AnchorToken);
+            // }
             foreach (var parameterNode in node[0])
             {
                 var parameter = parameterNode.AnchorToken.Lexeme;
@@ -201,7 +201,7 @@ namespace Drac
 
         public void Visit(StmtReturn node)
         {
-            var returnStr = node.AnchorToken.Lexeme;
+            var returnStr = node[0].AnchorToken.Lexeme;
             int value;
 
             if (!Int32.TryParse(returnStr, out value))
