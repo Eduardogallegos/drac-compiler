@@ -22,6 +22,12 @@ namespace Drac{
             }
         }
 
+        public bool hasChildren{
+            get {
+                return children.Count > 0;
+            }
+        }
+
         public Node this[int index] {
             get {
                 return children[index];

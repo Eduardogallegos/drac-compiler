@@ -31,6 +31,7 @@ namespace Drac
         public SemanticVisitor2(SemanticVisitor1 visitor1)
         {
             this.visitor1 = visitor1;
+            SymbolTable = new SortedDictionary<string, bool>();
         }
 
         public void Visit(Program node)
@@ -57,41 +58,27 @@ namespace Drac
                     var variableName = childNode.AnchorToken.Lexeme;
                     if (SymbolTable.ContainsKey(variableName))
                     {
-                        throw new SemanticError("Duplicated parameter: " + variableName, childNode.AnchorToken);
+                        if(!visitor1.GlobalVariablesTable.Contains(variableName)){
+                            throw new SemanticError("Duplicated variable: " + variableName, childNode.AnchorToken);
+                        }
+                        
                     }
                     else
                     {
                         SymbolTable.Add(variableName, true);
                     }
                 
+                }
             }
             VisitChildren(node);
-            }
         }
 
         public void Visit(Funcion node)
         {
             SymbolTable = new SortedDictionary<string, bool>();
-            VisitChildren(node);
             visitor1.GlobalFunctionsTable[node.AnchorToken.Lexeme].SymbolTable = SymbolTable;
+            VisitChildren(node);
 
-        }
-        public void Visit(VarDefList node)
-        {
-            
-            if (node != null)
-            {
-                foreach (var variableNode in node)
-                {
-                    var variable = variableNode.AnchorToken.Lexeme;
-                    if (SymbolTable.ContainsKey(variable))
-                    {
-                        throw new SemanticError("Duplicated local variable" + variable, variableNode.AnchorToken);
-                    }
-                    SymbolTable.Add(variable, false);
-                }
-            
-            VisitChildren(node);}
         }
 
         public void Visit(StmtList node)
@@ -126,19 +113,20 @@ namespace Drac
 
         public void Visit(FunctionCall node)
         {
-            if(node!=null){
             var functionName = node.AnchorToken.Lexeme;
 
             if (!visitor1.GlobalFunctionsTable.ContainsKey(functionName))
             {
                 throw new SemanticError("The function doesn't exist" + functionName, node.AnchorToken);
             }
-            if (node[0].length != visitor1.GlobalFunctionsTable[functionName].Arity)
-            {
-                throw new SemanticError("Incorrect number of parameters" + functionName, node.AnchorToken);
+            if(node.hasChildren){
+                if (node[0].length != visitor1.GlobalFunctionsTable[functionName].Arity)
+                {
+                    throw new SemanticError("Incorrect number of parameters" + functionName, node.AnchorToken);
+                }
             }
             
-            VisitChildren(node);}
+            VisitChildren(node);
         }
         public void Visit(Increase node)
         {
@@ -184,20 +172,16 @@ namespace Drac
 
         public void Visit(StmtBreak node)
         {
-            loop_level--;
             if(loop_level<0){
-                throw new SemanticError("The break statement isn't inside the while and the do-while"+ node.AnchorToken.Lexeme, node.AnchorToken);
+                throw new SemanticError("The break statement isn't inside a while or a do-while instruction"+ node.AnchorToken.Lexeme, node.AnchorToken);
             }
-            
+            loop_level--;
             VisitChildren(node);
         }
 
         public void Visit(StmtReturn node)
         {
-
             VisitChildren(node);
-
-
         }
 
         public void Visit(StmtEmpty node)
@@ -288,7 +272,6 @@ namespace Drac
                     node.AnchorToken);
             }
             VisitChildren(node);
-
         }
         public void Visit(Char_lit node)
         {
@@ -296,14 +279,10 @@ namespace Drac
         }
         public void Visit(String_lit node)
         {
-
             VisitChildren(node);
-
-
         }
         public void Visit(Or node)
         {
-          
             VisitChildren(node);
         }
         public void Visit(And node)
@@ -321,16 +300,10 @@ namespace Drac
 
         void VisitChildren(Node node)
         {
-
-           
-                foreach (var n in node)
+            foreach (var n in node)
             {
-                
                 Visit((dynamic)n);
             }
-            
-            
-            
         }
     }
 }

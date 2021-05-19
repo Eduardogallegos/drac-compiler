@@ -120,10 +120,6 @@ namespace Drac
             }
         }
 // ASK: Las siguientes funciones son necesarias? No es necesario
-        public void Visit(VarDefList node)
-        {
-            VisitChildren(node);
-        }
 
         public void Visit(StmtList node)
         {
