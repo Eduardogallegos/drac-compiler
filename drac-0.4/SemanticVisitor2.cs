@@ -83,7 +83,6 @@ namespace Drac
 
         public void Visit(StmtList node)
         {
-            
             VisitChildren(node);
         }
 
@@ -117,12 +116,12 @@ namespace Drac
 
             if (!visitor1.GlobalFunctionsTable.ContainsKey(functionName))
             {
-                throw new SemanticError("The function doesn't exist" + functionName, node.AnchorToken);
+                throw new SemanticError("The function doesn't exist " + functionName, node.AnchorToken);
             }
             if(node.hasChildren){
                 if (node[0].length != visitor1.GlobalFunctionsTable[functionName].Arity)
                 {
-                    throw new SemanticError("Incorrect number of parameters" + functionName, node.AnchorToken);
+                    throw new SemanticError("Incorrect number of parameters " + functionName, node.AnchorToken);
                 }
             }
             
@@ -161,21 +160,23 @@ namespace Drac
         public void Visit(StmtWhile node)
         {
             loop_level++;
+
             VisitChildren(node);
+            loop_level--;
         }
 
         public void Visit(StmtDoWhile node)
         {
             loop_level++;
             VisitChildren(node);
+            loop_level--;
         }
 
         public void Visit(StmtBreak node)
         {
-            if(loop_level<0){
-                throw new SemanticError("The break statement isn't inside a while or a do-while instruction"+ node.AnchorToken.Lexeme, node.AnchorToken);
+            if(loop_level<=0){
+                throw new SemanticError("The break statement isn't inside a while or a do-while instruction", node.AnchorToken);
             }
-            loop_level--;
             VisitChildren(node);
         }
 
@@ -268,7 +269,7 @@ namespace Drac
             if (!Int32.TryParse(intStr, out value))
             {
                 throw new SemanticError(
-                    $"Integer literal too large: {intStr}",
+                    $"Integer too large: {intStr}",
                     node.AnchorToken);
             }
             VisitChildren(node);
