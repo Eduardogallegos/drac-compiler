@@ -61,21 +61,22 @@ namespace Drac
         {
             var variableName = node.AnchorToken.Lexeme;
 
-            if (Table.ContainsKey(variableName))
+            if (LocalVariablesTable.Contains(variableName))
+            {
+                
+            }
+            else if (LocalParametersTable.Contains(variableName))
             {
 
-                var expectedType = Table[variableName];
+            }
+            else if (semantic1.GlobalVariablesTable.Contains(variableName))
+            {
 
-                if (expectedType != Visit((dynamic)node[0]))
-                {
-                    throw new SemanticError(
-                        "Expecting type " + expectedType + " in assignment statement", node.AnchorToken);
-                }
             }
             else
             {
                 throw new SemanticError(
-                    "Undeclared variable: " + variableName,node.AnchorToken);
+                    "Undeclared variable: " + variableName, node.AnchorToken);
             }
 
             VisitChildren(node);
