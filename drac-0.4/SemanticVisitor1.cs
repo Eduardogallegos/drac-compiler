@@ -17,8 +17,8 @@ namespace Drac
         public struct Function
         {
             bool IsPrimitive { get; set; }
-            int Arity { get; set; }
-            ISet<string> SymbolTable { get; set; }
+            public int Arity { get; set; }
+            public ISet<string> SymbolTable { get; set; }
             public Function(bool primitive, int arity, ISet<string> symbolTable)
             {
                 this.IsPrimitive = primitive;

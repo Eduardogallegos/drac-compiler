@@ -14,8 +14,12 @@ namespace Drac
 {
     class SemanticVisitor2
     {
-        public SemanticVisitor2()
+        public SemanticVisitor1 visitor1{
+            get;
+        }
+        public SemanticVisitor2(SemanticVisitor1 visitor1)
         {
+            this.visitor1 = visitor1;
         }
 
         public ISet<string> LocalVariablesTable
@@ -35,7 +39,7 @@ namespace Drac
             foreach (var childNode in node)
             {
                 var variableName = childNode.AnchorToken.Lexeme;
-                if (semantic1.GlobalVariablesTable.Contains(variableName) | LocalVariablesTable.Contains(variableName) | LocalParametersTable.Contains(variableName))
+                if (visitor1.GlobalVariablesTable.Contains(variableName) | LocalVariablesTable.Contains(variableName) | LocalParametersTable.Contains(variableName))
                 {
                     throw new SemanticError("Duplicated variable: " + variableName, childNode.AnchorToken);
                 }
@@ -69,7 +73,7 @@ namespace Drac
             {
 
             }
-            else if (semantic1.GlobalVariablesTable.Contains(variableName))
+            else if (visitor1.GlobalVariablesTable.Contains(variableName))
             {
 
             }
@@ -86,11 +90,11 @@ namespace Drac
         {
             var functionName = node.AnchorToken.Lexeme;
 
-            if (!semantic1.GlobalFunctionsTable.ContainsKey(functionName))
+            if (!visitor1.GlobalFunctionsTable.ContainsKey(functionName))
             {
                 throw new SemanticError("The function doesn't exist" + functionName, node.AnchorToken);
             }
-            if (node[0].length != semantic1.GlobalFunctionsTable[functionName].Arity)
+            if (node[0].length != visitor1.GlobalFunctionsTable[functionName].Arity)
             {
                 throw new SemanticError("Incorrect number of parameters" + functionName, node.AnchorToken);
             }
@@ -102,7 +106,7 @@ namespace Drac
             LocalVariablesTable = new HashSet<string>();
             LocalParametersTable = new HashSet<string>();
             var functionName = node.AnchorToken.Lexeme;
-            if (semantic1.GlobalFunctionsTable.ContainsKey(functionName))
+            if (visitor1.GlobalFunctionsTable.ContainsKey(functionName))
             {
 
                 throw new SemanticError("Duplicate function" + functionName, node.AnchorToken);
