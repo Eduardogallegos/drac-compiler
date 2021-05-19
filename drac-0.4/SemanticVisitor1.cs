@@ -25,6 +25,7 @@ namespace Drac
                 this.Arity = arity;
                 this.SymbolTable = symbolTable;
             }
+            public override string ToString() => $"\t| {IsPrimitive} \t | {Arity}  \t | {SymbolTable} \t |";
         }
         public IDictionary<string, Function> GlobalFunctionsTable
         {

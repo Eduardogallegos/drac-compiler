@@ -94,19 +94,24 @@ namespace Drac
                     throw new SemanticError("No Main() function declared");
                 }
 
+                // var semantic2 = new SemanticVisitor2();
+                // semantic2.Visit((dynamic) program);
+
                 Console.WriteLine("Semantics OK.");
                 Console.WriteLine();
                 Console.WriteLine("Functions Table");
                 Console.WriteLine("============");
-                foreach (var entry in semantic1.GlobalFunctionsTable) {
-                    Console.WriteLine(entry);
+                var functions = semantic1.GlobalFunctionsTable.Keys;
+                Console.WriteLine("| NAME\t| IS PRIMITIVE?\t| Arity\t| Symbol Table\t|");
+                foreach (var function in functions) {
+                    Console.WriteLine($"| {function}" + semantic1.GlobalFunctionsTable[function]);
                 }
 
                 Console.WriteLine();
                 Console.WriteLine("Global Variables Table");
                 Console.WriteLine("============");
                 foreach (var entry in semantic1.GlobalVariablesTable) {
-                    Console.WriteLine(entry);
+                    Console.WriteLine("|\t"+entry+"\t|");
                 }
 
             }
