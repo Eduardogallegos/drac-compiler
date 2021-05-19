@@ -18,8 +18,8 @@ namespace Drac
         {
             bool IsPrimitive { get; set; }
             public int Arity { get; set; }
-            public ISet<string> SymbolTable { get; set; }
-            public Function(bool primitive, int arity, ISet<string> symbolTable)
+            public IDictionary<string, bool> SymbolTable { get; set; }
+            public Function(bool primitive, int arity, IDictionary<string, bool> symbolTable)
             {
                 this.IsPrimitive = primitive;
                 this.Arity = arity;
@@ -39,7 +39,7 @@ namespace Drac
             private set;
         }
 
-        private void SetAPIFunction(string functionName, int functionArity, bool functionPrimitive = true, ISet<string> functionSymbolTable = null){
+        private void SetAPIFunction(string functionName, int functionArity, bool functionPrimitive = true, IDictionary<string, bool> functionSymbolTable = null){
             Function newFunction = new Function(primitive: functionPrimitive, arity: functionArity, symbolTable: functionSymbolTable);
             GlobalFunctionsTable.Add(functionName, newFunction);
         }

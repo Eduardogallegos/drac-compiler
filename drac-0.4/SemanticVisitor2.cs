@@ -19,14 +19,9 @@ namespace Drac
             get;
         }
 
-        public ISet<string> LocalVariablesTable
+        public IDictionary<string, bool> SymbolTable
         {
-            get;
-            private set;
-        }
-
-        public ISet<string> LocalParametersTable
-        {
+            // Bool represents Is_Param?
             get;
             private set;
         }
@@ -56,56 +51,35 @@ namespace Drac
             foreach (var childNode in node)
             {
                 var variableName = childNode.AnchorToken.Lexeme;
-                if (visitor1.GlobalVariablesTable.Contains(variableName) | LocalVariablesTable.Contains(variableName) | LocalParametersTable.Contains(variableName))
+                if (SymbolTable.ContainsKey(variableName))
                 {
-                    throw new SemanticError("Duplicated variable: " + variableName, childNode.AnchorToken);
+                    throw new SemanticError("Duplicated parameter: " + variableName, childNode.AnchorToken);
                 }
                 else
                 {
-                    LocalVariablesTable.Add(variableName);
+                    SymbolTable.Add(variableName, true);
                 }
             }
+            VisitChildren(node);
         }
 
         public void Visit(Funcion node)
         {
-            LocalVariablesTable = new HashSet<string>();
-            LocalParametersTable = new HashSet<string>();
-            // var functionName = node.AnchorToken.Lexeme;
-            // if (visitor1.GlobalFunctionsTable.ContainsKey(functionName))
-            // {
-
-            //     throw new SemanticError("Duplicate function" + functionName, node.AnchorToken);
-            // }
-            foreach (var parameterNode in node[0])
-            {
-                var parameter = parameterNode.AnchorToken.Lexeme;
-                if (!LocalParametersTable.Contains(parameter))
-                {
-                    LocalParametersTable.Add(parameter);
-                }
-                else
-                {
-                    throw new SemanticError("Duplicate parameter" + parameter, parameterNode.AnchorToken);
-                }
-
-            }
-
-            foreach (var variableNode in node[1])
-            {
-                var variable = variableNode.AnchorToken.Lexeme;
-                if (LocalVariablesTable.Contains(variable))
-                {
-                    throw new SemanticError("Duplicate variable" + variable, variableNode.AnchorToken);
-                }
-                LocalVariablesTable.Add(variable);
-            }
-            // TODO: Add references to the GlobalFunctionsTable
-
+            SymbolTable = new SortedDictionary<string, bool>();
             VisitChildren(node);
+            visitor1.GlobalFunctionsTable[node.AnchorToken.Lexeme].SymbolTable = SymbolTable;
         }
         public void Visit(VarDefList node)
         {
+            foreach (var variableNode in node)
+            {
+                var variable = variableNode.AnchorToken.Lexeme;
+                if (SymbolTable.ContainsKey(variable))
+                {
+                    throw new SemanticError("Duplicated local variable" + variable, variableNode.AnchorToken);
+                }
+                SymbolTable.Add(variable, false);
+            }
             VisitChildren(node);
         }
 
@@ -119,11 +93,7 @@ namespace Drac
         {
             var variableName = node.AnchorToken.Lexeme;
 
-            if (LocalVariablesTable.Contains(variableName))
-            {
-
-            }
-            else if (LocalParametersTable.Contains(variableName))
+            if (SymbolTable.ContainsKey(variableName))
             {
 
             }
