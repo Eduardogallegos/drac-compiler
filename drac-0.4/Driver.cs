@@ -94,8 +94,8 @@ namespace Drac
                     throw new SemanticError("No Main() function declared");
                 }
 
-                // var semantic2 = new SemanticVisitor2();
-                // semantic2.Visit((dynamic) program);
+                var semantic2 = new SemanticVisitor2();
+                semantic2.Visit((dynamic) program);
 
                 Console.WriteLine("Semantics OK.");
                 Console.WriteLine();

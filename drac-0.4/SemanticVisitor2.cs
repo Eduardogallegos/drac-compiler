@@ -10,23 +10,48 @@
 using System;
 using System.Collections.Generic;
 
-namespace Drac{
-    class SemanticVisitor2{
+namespace Drac
+{
+    class SemanticVisitor2
+    {
+        private static visitor1 = SemanticVisitor1;
+        public SemanticVisitor2()
+        {
 
-      public ISet<string> LocalVariablesTable
+
+
+
+        }
+
+
+        public ISet<string> LocalVariablesTable
         {
             get;
             private set;
         }
 
-      public void Visit(IdList node)
+        public ISet<string> LocalParametersTable
         {
+            get;
+            private set;
+        }
+
+        static readonly IDictionary<TokenCategory, Type> typeMapper =
+            new Dictionary<TokenCategory, Type>() {
+                { TokenCategory.BOOL, Type.BOOL },
+                { TokenCategory.INT, Type.INT }
+            };
+
+        public void Visit(IdList node)
+        {
+
+
             foreach (var childNode in node)
             {
                 var variableName = childNode.AnchorToken.Lexeme;
-                if (SemanticVisitor1.GlobalVariablesTable.Contains(variableName)|LocalVariablesTable.Contains(variableName))
+                if (SemanticVisitor1.GlobalVariablesTable.ContainsKey(variableName) | LocalVariablesTable.ContainsKey(variableName) | LocalParametersTable.ContainsKey(variableName))
                 {
-                    throw new SemanticError("Duplicated variable: " + variableName, childNode);
+                    throw new SemanticError("Duplicated variable: " + variableName, childNode.AnchorToken);
                 }
                 else
                 {
@@ -34,17 +59,12 @@ namespace Drac{
                 }
             }
         }
-        
-     public SemanticVisitor2()
-        {
-            
-            LocalVariablesTable = new ISet<string>();
-            
-        }
 
 
 
-            public void Visit(VarDefList node)
+
+
+        public void Visit(VarDefList node)
         {
             VisitChildren(node);
         }
@@ -57,20 +77,24 @@ namespace Drac{
         public void Visit(Assignment node)
         {
 
-          var variableName = node.AnchorToken.Lexeme;
+            var variableName = node.AnchorToken.Lexeme;
 
-            if (Table.ContainsKey(variableName)) {
+            if (Table.ContainsKey(variableName))
+            {
 
                 var expectedType = Table[variableName];
 
-                if (expectedType != Visit((dynamic) node[0])) {
+                if (expectedType != Visit((dynamic)node[0]))
+                {
                     throw new SemanticError(
                         "Expecting type " + expectedType
                         + " in assignment statement",
                         node.AnchorToken);
                 }
 
-            } else {
+            }
+            else
+            {
                 throw new SemanticError(
                     "Undeclared variable: " + variableName,
                     node.AnchorToken);
@@ -81,7 +105,58 @@ namespace Drac{
 
         public void Visit(FunctionCall node)
         {
+
+            var functionName = node.AnchorToken.Lexeme;
+
+            if (!SemanticVisitor1.GlobalFunctionsTable.ContainsKey(functionName))
+            {
+                throw new SemanticError("The function doesn't exist" + functionName, node.AnchorToken);
+            }
+            if (node[0].length != SemanticVisitor1.GlobalFunctionsTable[functionName].Arity)
+            {
+                throw new SemanticError("Incorrect number of parameters" + functionName, node.AnchorToken);
+            }
+
+            //VisitChildren(node);
+
+
+        }
+
+        public void Visit(Funcion node)
+        {
+            LocalVariablesTable = new ISet<string>();
+            LocalParametersTable = new ISet<string>();
+            var functionName = node.AnchorToken.lexeme;
+            if (SemanticVisitor1.GlobalFunctionsTable.ContainsKey(functionName))
+            {
+
+                throw new SemanticError("Duplicate function" + functionName, node.AnchorToken);
+            }
+            foreach (var parameter in node[0])
+            {
+                if (!LocalParametersTable.ContainsKey(parameter))
+                {
+                    LocalParametersTable.add(parameter);
+                }
+                else
+                {
+                    throw new SemanticError("Duplicate parameter" + parameter, parameter.AnchorToken);
+                }
+
+            }
+
+            foreach (var variable in node[1])
+            {
+                if (LocalVariablesTable.ContainsKey(variable))
+                {
+                    throw new SemanticError("Duplicate variable" + variable, variable.AnchorToken);
+                }
+                LocalVariablesTable.add(variable);
+            }
+
             VisitChildren(node);
+
+
         }
 
         public void Visit(Increase node)
@@ -131,7 +206,18 @@ namespace Drac{
 
         public void Visit(StmtReturn node)
         {
+            var returnStr = node.AnchorToken.Lexeme;
+            int value;
+
+            if (!Int32.TryParse(returnStr, out value))
+            {
+                throw new SemanticError(
+                    $"Return literal too large: {returnStr}",
+                    node.AnchorToken);
+            }
             VisitChildren(node);
+
+
         }
 
         public void Visit(StmtEmpty node)
@@ -212,7 +298,17 @@ namespace Drac{
         }
         public void Visit(Int_literal node)
         {
+            var intStr = node.AnchorToken.Lexeme;
+            int value;
+
+            if (!Int32.TryParse(lit_Str, out value))
+            {
+                throw new SemanticError(
+                    $"Integer literal too large: {intStr}",
+                    node.AnchorToken);
+            }
             VisitChildren(node);
+
         }
         public void Visit(Char_lit node)
         {
@@ -220,10 +316,23 @@ namespace Drac{
         }
         public void Visit(String_lit node)
         {
+
             VisitChildren(node);
+
+
         }
         public void Visit(Or node)
         {
+
+            var lit_Str = node.AnchorToken.Lexeme;
+            int value;
+
+            if (!Int32.TryParse(lit_Str, out value))
+            {
+                throw new SemanticError(
+                    $"String literal too large: {lit_Str}",
+                    node.AnchorToken);
+            }
             VisitChildren(node);
         }
         public void Visit(And node)
@@ -236,6 +345,15 @@ namespace Drac{
         }
         public void Visit(ExprList node)
         {
+            var lit_Str = node.AnchorToken.Lexeme;
+            int value;
+
+            if (!Int32.TryParse(lit_Str, out value))
+            {
+                throw new SemanticError(
+                    $"String literal too large: {lit_Str}",
+                    node.AnchorToken);
+            }
             VisitChildren(node);
         }
 
