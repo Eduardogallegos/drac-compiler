@@ -88,10 +88,9 @@ namespace Drac
                 var semantic1 = new SemanticVisitor1();
                 semantic1.Visit((dynamic) program);
 
-                // ASK: Es valido hacer esto? O tengo que usar Contains?
-                if (!semantic1.GlobalFunctionsTable.ContainsKey("main"))
+                if (!semantic1.GlobalFunctionsTable.ContainsKey("main") || semantic1.GlobalFunctionsTable["main"].Arity != 0)
                 {
-                    throw new SemanticError("No Main() function declared");
+                    throw new SemanticError("No main() function declared");
                 }
 
                 var semantic2 = new SemanticVisitor2(semantic1);
