@@ -14,12 +14,9 @@ namespace Drac
 {
     class SemanticVisitor2
     {
-        public SemanticVisitor1 visitor1{
-            get;
-        }
-        public SemanticVisitor2(SemanticVisitor1 visitor1)
+        public SemanticVisitor1 visitor1
         {
-            this.visitor1 = visitor1;
+            get;
         }
 
         public ISet<string> LocalVariablesTable
@@ -32,6 +29,26 @@ namespace Drac
         {
             get;
             private set;
+        }
+
+        public SemanticVisitor2(SemanticVisitor1 visitor1)
+        {
+            this.visitor1 = visitor1;
+        }
+
+        public void Visit(Program node)
+        {
+            VisitChildren(node);
+        }
+
+        public void Visit(VarDef node)
+        {
+            VisitChildren(node);
+        }
+
+        public void Visit(Identifier node)
+        {
+            VisitChildren(node);
         }
 
         public void Visit(IdList node)
@@ -48,57 +65,6 @@ namespace Drac
                     LocalVariablesTable.Add(variableName);
                 }
             }
-        }
-
-        public void Visit(VarDefList node)
-        {
-            VisitChildren(node);
-        }
-
-        public void Visit(StmtList node)
-        {
-            VisitChildren(node);
-        }
-
-        // CHECK
-        public void Visit(Assignment node)
-        {
-            var variableName = node.AnchorToken.Lexeme;
-
-            if (LocalVariablesTable.Contains(variableName))
-            {
-                
-            }
-            else if (LocalParametersTable.Contains(variableName))
-            {
-
-            }
-            else if (visitor1.GlobalVariablesTable.Contains(variableName))
-            {
-
-            }
-            else
-            {
-                throw new SemanticError(
-                    "Undeclared variable: " + variableName, node.AnchorToken);
-            }
-
-            VisitChildren(node);
-        }
-
-        public void Visit(FunctionCall node)
-        {
-            var functionName = node.AnchorToken.Lexeme;
-
-            if (!visitor1.GlobalFunctionsTable.ContainsKey(functionName))
-            {
-                throw new SemanticError("The function doesn't exist" + functionName, node.AnchorToken);
-            }
-            if (node[0].length != visitor1.GlobalFunctionsTable[functionName].Arity)
-            {
-                throw new SemanticError("Incorrect number of parameters" + functionName, node.AnchorToken);
-            }
-            //VisitChildren(node); ASK: Es necesario visitar a los nodos hijos de nuevo?
         }
 
         public void Visit(Funcion node)
@@ -138,7 +104,56 @@ namespace Drac
 
             VisitChildren(node);
         }
+        public void Visit(VarDefList node)
+        {
+            VisitChildren(node);
+        }
 
+        public void Visit(StmtList node)
+        {
+            VisitChildren(node);
+        }
+
+        // CHECK
+        public void Visit(Assignment node)
+        {
+            var variableName = node.AnchorToken.Lexeme;
+
+            if (LocalVariablesTable.Contains(variableName))
+            {
+
+            }
+            else if (LocalParametersTable.Contains(variableName))
+            {
+
+            }
+            else if (visitor1.GlobalVariablesTable.Contains(variableName))
+            {
+
+            }
+            else
+            {
+                throw new SemanticError(
+                    "Undeclared variable: " + variableName, node.AnchorToken);
+            }
+
+            VisitChildren(node);
+        }
+
+        public void Visit(FunctionCall node)
+        {
+            var functionName = node.AnchorToken.Lexeme;
+
+            if (!visitor1.GlobalFunctionsTable.ContainsKey(functionName))
+            {
+                throw new SemanticError("The function doesn't exist" + functionName, node.AnchorToken);
+            }
+            if (node[0].length != visitor1.GlobalFunctionsTable[functionName].Arity)
+            {
+                throw new SemanticError("Incorrect number of parameters" + functionName, node.AnchorToken);
+            }
+            //VisitChildren(node); ASK: Es necesario visitar a los nodos hijos de nuevo?
+        }
         public void Visit(Increase node)
         {
             VisitChildren(node);

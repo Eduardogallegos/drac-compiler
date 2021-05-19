@@ -76,7 +76,7 @@ namespace Drac
 
         public void Visit(Identifier node)
         {
-            // VisitChildren(node); ASK No tiene hijos, aun asi se debe consultar?
+            VisitChildren(node);
         }
 
         public void Visit(IdList node)
