@@ -12,6 +12,34 @@ using System.Collections.Generic;
 
 namespace Drac{
     class SemanticVisitor2{
+
+      public ISet<string> LocalVariablesTable
+        {
+            get;
+            private set;
+        }
+
+      public void Visit(IdList node)
+        {
+            foreach (var childNode in node)
+            {
+                var variableName = childNode.AnchorToken.Lexeme;
+                if (SemanticVisitor1.GlobalVariablesTable.Contains(variableName)|LocalVariablesTable.Contains(variableName))
+                {
+                    throw new SemanticError("Duplicated variable: " + variableName, childNode);
+                }
+                else
+                {
+                    LocalVariablesTable.Add(variableName);
+                }
+            }
+        }
         
+     public SemanticVisitor2()
+        {
+            
+            LocalVariablesTable = new ISet<string>();
+            
+        }
     }
 }
