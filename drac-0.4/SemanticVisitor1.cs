@@ -75,7 +75,7 @@ namespace Drac
 
         public void Visit(Identifier node)
         {
-            // VisitChildren(node); No tiene hijos, aun asi se debe consultar?
+            // VisitChildren(node); ASK No tiene hijos, aun asi se debe consultar?
         }
 
         public void Visit(IdList node)
@@ -96,7 +96,7 @@ namespace Drac
 
         public void Visit(Funcion node)
         {
-            // VisitChildren(node); No se debe visitar los hijos en la primer iteracion, cierto?
+            // VisitChildren(node); ASK: No se debe visitar los hijos en la primer iteracion, cierto?
             var functionName = node.AnchorToken.Lexeme;
             if (GlobalFunctionsTable.ContainsKey(functionName))
             {
@@ -113,7 +113,7 @@ namespace Drac
                 GlobalFunctionsTable.Add(functionName, newFunction);
             }
         }
-// son necesarias?
+// ASK: Las siguientes funciones son necesarias?
         public void Visit(VarDefList node)
         {
             VisitChildren(node);

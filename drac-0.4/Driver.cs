@@ -88,6 +88,12 @@ namespace Drac
                 var semantic1 = new SemanticVisitor1();
                 semantic1.Visit((dynamic) program);
 
+                // ASK: Es valido hacer esto? O tengo que usar Contains?
+                if (!semantic1.GlobalFunctionsTable.ContainsKey("main"))
+                {
+                    throw new SemanticError("No Main() function declared");
+                }
+
                 Console.WriteLine("Semantics OK.");
                 Console.WriteLine();
                 Console.WriteLine("Functions Table");
