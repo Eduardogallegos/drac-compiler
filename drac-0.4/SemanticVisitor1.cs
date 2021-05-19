@@ -86,7 +86,7 @@ namespace Drac
                 var variableName = childNode.AnchorToken.Lexeme;
                 if (GlobalVariablesTable.Contains(variableName))
                 {
-                    throw new SemanticError("Duplicated variable: " + variableName, childNode.AnchorToken);
+                    throw new SemanticError("Duplicated global variable: " + variableName, childNode.AnchorToken);
                 }
                 else
                 {
@@ -105,12 +105,7 @@ namespace Drac
             }
             else
             {
-                var functionArity = 0;
-                foreach (var n in node[0])
-                {
-                    functionArity ++;
-                }
-                Function newFunction = new Function(primitive: false, arity: functionArity, symbolTable: null);
+                Function newFunction = new Function(primitive: false, arity: node[0].length, symbolTable: null);
                 GlobalFunctionsTable.Add(functionName, newFunction);
             }
         }

@@ -18,11 +18,11 @@
 
 drac.exe: Driver.cs Scanner.cs Token.cs TokenCategory.cs Parser.cs \
 	SyntaxError.cs Node.cs SpecificNodes.cs SemanticVisitor1.cs \
-	SemanticVisitor2.cs SemanticError.cs
+	SemanticError.cs
 
 	mcs -out:drac.exe Driver.cs Scanner.cs Token.cs TokenCategory.cs \
 	Parser.cs SyntaxError.cs Node.cs SpecificNodes.cs SemanticVisitor1.cs \
-	SemanticVisitor2.cs SemanticError.cs
+	SemanticError.cs
 
 clean:
 

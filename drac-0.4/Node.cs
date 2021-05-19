@@ -16,6 +16,12 @@ namespace Drac{
 
         IList<Node> children = new List<Node>();
 
+        public int length{
+            get {
+                return children.Count;
+            }
+        }
+
         public Node this[int index] {
             get {
                 return children[index];
