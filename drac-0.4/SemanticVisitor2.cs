@@ -123,6 +123,11 @@ namespace Drac
                 {
                     throw new SemanticError("Incorrect number of parameters " + functionName, node.AnchorToken);
                 }
+            }else{
+                if (0 != visitor1.GlobalFunctionsTable[functionName].Arity)
+                {
+                    throw new SemanticError("Incorrect number of parameters " + functionName, node.AnchorToken);
+                }
             }
             
             VisitChildren(node);
