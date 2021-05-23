@@ -38,6 +38,6 @@ main() {
     }
     printi(fails);
     prints(" assertion failure(s) found.");
-    println();
+    println(hola);
     prints(a);
 }

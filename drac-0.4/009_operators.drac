@@ -7,6 +7,8 @@
 var fails;
 var asserts;
 
+
+
 assert(value1, value2, message) {
     inc asserts;
     if (value1 <> value2) {
@@ -23,8 +25,11 @@ some_fun() {
 
 -- Always returns true
 true_fun() {
+   
     return true;
 }
+
+
 
 -- Always returns false
 false_fun() {
@@ -33,6 +38,7 @@ false_fun() {
 
 -- Should never be called
 never_called() {
+    
     assert(false, true, "error in short circuit operator");
 }
 
@@ -108,4 +114,5 @@ main() {
     prints(" failure(s) found in ");
     printi(asserts);
     prints(" assertion(s).\n");
+    
 }
