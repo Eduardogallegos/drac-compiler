@@ -16,6 +16,7 @@ namespace Drac
     class IdList : Node { }
     class Funcion : Node { }
     class StmtList : Node { }
+    class VarDefList : Node { }
     class Assignment : Node { }
     class FunctionCall : Node { }
     class Increase : Node { }

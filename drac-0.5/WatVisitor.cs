@@ -29,8 +29,6 @@ namespace Drac {
             this.table = table;
         }
 
-
-          
         public string Visit(True node) {
             return "    i32.const 1\n";
         }
