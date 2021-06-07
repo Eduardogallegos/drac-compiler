@@ -163,15 +163,11 @@ namespace Drac
         //2
         public Node VarDef()
         {
-            var result = new VarDef();
-            if(CurrentToken == TokenCategory.VAR){
-                var varToken = Expect(TokenCategory.VAR);
-                var idlist = IDList();
-                Expect(TokenCategory.SEMICOLON);
-                result.Add(idlist);
-                result.AnchorToken = varToken;
-                
-            }
+            var varToken = Expect(TokenCategory.VAR);
+            var idlist = IDList();
+            Expect(TokenCategory.SEMICOLON);
+            var result = new VarDef() { idlist };
+            result.AnchorToken = varToken;
             return result;
         }
 
@@ -199,7 +195,7 @@ namespace Drac
             return idList;
         }
 
-        //4 REVERT COMMIT
+        //4
         public Node FunDef()
         {
             var idToken = Expect(TokenCategory.IDENTIFIER);
@@ -207,10 +203,14 @@ namespace Drac
             var idList = IDList(); // check
             Expect(TokenCategory.PARENTHESIS_CLOSE);
             Expect(TokenCategory.BRACKET_LEFT);
-            var varDef = VarDef();
+            var varDefLst = new VarDefList();
+            while (CurrentToken == TokenCategory.VAR)
+            {
+                varDefLst.Add(VarDef());
+            }
             var stmtList = StmtList();
             Expect(TokenCategory.BRACKET_RIGHT);
-            var result = new Funcion() { idList, varDef, stmtList };
+            var result = new Funcion() { idList, varDefLst, stmtList };
             result.AnchorToken = idToken;
             return result;
         }

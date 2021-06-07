@@ -203,7 +203,6 @@ namespace Drac
             var idList = IDList(); // check
             Expect(TokenCategory.PARENTHESIS_CLOSE);
             Expect(TokenCategory.BRACKET_LEFT);
-            // var varDef = VarDef();
             var varDefLst = new VarDefList();
             while (CurrentToken == TokenCategory.VAR)
             {
