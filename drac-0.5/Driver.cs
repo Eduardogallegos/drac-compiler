@@ -81,6 +81,7 @@ namespace Drac
             {
                 var inputPath = args[0];
                 var input = File.ReadAllText(inputPath);
+                var outputPath=Path.ChangeExtension(inputPath, ".wat");
 
                 var parser = new Parser(new Scanner(input).Scan().GetEnumerator());
                 var program = parser.Program();
@@ -112,6 +113,14 @@ namespace Drac
                 foreach (var entry in semantic1.GlobalVariablesTable) {
                     Console.WriteLine("|\t"+entry+"\t|");
                 }
+
+                var codeGenerator = new WatVisitor(semantic.Table);
+                File.WriteAllText(
+                    outputPath,
+                    codeGenerator.Visit((dynamic) ast));
+                Console.WriteLine(
+                    "Created Wat (WebAssembly text format) file "
+                    + $"'{outputPath}'.");
 
             }
             catch (Exception e)

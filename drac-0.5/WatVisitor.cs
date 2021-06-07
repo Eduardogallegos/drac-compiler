@@ -24,6 +24,47 @@ namespace Drac {
 
     class WatVisitor {
 
+         IDictionary<string, Type> table;
+        public WatVisitor(IDictionary<string, Type> table) {
+            this.table = table;
+        }
+
+
+          
+        public string Visit(True node) {
+            return "    i32.const 1\n";
+        }
+
+       
+        public string Visit(False node) {
+            return "    i32.const 0\n";
+        }
+
+       
+        public string Visit(Neg node) {
+            return "    i32.const 0\n"
+                + Visit((dynamic) node[0])
+                + "    i32.sub\n";
+        }
+
         
+        public string Visit(And node) {
+            return VisitBinaryOperator("i32.and", node);
+        }
+
+        
+        public string Visit(Less node) {
+            return VisitBinaryOperator("i32.lt_s", node);
+        }
+
+       
+        public string Visit(Plus node) {
+            return VisitBinaryOperator("i32.add", node);
+        }
+
+        //-----------------------------------------------------------
+        public string Visit(Mul node) {
+            return VisitBinaryOperator("i32.mul", node);
+        }
     }
 }
