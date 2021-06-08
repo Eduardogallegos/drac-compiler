@@ -21,58 +21,58 @@
 		call $new
 		local.set $_temp
 		local.get $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $_temp
 		i32.const 104
 		call $add
 		drop
-		local.get $_temp
 		i32.const 101
 		call $add
 		drop
-		local.get $_temp
 		i32.const 108
 		call $add
 		drop
-		local.get $_temp
 		i32.const 108
 		call $add
 		drop
-		local.get $_temp
 		i32.const 111
 		call $add
 		drop
-		local.get $_temp
 		i32.const 44
 		call $add
 		drop
-		local.get $_temp
 		i32.const 32
 		call $add
 		drop
-		local.get $_temp
 		i32.const 119
 		call $add
 		drop
-		local.get $_temp
 		i32.const 111
 		call $add
 		drop
-		local.get $_temp
 		i32.const 114
 		call $add
 		drop
-		local.get $_temp
 		i32.const 108
 		call $add
 		drop
-		local.get $_temp
 		i32.const 100
 		call $add
 		drop
-		local.get $_temp
 		i32.const 10
 		call $add
 		drop
-		local.get $_temp
 		local.set $s 
 		call $prints
 		drop
