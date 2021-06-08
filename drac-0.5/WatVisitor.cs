@@ -23,35 +23,10 @@ using System.Collections.Generic;
 namespace Drac {
 
     class WatVisitor {
+
+        int labelCounter = 0;
         public WatVisitor() {
         }
-
-        // public string Visit(True node) {
-        //     return "    i32.const 1\n";
-        // }
-
-       
-        // public string Visit(False node) {
-        //     return "    i32.const 0\n";
-        // }
-
-       
-        // public string Visit(Neg node) {
-        //     return "    i32.const 0\n"
-        //         + Visit((dynamic) node[0])
-        //         + "    i32.sub\n";
-        // }
-
-        
-        // public string Visit(And node) {
-        //     return VisitBinaryOperator("i32.and", node);
-        // }
-
-        
-        // public string Visit(Less node) {
-        //     return VisitBinaryOperator("i32.lt_s", node);
-        // }
-
 
         public string Visit(Program node)
         {
@@ -81,16 +56,12 @@ namespace Drac {
                 + "\t(import \"drac\" \"size\" (func $size (param i32) (result i32)))\n"
                 + "\t(import \"drac\" \"add\" (func $add (param i32 i32) (result i32)))\n"
                 + "\t(import \"drac\" \"get\" (func $get (param i32 i32) (result i32)))\n"
-                + "\t(import \"drac\" \"set\" (func $set (param i32 i32 i32) (result i32)))\n"
+                + "\t(import \"drac\" \"set\" (func $set (param i32 i32 i32) (result i32)))\n\n"
                 + VisitChildren(node)
                 + "\t\ti32.const 0\n"
                 + "\t)\n"
                 + ")\n";
         }
-
-        //public string Visit(Def node){
-          //  return VisitChildren(node);
-        //}
 
         public string Visit(VarDef node){
             return VisitChildren(node);
@@ -115,8 +86,10 @@ namespace Drac {
 
             if (functionName.Contains("main"))
             {
-                stringCode.Append($"\t\t(func\n" + $"\t\t(export \"{functionName}\")\n");
+                stringCode.Append($"\t(func\n" + $"\t\t(export \"{functionName}\")\n");
                 stringCode.Append("\t\t(result i32)\n");
+                stringCode.Append("\t\t(local $_temp i32)\n");
+                stringCode.Append("\t\t(local $s i32)\n");
                 stringCode.Append(Visit((dynamic) node[2]));
             }
             return stringCode.ToString();
@@ -132,25 +105,160 @@ namespace Drac {
             return VisitChildren(node);
         }
 
+        public string Visit(Assignment node){
+            return VisitChildren(node);
+        }
+
+        public string Visit(FunctionCall node) {
+            return Visit((dynamic) node[0])
+                + $"\t\tcall ${node.AnchorToken.Lexeme}\n\t\tdrop\n";
+        }
+
+        public string Visit(Increase node){
+            return VisitChildren(node);
+        }
+
+        public string Visit(Decrease node){
+            return VisitChildren(node);
+        }
+
+        public string Visit(StmtIf node){
+            return VisitChildren(node);
+        }
+
+        public string Visit(ElseIfList node){
+            return VisitChildren(node);
+        }
+
+        public string Visit(ElseIf node){
+            return VisitChildren(node);
+        }
+
+        public string Visit(Else node){
+            return VisitChildren(node);
+        }
+
+        public string Visit(StmtWhile node){
+            var label1 = GenerateLabel();
+            var label2 = GenerateLabel();
+
+            return "block" + label1 + "\n"
+            + "loop" + label2 + "\n"
+            + Visit((dynamic) node[0])
+            + "i32.eqz\n"
+            + "br_if" + label1 + "\n"
+            + Visit ((dynamic) node[1])
+            + "br" + label2 + "\n"
+            + "end\n"
+            + "end\n";
+        }
+
+        public string Visit(StmtDoWhile node){
+            var label1 = GenerateLabel();
+            var label2 = GenerateLabel();
+
+            return "block" + label1 + "\n"
+            + "loop" + label2 + "\n"
+            + Visit ((dynamic) node[1])
+            + Visit((dynamic) node[0])
+            + "i32.eqz\n"
+            + "br_if" + label1 + "\n"
+            + "br" + label2 + "\n"
+            + "end\n"
+            + "end\n";
+        }
+
+        public string Visit(StmtBreak node){
+            return VisitChildren(node);
+        }
+
         public string Visit(StmtReturn node)
         {
             return  VisitChildren(node) + "\t\treturn\n";
+        }
+
+        public string Visit(StmtEmpty node){
+            return VisitChildren(node);
+        }
+
+        public string Visit(Equals node){
+            return VisitChildren(node);
+        }
+
+        public string Visit(Diff node){
+            return VisitChildren(node);
+        }
+
+        // public string Visit(Less node) {
+        //     return VisitBinaryOperator("i32.lt_s", node);
+        // }
+
+        public string Visit(LessEqual node){
+            return VisitChildren(node);
+        }
+
+        public string Visit(Greater node){
+            return VisitChildren(node);
+        }
+
+        public string Visit(MoreEqual node){
+            return VisitChildren(node);
+        }
+
+        public string Visit(Neg node) {
+            return "    i32.const 0\n"
+                + Visit((dynamic) node[0])
+                + "    i32.sub\n";
         }
 
         // public string Visit(Plus node) {
         //     return VisitBinaryOperator("i32.add", node);
         // }
 
-        
         // public string Visit(Mul node) {
         //     return VisitBinaryOperator("i32.mul", node);
         // }
 
+        public string Visit(Div node){
+            return VisitChildren(node);
+        }
+
+        public string Visit(Mod node){
+            return VisitChildren(node);
+        }
+
+        public string Visit(Not node){
+            return VisitChildren(node);
+        }
+
+        public string Visit(Positive node){
+            return VisitChildren(node);
+        }
+
+        public string Visit(Negative node){
+            return VisitChildren(node);
+        }
+
+        public string Visit(True node) {
+            return "    i32.const 1\n";
+        }
+
+        public string Visit(False node) {
+            return "    i32.const 0\n";
+        }
+
+        public string Visit(Int_literal node)
+        {
+            return $"\t\ti32.const {node.AnchorToken.Lexeme}\n";
+        }
+
+        public string Visit(Char_lit node){
+            return VisitChildren(node);
+        }
+
         public string Visit(String_lit node){
             var asciiChars = convertCharToASCII(node.AnchorToken.Lexeme);
             var sb = new StringBuilder();
-            sb.Append("\t\t(local $_temp i32)\n");
-            sb.Append("\t\t(local $s i32)\n");
             sb.Append("\t\ti32.const 0\n");
             sb.Append("\t\tcall $new\n");
             sb.Append($"\t\tlocal.set $_temp\n");
@@ -167,14 +275,16 @@ namespace Drac {
             return sb.ToString();
         }
 
-        public string Visit(Int_literal node)
-        {
-            return $"\t\ti32.const {node.AnchorToken.Lexeme}\n";
+        public string Visit(Or node){
+            return VisitChildren(node);
         }
 
-        public string Visit(FunctionCall node) {
-            return Visit((dynamic) node[0])
-                + $"\t\tcall ${node.AnchorToken.Lexeme}\n\t\tdrop\n";
+        // public string Visit(And node) {
+        //     return VisitBinaryOperator("i32.and", node);
+        // }
+
+        public string Visit(Array node){
+            return VisitChildren(node);
         }
 
         string VisitChildren(Node node) {
@@ -183,6 +293,10 @@ namespace Drac {
                 sb.Append(Visit((dynamic) n));
             }
             return sb.ToString();
+        }
+
+        public String GenerateLabel(){
+            return $"${labelCounter++:00000}";
         }
 
         private IList<int> convertCharToASCII(String Lexeme){
