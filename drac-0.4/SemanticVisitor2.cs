@@ -15,6 +15,7 @@ namespace Drac
     class SemanticVisitor2
     {
         int loop_level = 0;
+        bool is_param = false;
         public SemanticVisitor1 visitor1
         {
             get;
@@ -70,7 +71,7 @@ namespace Drac
                     }
                     else
                     {
-                        SymbolTable.Add(variableName, true);
+                        SymbolTable.Add(variableName, is_param);
                     }
                 
                 }
@@ -82,8 +83,11 @@ namespace Drac
         {
             SymbolTable = new SortedDictionary<string, bool>();
             visitor1.GlobalFunctionsTable[node.AnchorToken.Lexeme].SymbolTable = SymbolTable;
-            VisitChildren(node);
-
+            is_param = true;
+            Visit((dynamic)node[0]); // Params
+            is_param = false;
+            Visit((dynamic)node[1]); // Local Vars
+            Visit((dynamic) node[2]); // Stmt List
         }
 
         public void Visit(StmtList node)
