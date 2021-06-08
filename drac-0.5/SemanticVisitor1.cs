@@ -30,7 +30,7 @@ namespace Drac
                 if(SymbolTable != null){
                     foreach (var symbol in SymbolTable.Keys)
                     {
-                        toString += $"{symbol},";
+                        toString += $"{symbol}=>{SymbolTable[symbol]},";
                     }
                 }
                 toString += "]\t |";
