@@ -19,7 +19,7 @@
 from sys import argv, stderr, exit
 from wasmer import engine, Module, wat2wasm, Store, Instance
 from wasmer_compiler_cranelift import Compiler
-from bcuplib import make_import_object
+from draclib import make_import_object
 
 def main():
     if len(argv) != 2:
