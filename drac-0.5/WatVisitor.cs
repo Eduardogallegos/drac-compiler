@@ -164,7 +164,6 @@ namespace Drac {
                           + "\t\tcall $add\n"
                           + "\t\tdrop\n");
             }
-            sb.Append($"\t\tlocal.set $s \n");
             return sb.ToString();
         }
 

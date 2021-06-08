@@ -73,7 +73,6 @@
 		i32.const 10
 		call $add
 		drop
-		local.set $s 
 		call $prints
 		drop
 		i32.const 42

@@ -1,20 +1,8 @@
 #!/usr/bin/env python
 
-# Buttercup Wat execution script.
+# Generic Wat execution script.
 # Copyright (C) 2021 Ariel Ortiz, ITESM CEM
 #
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from sys import argv, stderr, exit
 from wasmer import engine, Module, wat2wasm, Store, Instance
@@ -45,6 +33,6 @@ def main():
     instance = Instance(module, import_object)
 
     # Run start function and return to OS its exit code
-    exit(instance.exports.start())
+    exit(instance.exports.main())
 
 main()
