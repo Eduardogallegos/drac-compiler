@@ -39,6 +39,11 @@ namespace Drac
             VisitChildren(node);
         }
 
+        public void Visit(VarDefList node)
+        {
+            VisitChildren(node);
+        }
+
         public void Visit(VarDef node)
         {
             VisitChildren(node);

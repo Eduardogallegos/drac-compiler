@@ -26,7 +26,7 @@ namespace Drac
     public class Driver
     {
 
-        const string VERSION = "0.4";
+        const string VERSION = "0.5";
         const string AUTHORS = "Eduardo Gallegos, Alejandro Chavez, Pedro Cortes";
 
         //-----------------------------------------------------------
@@ -34,7 +34,8 @@ namespace Drac
             "Lexical analysis",
             "Syntactic analysis",
             "AST construction",
-            "Sematic Analysis"
+            "Sematic Analysis",
+            "Wat code generation"
         };
 
         //-----------------------------------------------------------
@@ -114,10 +115,10 @@ namespace Drac
                     Console.WriteLine("|\t"+entry+"\t|");
                 }
 
-                var codeGenerator = new WatVisitor(semantic1.GlobalFunctionsTable, semantic1.GlobalVariablesTable);
+                var codeGenerator = new WatVisitor();
                 File.WriteAllText(
                     outputPath,
-                    codeGenerator.Visit((dynamic) ast));
+                    codeGenerator.Visit((dynamic) program));
                 Console.WriteLine(
                     "Created Wat (WebAssembly text format) file "
                     + $"'{outputPath}'.");

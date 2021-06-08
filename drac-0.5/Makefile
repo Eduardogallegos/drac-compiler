@@ -18,12 +18,13 @@
 
 drac.exe: Driver.cs Scanner.cs Token.cs TokenCategory.cs Parser.cs \
 	SyntaxError.cs Node.cs SpecificNodes.cs SemanticVisitor1.cs \
-	SemanticVisitor2.cs SemanticError.cs
+	SemanticVisitor2.cs SemanticError.cs WatVisitor.cs
 
 	mcs -out:drac.exe Driver.cs Scanner.cs Token.cs TokenCategory.cs \
 	Parser.cs SyntaxError.cs Node.cs SpecificNodes.cs SemanticVisitor1.cs \
-	SemanticVisitor2.cs SemanticError.cs
+	SemanticVisitor2.cs SemanticError.cs WatVisitor.cs
 
 clean:
 
-	rm -f drac.exe
+	rm -f drac.exe 001_hello.wat
+	rm -rf __pycache__
