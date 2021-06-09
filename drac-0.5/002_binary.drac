@@ -10,10 +10,19 @@ reverse(array) {
     finish = size(array) - 1;
     -- while (start < finish) {
         temp = get(array, start);
+        printi(array);
+        println();
+        printi(start);
+        println();
+        printi(finish);
         set(array, start, get(array, finish));
         set(array, finish, temp);
         inc start;
         dec finish;
+        println();
+        printi(start);
+        println();
+        printi(finish);
     -- }
 }
 
@@ -26,8 +35,12 @@ binary(num) {
     result = "";
     -- while (num > 0) {
         remainder = num % 2;
+        -- printi(remainder);
         add(result, remainder + '0');
         num = num / 2;
+        printi(result);
+        println();
+        printi(num);
     -- }
     reverse(result);
     return result;
@@ -48,5 +61,6 @@ main() {
         } else {
             option = get(option, 0);
         }
+        printc(option);
     -- } while (option == 'Y' or option == 'y');
 }

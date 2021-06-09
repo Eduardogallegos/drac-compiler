@@ -13,139 +13,55 @@
 	(import "drac" "get" (func $get (param i32 i32) (result i32)))
 	(import "drac" "set" (func $set (param i32 i32 i32) (result i32)))
 
-	(func $reverse
-		(param $array i32)
+	(func $iterative_factorial
+		(param $n i32)
 		(result i32)
 		(local $_temp i32)
-		(local $s i32)
-		(local $start i32)
-		(local $finish i32)
-		(local $temp i32)
-		i32.const 0
-		local.set $start
-		local.get $array
-		call $size
+		(local $result i32)
+		(local $i i32)
 		i32.const 1
-		i32.sub
-		local.set $finish
-		local.get $array
-		local.get $start
-		call $get
-		local.set $temp
-		local.get $array
-		call $printi
-		drop
-		call $println
-		drop
-		local.get $start
-		call $printi
-		drop
-		call $println
-		drop
-		local.get $finish
-		call $printi
-		drop
-		local.get $array
-		local.get $start
-		local.get $array
-		local.get $finish
-		call $get
-		call $set
-		drop
-		local.get $array
-		local.get $finish
-		local.get $temp
-		call $set
-		drop
-		local.get $start
+		local.set $result
+		i32.const 2
+		local.set $i
+		local.get $result
+		local.get $i
+		i32.mul
+		local.set $result
+		local.get $i
 		i32.const 1
 		i32.add
-		local.set $start
-		local.get $finish
-		i32.const 1
-		i32.sub
-		local.set $finish
-		call $println
-		drop
-		local.get $start
-		call $printi
-		drop
-		call $println
-		drop
-		local.get $finish
-		call $printi
-		drop
+		local.set $i
+		local.get $result
+		return
 		i32.const 0
 	)
-	(func $binary
-		(param $num i32)
+	(func $recursive_factorial
+		(param $n i32)
 		(result i32)
 		(local $_temp i32)
-		(local $s i32)
-		(local $result i32)
-		(local $remainder i32)
-		local.get $num
+		local.get $n
 		i32.const 0
 		i32.le_s
 		if
-		i32.const 0
-		call $new
-		local.set $_temp
-		local.get $_temp
-		local.get $_temp
-		i32.const 48
-		call $add
-		drop
+		i32.const 1
+		return
+		else
+		local.get $n
+		local.get $n
+		i32.const 1
+		i32.sub
+		call $recursive_factorial
+		i32.mul
 		return
 		end
-		i32.const 0
-		call $new
-		local.set $_temp
-		local.get $_temp
-		local.set $result
-		local.get $num
-		i32.const 2
-		i32.rem_s
-		local.set $remainder
-		local.get $result
-		local.get $remainder
-		i32.const 0
-		call $new
-		local.set $_temp
-		local.get $_temp
-		local.get $_temp
-		i32.const 48
-		call $add
-		drop
-		i32.add
-		call $add
-		drop
-		local.get $num
-		i32.const 2
-		i32.div_s
-		local.set $num
-		local.get $result
-		call $printi
-		drop
-		call $println
-		drop
-		local.get $num
-		call $printi
-		drop
-		local.get $result
-		call $reverse
-		drop
-		local.get $result
-		return
 		i32.const 0
 	)
 	(func
 		(export "main")
 		(result i32)
 		(local $_temp i32)
-		(local $s i32)
-		(local $option i32)
 		(local $num i32)
+		(local $option i32)
 		i32.const 0
 		call $new
 		local.set $_temp
@@ -243,29 +159,25 @@
 		local.get $_temp
 		local.get $_temp
 		local.get $_temp
-		local.get $_temp
-		local.get $_temp
-		local.get $_temp
-		local.get $_temp
-		local.get $_temp
-		local.get $_temp
-		local.get $_temp
-		local.get $_temp
-		local.get $_temp
-		local.get $_temp
-		local.get $_temp
-		local.get $_temp
-		local.get $_temp
-		local.get $_temp
-		local.get $_temp
-		local.get $_temp
-		i32.const 67
+		i32.const 73
 		call $add
 		drop
-		i32.const 111
+		i32.const 116
 		call $add
 		drop
-		i32.const 110
+		i32.const 101
+		call $add
+		drop
+		i32.const 114
+		call $add
+		drop
+		i32.const 97
+		call $add
+		drop
+		i32.const 116
+		call $add
+		drop
+		i32.const 105
 		call $add
 		drop
 		i32.const 118
@@ -274,94 +186,34 @@
 		i32.const 101
 		call $add
 		drop
-		i32.const 114
-		call $add
-		drop
-		i32.const 115
-		call $add
-		drop
-		i32.const 105
-		call $add
-		drop
-		i32.const 111
-		call $add
-		drop
-		i32.const 110
-		call $add
-		drop
 		i32.const 32
-		call $add
-		drop
-		i32.const 116
-		call $add
-		drop
-		i32.const 111
-		call $add
-		drop
-		i32.const 32
-		call $add
-		drop
-		i32.const 98
-		call $add
-		drop
-		i32.const 105
-		call $add
-		drop
-		i32.const 110
-		call $add
-		drop
-		i32.const 97
-		call $add
-		drop
-		i32.const 114
-		call $add
-		drop
-		i32.const 121
-		call $add
-		drop
-		i32.const 32
-		call $add
-		drop
-		i32.const 111
 		call $add
 		drop
 		i32.const 102
 		call $add
 		drop
-		i32.const 32
+		i32.const 97
+		call $add
+		drop
+		i32.const 99
 		call $add
 		drop
 		i32.const 116
 		call $add
 		drop
-		i32.const 104
+		i32.const 111
+		call $add
+		drop
+		i32.const 114
+		call $add
+		drop
+		i32.const 105
 		call $add
 		drop
 		i32.const 97
 		call $add
 		drop
-		i32.const 116
-		call $add
-		drop
-		i32.const 32
-		call $add
-		drop
-		i32.const 110
-		call $add
-		drop
-		i32.const 117
-		call $add
-		drop
-		i32.const 109
-		call $add
-		drop
-		i32.const 98
-		call $add
-		drop
-		i32.const 101
-		call $add
-		drop
-		i32.const 114
+		i32.const 108
 		call $add
 		drop
 		i32.const 58
@@ -373,8 +225,104 @@
 		call $prints
 		drop
 		local.get $num
-		call $binary
+		call $iterative_factorial
+		call $printi
+		drop
+		call $println
+		drop
+		i32.const 0
+		call $new
+		local.set $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $_temp
+		i32.const 82
+		call $add
+		drop
+		i32.const 101
+		call $add
+		drop
+		i32.const 99
+		call $add
+		drop
+		i32.const 117
+		call $add
+		drop
+		i32.const 114
+		call $add
+		drop
+		i32.const 115
+		call $add
+		drop
+		i32.const 105
+		call $add
+		drop
+		i32.const 118
+		call $add
+		drop
+		i32.const 101
+		call $add
+		drop
+		i32.const 32
+		call $add
+		drop
+		i32.const 102
+		call $add
+		drop
+		i32.const 97
+		call $add
+		drop
+		i32.const 99
+		call $add
+		drop
+		i32.const 116
+		call $add
+		drop
+		i32.const 111
+		call $add
+		drop
+		i32.const 114
+		call $add
+		drop
+		i32.const 105
+		call $add
+		drop
+		i32.const 97
+		call $add
+		drop
+		i32.const 108
+		call $add
+		drop
+		i32.const 58
+		call $add
+		drop
+		i32.const 32
+		call $add
+		drop
 		call $prints
+		drop
+		local.get $num
+		call $recursive_factorial
+		call $printi
 		drop
 		call $println
 		drop
@@ -406,25 +354,28 @@
 		local.get $_temp
 		local.get $_temp
 		local.get $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $_temp
 		i32.const 67
 		call $add
 		drop
 		i32.const 111
 		call $add
 		drop
-		i32.const 110
+		i32.const 109
 		call $add
 		drop
-		i32.const 118
+		i32.const 112
 		call $add
 		drop
-		i32.const 101
-		call $add
-		drop
-		i32.const 114
+		i32.const 117
 		call $add
 		drop
 		i32.const 116
+		call $add
+		drop
+		i32.const 101
 		call $add
 		drop
 		i32.const 32
@@ -454,22 +405,31 @@
 		i32.const 32
 		call $add
 		drop
-		i32.const 110
+		i32.const 102
 		call $add
 		drop
-		i32.const 117
+		i32.const 97
 		call $add
 		drop
-		i32.const 109
+		i32.const 99
 		call $add
 		drop
-		i32.const 98
+		i32.const 116
 		call $add
 		drop
-		i32.const 101
+		i32.const 111
 		call $add
 		drop
 		i32.const 114
+		call $add
+		drop
+		i32.const 105
+		call $add
+		drop
+		i32.const 97
+		call $add
+		drop
+		i32.const 108
 		call $add
 		drop
 		i32.const 63
@@ -502,9 +462,6 @@
 		call $get
 		local.set $option
 		end
-		local.get $option
-		call $printc
-		drop
 		i32.const 0
 	)
 )

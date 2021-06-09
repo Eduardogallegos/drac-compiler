@@ -17,7 +17,6 @@
 		(export "main")
 		(result i32)
 		(local $_temp i32)
-		(local $s i32)
 		i32.const 0
 		call $new
 		local.set $_temp
@@ -75,6 +74,7 @@
 		call $add
 		drop
 		call $prints
+		drop
 		i32.const 42
 		return
 		i32.const 0

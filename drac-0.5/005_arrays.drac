@@ -69,7 +69,7 @@ sort_array(a) {            -----------------------------------------
             inc j;
         -- }
         if (not swap) { -- Stop when no more swaps were carried out.
-            break;
+            -- break;
         }
         inc i;
     }
