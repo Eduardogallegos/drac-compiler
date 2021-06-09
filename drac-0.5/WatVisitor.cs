@@ -62,7 +62,6 @@ namespace Drac {
                 + "\t(import \"drac\" \"get\" (func $get (param i32 i32) (result i32)))\n"
                 + "\t(import \"drac\" \"set\" (func $set (param i32 i32 i32) (result i32)))\n\n"
                 + VisitChildren(node)
-                + "\t)\n"
                 + ")\n";
         }
 
@@ -83,7 +82,7 @@ namespace Drac {
             var varName = node.AnchorToken.Lexeme;
             if (!visitor1.GlobalFunctionsTable.ContainsKey(varName)){
                 var varScope = getVarScope(varName);
-                sb.Append($"\t\t{varScope}.get ${varName}");
+                sb.Append($"\t\t{varScope}.get ${varName}\n");
             }
             return sb.ToString();
         }
@@ -113,24 +112,23 @@ namespace Drac {
             if (functionName.Contains("main"))
             {
                 stringCode.Append($"\t(func\n" + $"\t\t(export \"{functionName}\")\n");
-                stringCode.Append("\t\t(result i32)\n");
-                stringCode.Append("\t\t(local $_temp i32)\n");
-                stringCode.Append("\t\t(local $s i32)\n");
-                stringCode.Append(Visit((dynamic) node[2]));
+                // stringCode.Append(Visit((dynamic) node[2]));
             }else{
-                stringCode.Append($"\t\t(func ${functionName}\n");
+                stringCode.Append($"\t(func ${functionName}\n");
             }
             is_param = true;
             stringCode.Append(Visit((dynamic) node[0])); // params
-            stringCode.Append("\t\t\t(result i32)\n");
+            // stringCode.Append("\t\t\t(result i32)\n");
             is_param = false;
-
+            stringCode.Append("\t\t(result i32)\n");
+            stringCode.Append("\t\t(local $_temp i32)\n");
+            stringCode.Append("\t\t(local $s i32)\n");
             stringCode.Append(Visit((dynamic) node[1])); // locals vars
 
             stringCode.Append(Visit((dynamic) node[2])); // stmt list
 
             stringCode.Append("\t\ti32.const 0\n");
-            stringCode.Append("\t\t)\n");
+            stringCode.Append("\t)\n");
             return stringCode.ToString();
 
         }
@@ -158,13 +156,18 @@ namespace Drac {
             Console.WriteLine("assig");
             var varName = node.AnchorToken.Lexeme;
             var varScope = getVarScope(varName);
-            return Visit((dynamic)node[0]) + $"\t\t{varScope}.set ${varName}";
+            return Visit((dynamic)node[0]) + $"\t\t{varScope}.set ${varName}\n";
         }
 
         public string Visit(FunctionCall node) {
             Console.WriteLine("fncall");
-            return Visit((dynamic) node[0])
+            if(node.hasChildren){
+                return Visit((dynamic) node[0])
                 + $"\t\tcall ${node.AnchorToken.Lexeme}\n\t\tdrop\n";
+            }else{
+                return $"\t\tcall ${node.AnchorToken.Lexeme}\n";
+            }
+            
         }
 
         public string Visit(Increase node){
@@ -174,7 +177,7 @@ namespace Drac {
             return $"\t\t{varScope}.get ${varName}\n"
             + "\t\ti32.const 1\n"
             + "\t\ti32.add\n"
-            + $"\t\t{varScope}.set ${varName}";
+            + $"\t\t{varScope}.set ${varName}\n";
         }
 
         public string Visit(Decrease node){
@@ -184,7 +187,7 @@ namespace Drac {
             return $"\t\t{varScope}.get ${varName}\n"
             + "\t\ti32.const 1\n"
             + "\t\ti32.sub\n"
-            + $"\t\t{varScope}.set ${varName}";
+            + $"\t\t{varScope}.set ${varName}\n";
         }
 
         public string Visit(StmtIf node){
@@ -240,13 +243,13 @@ namespace Drac {
             var label1 = GenerateLabel();
             var label2 = GenerateLabel();
 
-            return "\t\tblock" + label1 + "\n"
-            + "\t\tloop" + label2 + "\n"
+            return "\t\tblock " + label1 + "\n"
+            + "\t\tloop " + label2 + "\n"
             + Visit((dynamic) node[0])
             + "\t\ti32.eqz\n"
-            + "\t\tbr_if" + label1 + "\n"
+            + "\t\tbr_if " + label1 + "\n"
             + Visit ((dynamic) node[1])
-            + "\t\tbr" + label2 + "\n"
+            + "\t\tbr " + label2 + "\n"
             + "\t\tend\n"
             + "\t\tend\n";
         }
@@ -256,13 +259,13 @@ namespace Drac {
             var label1 = GenerateLabel();
             var label2 = GenerateLabel();
 
-            return "\t\tblock" + label1 + "\n"
-            + "\t\tloop" + label2 + "\n"
-            + Visit ((dynamic) node[1])
-            + Visit((dynamic) node[0])
+            return "\t\tblock " + label1 + "\n"
+            + "\t\tloop " + label2 + "\n"
+            + Visit ((dynamic) node[0])
+            + "\t\tbr " + label2 + "\n"
+            + Visit((dynamic) node[1])
             + "\t\ti32.eqz\n"
-            + "\t\tbr_if" + label1 + "\n"
-            + "\t\tbr" + label2 + "\n"
+            + "\t\tbr_if " + label1 + "\n"
             + "\t\tend\n"
             + "\t\tend\n";
         }
@@ -408,7 +411,7 @@ namespace Drac {
             sb.Append($"\t\tlocal.set $_temp\n");
             sb.Append($"\t\tlocal.get $_temp\n");
             sb.Append($"\t\tlocal.get $_temp\n");
-            sb.Append($"\t\ti32.const {asciiChar}\n"
+            sb.Append($"\t\ti32.const {asciiChar[0]}\n"
                 + "\t\tcall $add\n"
                 + "\t\tdrop\n");
             return sb.ToString();
