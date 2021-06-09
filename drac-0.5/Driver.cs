@@ -115,7 +115,7 @@ namespace Drac
                     Console.WriteLine("|\t"+entry+"\t|");
                 }
 
-                var codeGenerator = new WatVisitor();
+                var codeGenerator = new WatVisitor(semantic1);
                 File.WriteAllText(
                     outputPath,
                     codeGenerator.Visit((dynamic) program));
