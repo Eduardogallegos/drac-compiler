@@ -17,7 +17,6 @@
 		(param $y i32)
 		(result i32)
 		(local $_temp i32)
-		(local $s i32)
 		local.get $y
 		i32.const 4
 		i32.rem_s
@@ -57,7 +56,6 @@
 		(param $m i32)
 		(result i32)
 		(local $_temp i32)
-		(local $s i32)
 		(local $result i32)
 		local.get $m
 		i32.const 2
@@ -120,7 +118,6 @@
 		(param $d i32)
 		(result i32)
 		(local $_temp i32)
-		(local $s i32)
 		local.get $d
 		local.get $y
 		local.get $m
@@ -131,11 +128,65 @@
 		i32.const 12
 		i32.eq
 		if
+		i32.const 0
+		call $new
+		local.set $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $y
+		i32.const 1
+		i32.add
+		call $add
+		drop
+		i32.const 1
+		call $add
+		drop
+		i32.const 1
+		call $add
+		drop
 		return
 		else
+		i32.const 0
+		call $new
+		local.set $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $y
+		call $add
+		drop
+		local.get $m
+		i32.const 1
+		i32.add
+		call $add
+		drop
+		i32.const 1
+		call $add
+		drop
 		return
 		end
 		else
+		i32.const 0
+		call $new
+		local.set $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $y
+		call $add
+		drop
+		local.get $m
+		call $add
+		drop
+		local.get $d
+		i32.const 1
+		i32.add
+		call $add
+		drop
 		return
 		end
 		i32.const 0
@@ -146,7 +197,6 @@
 		(param $d i32)
 		(result i32)
 		(local $_temp i32)
-		(local $s i32)
 		(local $next i32)
 		i32.const 0
 		call $new
@@ -213,27 +263,13 @@
 		local.get $y
 		call $printi
 		drop
-		i32.const 0
-		call $new
-		local.set $_temp
-		local.get $_temp
-		local.get $_temp
 		i32.const 47
-		call $add
-		drop
 		call $printc
 		drop
 		local.get $m
 		call $printi
 		drop
-		i32.const 0
-		call $new
-		local.set $_temp
-		local.get $_temp
-		local.get $_temp
 		i32.const 47
-		call $add
-		drop
 		call $printc
 		drop
 		local.get $d
@@ -271,14 +307,7 @@
 		call $get
 		call $printi
 		drop
-		i32.const 0
-		call $new
-		local.set $_temp
-		local.get $_temp
-		local.get $_temp
 		i32.const 47
-		call $add
-		drop
 		call $printc
 		drop
 		local.get $next
@@ -286,14 +315,7 @@
 		call $get
 		call $printi
 		drop
-		i32.const 0
-		call $new
-		local.set $_temp
-		local.get $_temp
-		local.get $_temp
 		i32.const 47
-		call $add
-		drop
 		call $printc
 		drop
 		local.get $next
@@ -309,7 +331,6 @@
 		(export "main")
 		(result i32)
 		(local $_temp i32)
-		(local $s i32)
 		i32.const 2020
 		i32.const 2
 		i32.const 28

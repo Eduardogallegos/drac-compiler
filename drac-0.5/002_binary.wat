@@ -17,7 +17,6 @@
 		(param $array i32)
 		(result i32)
 		(local $_temp i32)
-		(local $s i32)
 		(local $start i32)
 		(local $finish i32)
 		(local $temp i32)
@@ -28,23 +27,17 @@
 		i32.const 1
 		i32.sub
 		local.set $finish
+		block $00000
+		loop $00001
+		local.get $start
+		local.get $finish
+		i32.lt_s
+		i32.eqz
+		br_if $00000
 		local.get $array
 		local.get $start
 		call $get
 		local.set $temp
-		local.get $array
-		call $printi
-		drop
-		call $println
-		drop
-		local.get $start
-		call $printi
-		drop
-		call $println
-		drop
-		local.get $finish
-		call $printi
-		drop
 		local.get $array
 		local.get $start
 		local.get $array
@@ -65,23 +58,15 @@
 		i32.const 1
 		i32.sub
 		local.set $finish
-		call $println
-		drop
-		local.get $start
-		call $printi
-		drop
-		call $println
-		drop
-		local.get $finish
-		call $printi
-		drop
+		br $00001
+		end
+		end
 		i32.const 0
 	)
 	(func $binary
 		(param $num i32)
 		(result i32)
 		(local $_temp i32)
-		(local $s i32)
 		(local $result i32)
 		(local $remainder i32)
 		local.get $num
@@ -103,20 +88,20 @@
 		local.set $_temp
 		local.get $_temp
 		local.set $result
+		block $00002
+		loop $00003
+		local.get $num
+		i32.const 0
+		i32.gt_s
+		i32.eqz
+		br_if $00002
 		local.get $num
 		i32.const 2
 		i32.rem_s
 		local.set $remainder
 		local.get $result
 		local.get $remainder
-		i32.const 0
-		call $new
-		local.set $_temp
-		local.get $_temp
-		local.get $_temp
 		i32.const 48
-		call $add
-		drop
 		i32.add
 		call $add
 		drop
@@ -124,14 +109,9 @@
 		i32.const 2
 		i32.div_s
 		local.set $num
-		local.get $result
-		call $printi
-		drop
-		call $println
-		drop
-		local.get $num
-		call $printi
-		drop
+		br $00003
+		end
+		end
 		local.get $result
 		call $reverse
 		drop
@@ -143,9 +123,10 @@
 		(export "main")
 		(result i32)
 		(local $_temp i32)
-		(local $s i32)
 		(local $option i32)
 		(local $num i32)
+		block $00004
+		loop $00005
 		i32.const 0
 		call $new
 		local.set $_temp
@@ -487,14 +468,7 @@
 		i32.const 0
 		i32.eq
 		if
-		i32.const 0
-		call $new
-		local.set $_temp
-		local.get $_temp
-		local.get $_temp
 		i32.const 78
-		call $add
-		drop
 		local.set $option
 		else
 		local.get $option
@@ -503,8 +477,20 @@
 		local.set $option
 		end
 		local.get $option
-		call $printc
-		drop
+		i32.const 89
+		i32.eq
+		if(result i32)
+		i32.const 1
+		else
+		local.get $option
+		i32.const 121
+		i32.eq
+		i32.eqz
+		i32.eqz
+		end
+		br_if $00005
+		end
+		end
 		i32.const 0
 	)
 )

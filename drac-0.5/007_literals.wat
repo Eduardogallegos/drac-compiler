@@ -128,14 +128,7 @@
 		(local $n i32)
 		i32.const 0
 		global.set $fails
-		i32.const 0
-		call $new
-		local.set $_temp
-		local.get $_temp
-		local.get $_temp
 		i32.const 10
-		call $add
-		drop
 		i32.const 10
 		i32.const 0
 		call $new
@@ -239,14 +232,7 @@
 		drop
 		call $assert
 		drop
-		i32.const 0
-		call $new
-		local.set $_temp
-		local.get $_temp
-		local.get $_temp
 		i32.const 13
-		call $add
-		drop
 		i32.const 13
 		i32.const 0
 		call $new
@@ -382,14 +368,7 @@
 		drop
 		call $assert
 		drop
-		i32.const 0
-		call $new
-		local.set $_temp
-		local.get $_temp
-		local.get $_temp
 		i32.const 9
-		call $add
-		drop
 		i32.const 9
 		i32.const 0
 		call $new
@@ -477,14 +456,7 @@
 		drop
 		call $assert
 		drop
-		i32.const 0
-		call $new
-		local.set $_temp
-		local.get $_temp
-		local.get $_temp
 		i32.const 92
-		call $add
-		drop
 		i32.const 92
 		i32.const 0
 		call $new
@@ -596,14 +568,7 @@
 		drop
 		call $assert
 		drop
-		i32.const 0
-		call $new
-		local.set $_temp
-		local.get $_temp
-		local.get $_temp
 		i32.const 39
-		call $add
-		drop
 		i32.const 39
 		i32.const 0
 		call $new
@@ -727,14 +692,7 @@
 		drop
 		call $assert
 		drop
-		i32.const 0
-		call $new
-		local.set $_temp
-		local.get $_temp
-		local.get $_temp
 		i32.const 34
-		call $add
-		drop
 		i32.const 34
 		i32.const 0
 		call $new
@@ -858,22 +816,8 @@
 		drop
 		call $assert
 		drop
-		i32.const 0
-		call $new
-		local.set $_temp
-		local.get $_temp
-		local.get $_temp
 		i32.const 48
-		call $add
-		drop
-		i32.const 0
-		call $new
-		local.set $_temp
-		local.get $_temp
-		local.get $_temp
 		i32.const 65
-		call $add
-		drop
 		i32.const 0
 		call $new
 		local.set $_temp
@@ -1024,14 +968,7 @@
 		drop
 		call $assert
 		drop
-		i32.const 0
-		call $new
-		local.set $_temp
-		local.get $_temp
-		local.get $_temp
 		i32.const 48
-		call $add
-		drop
 		i32.const 8364
 		i32.const 0
 		call $new
@@ -1420,12 +1357,131 @@
 		call $add
 		drop
 		local.set $s
+		i32.const 0
+		call $new
+		local.set $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $_temp
+		i32.const 161
+		call $add
+		drop
+		i32.const 8364
+		call $add
+		drop
+		i32.const 115
+		call $add
+		drop
+		i32.const 116
+		call $add
+		drop
+		i32.const 101
+		call $add
+		drop
+		i32.const 32
+		call $add
+		drop
+		i32.const 110
+		call $add
+		drop
+		i32.const 105
+		call $add
+		drop
+		i32.const 241
+		call $add
+		drop
+		i32.const 111
+		call $add
+		drop
+		i32.const 32
+		call $add
+		drop
+		i32.const 8364
+		call $add
+		drop
+		i32.const 115
+		call $add
+		drop
+		i32.const 116
+		call $add
+		drop
+		i32.const 225
+		call $add
+		drop
+		i32.const 32
+		call $add
+		drop
+		i32.const 98
+		call $add
+		drop
+		i32.const 105
+		call $add
+		drop
+		i32.const 101
+		call $add
+		drop
+		i32.const 110
+		call $add
+		drop
+		i32.const 32
+		call $add
+		drop
+		i32.const 209
+		call $add
+		drop
+		i32.const 111
+		call $add
+		drop
+		i32.const 241
+		call $add
+		drop
+		i32.const 111
+		call $add
+		drop
+		i32.const 33
+		call $add
+		drop
+		i32.const 10
+		call $add
+		drop
 		local.set $a
 		i32.const 0
 		local.set $i
 		local.get $s
 		call $size
 		local.set $n
+		block $00000
+		loop $00001
+		local.get $i
+		local.get $n
+		i32.lt_s
+		i32.eqz
+		br_if $00000
 		local.get $a
 		local.get $i
 		call $get
@@ -1534,6 +1590,9 @@
 		i32.const 1
 		i32.add
 		local.set $i
+		br $00001
+		end
+		end
 		global.get $fails
 		call $printi
 		drop

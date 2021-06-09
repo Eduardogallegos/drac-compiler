@@ -18,7 +18,7 @@ main() {
     
     sum = 0;
     i = 0;
-    -- while (i < size(array)) {
+     while (i < size(array)) {
         x = get(array, i);
         inc i;
         if (x == 99) {
@@ -38,7 +38,7 @@ main() {
                 }
             } while (2 + 2 <> 5);
         }
-    -- }
+    }
     if (sum == 88) {
         prints("The program works fine!\n");
     } else {

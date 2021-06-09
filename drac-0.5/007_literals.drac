@@ -32,10 +32,10 @@ main() {
          33, 10];
     i = 0;
     n = size(s);
-    -- while (i < n) {
+     while (i < n) {
         assert(get(a, i), get(s, i), "error in string literal");
         inc i;
-    -- }
+     }
     printi(fails);
     prints(" assertion failure(s) found.");
     println();

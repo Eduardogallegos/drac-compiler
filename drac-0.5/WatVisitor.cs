@@ -28,6 +28,8 @@ namespace Drac
 
         int labelCounter = 0;
         bool is_param = false;
+
+        Stack<string> stackLabelWhile = new Stack<string>();
         public SemanticVisitor1 visitor1 { get; }
         public WatVisitor(SemanticVisitor1 visitor1)
         {
@@ -297,8 +299,11 @@ namespace Drac
             Console.WriteLine("while");
             var label1 = GenerateLabel();
             var label2 = GenerateLabel();
-
-            return "\t\tblock " + label1 + "\n"
+            Console.WriteLine("antes de stack");
+            stackLabelWhile.Push(label1);
+            Console.WriteLine("despues de stack");
+            var sb= new StringBuilder();
+            sb.Append("\t\tblock " + label1 + "\n"
             + "\t\tloop " + label2 + "\n"
             + Visit((dynamic)node[0])
             + "\t\ti32.eqz\n"
@@ -306,7 +311,10 @@ namespace Drac
             + Visit((dynamic)node[1])
             + "\t\tbr " + label2 + "\n"
             + "\t\tend\n"
-            + "\t\tend\n";
+            + "\t\tend\n");
+            //push label1, generacion de codigo, pop
+            stackLabelWhile.Pop();
+            return sb.ToString();
         }
 
         public string Visit(StmtDoWhile node)
@@ -314,22 +322,29 @@ namespace Drac
             Console.WriteLine("do");
             var label1 = GenerateLabel();
             var label2 = GenerateLabel();
-
-            return "\t\tblock " + label1 + "\n"
+            stackLabelWhile.Push(label1);
+            var sb= new StringBuilder();
+            sb.Append("\t\tblock " + label1 + "\n"
             + "\t\tloop " + label2 + "\n"
             + Visit((dynamic)node[0])
-            + "\t\tbr " + label2 + "\n"
+            //+ "\t\tbr " + label2 + "\n"
             + Visit((dynamic)node[1])
-            + "\t\ti32.eqz\n"
-            + "\t\tbr_if " + label1 + "\n"
+            //+ "\t\ti32.eqz\n"
+            + "\t\tbr_if " + label2 + "\n"
             + "\t\tend\n"
-            + "\t\tend\n";
+            + "\t\tend\n");
+            stackLabelWhile.Pop();
+            return sb.ToString();
         }
 
         public string Visit(StmtBreak node)
         {
             Console.WriteLine("br");
-            return VisitChildren(node);
+            var sb= new StringBuilder();
+            var stringLabel= stackLabelWhile.Peek();
+            sb.Append($"\t\tbr {stringLabel}\n");
+
+            return sb.ToString();
         }
 
         public string Visit(StmtReturn node)
@@ -484,14 +499,14 @@ namespace Drac
             Console.WriteLine("char");
             var asciiChar = convertCharToASCII(node.AnchorToken.Lexeme);
             var sb = new StringBuilder();
-            sb.Append("\t\ti32.const 0\n");
-            sb.Append("\t\tcall $new\n");
-            sb.Append($"\t\tlocal.set $_temp\n");
-            sb.Append($"\t\tlocal.get $_temp\n");
-            sb.Append($"\t\tlocal.get $_temp\n");
-            sb.Append($"\t\ti32.const {asciiChar[0]}\n"
-                + "\t\tcall $add\n"
-                + "\t\tdrop\n");
+            // sb.Append("\t\ti32.const 0\n");
+            // sb.Append("\t\tcall $new\n");
+            // sb.Append($"\t\tlocal.set $_temp\n");
+            // sb.Append($"\t\tlocal.get $_temp\n");
+            // sb.Append($"\t\tlocal.get $_temp\n");
+            sb.Append($"\t\ti32.const {asciiChar[0]}\n");
+                // + "\t\tcall $add\n"
+                // + "\t\tdrop\n");
             return sb.ToString();
         }
 
@@ -540,23 +555,26 @@ namespace Drac
 
         public string Visit(Array node)
         {
-            // Console.WriteLine("array");
-            // var sb = new StringBuilder();
-            // sb.Append("\t\ti32.const 0\n");
-            // sb.Append("\t\tcall $new\n");
-            // sb.Append($"\t\tlocal.set $_temp\n");
-            // foreach (var entry in asciiChars)
-            // {
-            //     sb.Append($"\t\tlocal.get $_temp\n");
-            // }
-            // sb.Append($"\t\tlocal.get $_temp\n");
-            // foreach (var n in node) {
-            //     sb.Append(Visit((dynamic) n));
-            //     sb.Append("\t\tdrop\n");
-            // }
-            // return sb.ToString();
-            return "";
+             Console.WriteLine("array");
+             var sb = new StringBuilder();
+             sb.Append("\t\ti32.const 0\n");
+             sb.Append("\t\tcall $new\n");
+            sb.Append($"\t\tlocal.set $_temp\n");
+            foreach (var childNode in node[0]) //hijos del nodo y agregar add
+            {
+                sb.Append($"\t\tlocal.get $_temp\n");
+            }
+            sb.Append($"\t\tlocal.get $_temp\n");
+            foreach (var n in node[0]) {
+                sb.Append(Visit((dynamic) n));
+                sb.Append("\t\tcall $add\n");
+                sb.Append("\t\tdrop\n");
+            }
+            return sb.ToString();
+           
         }
+
+        
 
 
 

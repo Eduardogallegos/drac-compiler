@@ -8,19 +8,19 @@ is_palindrome(str) {
     var start, finish;
     start = 0;
     finish = size(str) - 1;
-    -- while (start < finish) {
+    while (start < finish) {
         if (get(str, start) <> get(str, finish)) {
             return false;
         }
         inc start;
         dec finish;
-    -- }
+     }
     return true;
 }
 
 main() {
     var str, option;
-    -- do {
+    do {
         prints("Input a string: ");
         str = reads();
         prints("The string \"");
@@ -37,5 +37,5 @@ main() {
         } else {
             option = get(option, 0);
         }
-    -- } while (option == 'Y' or option == 'y');
+    } while (option == 'Y' or option == 'y');
 }

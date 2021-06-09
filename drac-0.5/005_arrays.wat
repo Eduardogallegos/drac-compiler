@@ -17,20 +17,12 @@
 		(param $a i32)
 		(result i32)
 		(local $_temp i32)
-		(local $s i32)
 		(local $first i32)
 		(local $i i32)
 		(local $n i32)
     i32.const 1
 		local.set $first
-		i32.const 0
-		call $new
-		local.set $_temp
-		local.get $_temp
-		local.get $_temp
 		i32.const 91
-		call $add
-		drop
 		call $printc
 		drop
 		i32.const 0
@@ -38,6 +30,13 @@
 		local.get $a
 		call $size
 		local.set $n
+		block $00000
+		loop $00001
+		local.get $i
+		local.get $n
+		i32.lt_s
+		i32.eqz
+		br_if $00000
 		local.get $first
 		if
     i32.const 0
@@ -67,14 +66,10 @@
 		i32.const 1
 		i32.add
 		local.set $i
-		i32.const 0
-		call $new
-		local.set $_temp
-		local.get $_temp
-		local.get $_temp
+		br $00001
+		end
+		end
 		i32.const 93
-		call $add
-		drop
 		call $printc
 		drop
 		i32.const 0
@@ -83,7 +78,6 @@
 		(param $a i32)
 		(result i32)
 		(local $_temp i32)
-		(local $s i32)
 		(local $sum i32)
 		(local $i i32)
 		(local $n i32)
@@ -94,6 +88,13 @@
 		local.get $a
 		call $size
 		local.set $n
+		block $00002
+		loop $00003
+		local.get $i
+		local.get $n
+		i32.lt_s
+		i32.eqz
+		br_if $00002
 		local.get $sum
 		local.get $a
 		local.get $i
@@ -104,6 +105,9 @@
 		i32.const 1
 		i32.add
 		local.set $i
+		br $00003
+		end
+		end
 		local.get $sum
 		return
 		i32.const 0
@@ -112,7 +116,6 @@
 		(param $a i32)
 		(result i32)
 		(local $_temp i32)
-		(local $s i32)
 		(local $max i32)
 		(local $i i32)
 		(local $n i32)
@@ -126,6 +129,13 @@
 		local.get $a
 		call $size
 		local.set $n
+		block $00004
+		loop $00005
+		local.get $i
+		local.get $n
+		i32.lt_s
+		i32.eqz
+		br_if $00004
 		local.get $a
 		local.get $i
 		call $get
@@ -141,6 +151,9 @@
 		i32.const 1
 		i32.add
 		local.set $i
+		br $00005
+		end
+		end
 		local.get $max
 		return
 		i32.const 0
@@ -149,7 +162,6 @@
 		(param $a i32)
 		(result i32)
 		(local $_temp i32)
-		(local $s i32)
 		(local $i i32)
 		(local $j i32)
 		(local $t i32)
@@ -160,10 +172,30 @@
 		local.set $n
 		i32.const 0
 		local.set $i
+		block $00006
+		loop $00007
+		local.get $i
+		local.get $n
+		i32.const 1
+		i32.sub
+		i32.lt_s
+		i32.eqz
+		br_if $00006
 		i32.const 0
 		local.set $j
     i32.const 0
 		local.set $swap
+		block $00008
+		loop $00009
+		local.get $j
+		local.get $n
+		local.get $i
+		i32.sub
+		i32.const 1
+		i32.sub
+		i32.lt_s
+		i32.eqz
+		br_if $00008
 		local.get $a
 		local.get $j
 		call $get
@@ -201,24 +233,114 @@
 		i32.const 1
 		i32.add
 		local.set $j
+		br $00009
+		end
+		end
 		local.get $swap
 		i32.eqz
 		if
+		br $00006
 		end
 		local.get $i
 		i32.const 1
 		i32.add
 		local.set $i
+		br $00007
+		end
+		end
 		i32.const 0
 	)
 	(func
 		(export "main")
 		(result i32)
 		(local $_temp i32)
-		(local $s i32)
 		(local $array i32)
 		(local $sum i32)
 		(local $max i32)
+		i32.const 0
+		call $new
+		local.set $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $_temp
+		local.get $_temp
+		i32.const 73
+		call $add
+		drop
+		i32.const 77
+		call $add
+		drop
+		i32.const 56
+		call $add
+		drop
+		i32.const 10
+		call $add
+		drop
+		i32.const 14
+		call $add
+		drop
+		i32.const 54
+		call $add
+		drop
+		i32.const 75
+		call $add
+		drop
+		i32.const 62
+		call $add
+		drop
+		i32.const 71
+		call $add
+		drop
+		i32.const 10
+		call $add
+		drop
+		i32.const 3
+		call $add
+		drop
+		i32.const 71
+		call $add
+		drop
+		i32.const 16
+		call $add
+		drop
+		i32.const 49
+		call $add
+		drop
+		i32.const 66
+		call $add
+		drop
+		i32.const 91
+		call $add
+		drop
+		i32.const 69
+		call $add
+		drop
+		i32.const 62
+		call $add
+		drop
+		i32.const 25
+		call $add
+		drop
+		i32.const 65
+		call $add
+		drop
 		local.set $array
 		i32.const 0
 		call $new

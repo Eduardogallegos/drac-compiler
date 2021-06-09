@@ -17,7 +17,6 @@
 		(param $str i32)
 		(result i32)
 		(local $_temp i32)
-		(local $s i32)
 		(local $start i32)
 		(local $finish i32)
 		i32.const 0
@@ -27,6 +26,13 @@
 		i32.const 1
 		i32.sub
 		local.set $finish
+		block $00000
+		loop $00001
+		local.get $start
+		local.get $finish
+		i32.lt_s
+		i32.eqz
+		br_if $00000
 		local.get $str
 		local.get $start
 		call $get
@@ -46,6 +52,9 @@
 		i32.const 1
 		i32.sub
 		local.set $finish
+		br $00001
+		end
+		end
     i32.const 1
 		return
 		i32.const 0
@@ -54,9 +63,10 @@
 		(export "main")
 		(result i32)
 		(local $_temp i32)
-		(local $s i32)
 		(local $str i32)
 		(local $option i32)
+		block $00002
+		loop $00003
 		i32.const 0
 		call $new
 		local.set $_temp
@@ -402,20 +412,28 @@
 		i32.const 0
 		i32.eq
 		if
-		i32.const 0
-		call $new
-		local.set $_temp
-		local.get $_temp
-		local.get $_temp
 		i32.const 78
-		call $add
-		drop
 		local.set $option
 		else
 		local.get $option
 		i32.const 0
 		call $get
 		local.set $option
+		end
+		local.get $option
+		i32.const 89
+		i32.eq
+		if(result i32)
+		i32.const 1
+		else
+		local.get $option
+		i32.const 121
+		i32.eq
+		i32.eqz
+		i32.eqz
+		end
+		br_if $00003
+		end
 		end
 		i32.const 0
 	)

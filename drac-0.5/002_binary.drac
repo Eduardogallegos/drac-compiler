@@ -8,22 +8,15 @@ reverse(array) {
     var start, finish, temp;
     start = 0;
     finish = size(array) - 1;
-    -- while (start < finish) {
+    while (start < finish) {
         temp = get(array, start);
-        printi(array);
-        println();
-        printi(start);
-        println();
-        printi(finish);
+        
         set(array, start, get(array, finish));
         set(array, finish, temp);
         inc start;
         dec finish;
-        println();
-        printi(start);
-        println();
-        printi(finish);
-    -- }
+        
+     }
 }
 
 -- Converts num to a string with its binary representation.
@@ -33,22 +26,20 @@ binary(num) {
         return "0";
     }
     result = "";
-    -- while (num > 0) {
+    while (num > 0) {
         remainder = num % 2;
-        -- printi(remainder);
+        
         add(result, remainder + '0');
         num = num / 2;
-        printi(result);
-        println();
-        printi(num);
-    -- }
+        
+    }
     reverse(result);
     return result;
 }
 
 main() {
     var option, num;
-    -- do {
+     do {
         prints("Input a number: ");
         num = readi();
         prints("Conversion to binary of that number: ");
@@ -61,6 +52,6 @@ main() {
         } else {
             option = get(option, 0);
         }
-        printc(option);
-    -- } while (option == 'Y' or option == 'y');
+        
+    } while (option == 'Y' or option == 'y');
 }

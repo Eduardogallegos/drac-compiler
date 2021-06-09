@@ -10,7 +10,7 @@ print_array(a) {
     printc('[');
     i = 0;
     n = size(a);
-    -- while (i < n) {
+    while (i < n) {
         if (first) {
             first = false;
         } else {
@@ -18,7 +18,7 @@ print_array(a) {
         }
         printi(get(a, i));
         inc i;
-    -- }
+    }
     printc(']');
 }
 
@@ -28,10 +28,10 @@ sum_array(a) {
     sum = 0;
     i = 0;
     n = size(a);
-    -- while (i < n) {
+     while (i < n) {
         sum = sum + get(a, i);
         inc i;
-    -- }
+     }
     return sum;
 }
 
@@ -41,13 +41,13 @@ max_array(a) {
     max = get(a, 0);
     i = 0;
     n = size(a);
-    -- while (i < n) {
+     while (i < n) {
         x = get(a, i);
         if (x > max) {
             max = x;
         }
         inc i;
-    -- }
+     }
     return max;
 }
 
@@ -56,10 +56,10 @@ sort_array(a) {            -----------------------------------------
     var i, j, t, n, swap;  -- THIS FUNCTION IMPLEMENTS THE BUBBLE --
     n = size(a);           -- SORT ALGORITHM.                     --
     i = 0;                 -----------------------------------------
-    -- while (i < n - 1) {
+    while (i < n - 1) {
         j = 0;
         swap = false;
-        -- while (j < n - i - 1) {
+            while (j < n - i - 1) {
             if (get(a, j) > get(a, j + 1)) {
                 t = get(a, j);
                 set(a, j, get(a, j + 1));
@@ -67,13 +67,13 @@ sort_array(a) {            -----------------------------------------
                 swap = true;
             }
             inc j;
-        -- }
+         }
         if (not swap) { -- Stop when no more swaps were carried out.
-            -- break;
+            break;
         }
         inc i;
     }
--- }
+}
 
 main() {
     var array, sum, max;

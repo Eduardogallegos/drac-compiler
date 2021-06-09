@@ -17,7 +17,6 @@
 		(export "main")
 		(result i32)
 		(local $_temp i32)
-		(local $s i32)
 		(local $option i32)
 		block $00000
 		loop $00001
@@ -78,6 +77,7 @@
 		call $add
 		drop
 		call $prints
+		drop
 		call $reads
 		local.set $option
 		local.get $option
@@ -85,14 +85,7 @@
 		i32.const 0
 		i32.eq
 		if
-		i32.const 0
-		call $new
-		local.set $_temp
-		local.get $_temp
-		local.get $_temp
 		i32.const 78
-		call $add
-		drop
 		local.set $option
 		else
 		local.get $option
@@ -100,19 +93,10 @@
 		call $get
 		local.set $option
 		end
-		br $00001
 		local.get $option
-		i32.const 0
-		call $new
-		local.set $_temp
-		local.get $_temp
-		local.get $_temp
 		i32.const 121
-		call $add
-		drop
 		i32.eq
-		i32.eqz
-		br_if $00000
+		br_if $00001
 		end
 		end
 		i32.const 42
