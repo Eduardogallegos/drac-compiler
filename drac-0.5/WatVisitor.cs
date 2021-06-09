@@ -474,6 +474,10 @@ namespace Drac {
             return sb.ToString();
         }
 
+        public string Visit(Break node){
+            
+        }
+
         string VisitChildren(Node node) {
             var sb = new StringBuilder();
             foreach (var n in node) {
@@ -529,5 +533,7 @@ namespace Drac {
             }
             return result;
         }
+
+
     }
 }
