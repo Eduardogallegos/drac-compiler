@@ -163,7 +163,7 @@ namespace Drac {
             Console.WriteLine("fncall");
             if(node.hasChildren){
                 return Visit((dynamic) node[0])
-                + $"\t\tcall ${node.AnchorToken.Lexeme}\n\t\tdrop\n";
+                + $"\t\tcall ${node.AnchorToken.Lexeme}\n";
             }else{
                 return $"\t\tcall ${node.AnchorToken.Lexeme}\n";
             }
@@ -440,16 +440,13 @@ namespace Drac {
         public string Visit(Or node){
             Console.WriteLine("or");
             return Visit((dynamic)node[0])
-                   + "\t\tif(result i32)\n"
-                   + "\t\ti32.const 1\n"
-                   + "\t\telse\n"
-                   + Visit((dynamic)node[1])
-                   + "\t\tif(result i32)\n"
-                   + "\t\ti32.const 1\n"
-                   + "\t\telse\n"
-                   + "\t\ti32.const 0\n"
-                   + "\t\tend\n"
-                   + "\t\tend\n";
+                + "\t\tif(result i32)\n"
+                + "\t\ti32.const 1\n"
+                + "\t\telse\n"
+                + Visit((dynamic)node[1])
+                + "\t\ti32.eqz\n"
+                + "\t\ti32.eqz\n"
+                + "\t\tend\n";
         }
 
         public string Visit(And node) {
@@ -461,7 +458,20 @@ namespace Drac {
 
         public string Visit(Array node){
             Console.WriteLine("array");
-            return VisitChildren(node);
+            var sb = new StringBuilder();
+            sb.Append("\t\ti32.const 0\n");
+            sb.Append("\t\tcall $new\n");
+            sb.Append($"\t\tlocal.set $_temp\n");
+            foreach (var entry in asciiChars)
+            {
+                sb.Append($"\t\tlocal.get $_temp\n");
+            }
+            sb.Append($"\t\tlocal.get $_temp\n");
+            foreach (var n in node) {
+                sb.Append(Visit((dynamic) n));
+                sb.Append("\t\tdrop\n");
+            }
+            return sb.ToString();
         }
 
         string VisitChildren(Node node) {

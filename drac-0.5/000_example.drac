@@ -1,12 +1,13 @@
-"(*Holis*)"
-(*
-Hola
-(*nested comment*)
-*)
-2
--2
-45
-45e
-e45
-4_
-e_4
+main() {
+    var option;
+    do{
+        prints("hello, world\n");
+        option = reads();
+        if (size(option) == 0) {
+            option = 'N';
+        } else {
+            option = get(option, 0);
+        }
+    }while(option == 'y');
+    return 42;
+}
