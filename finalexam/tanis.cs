@@ -158,7 +158,11 @@ namespace Tanis
         public Node Min(){
              var result = new Min();
             Expect(TokenCategory.OPEN_BRACKET);
-            result.Add(List());
+            result.Add(Expr());
+            while(CurrentToken == TokenCategory.COMMA){
+                Expect(TokenCategory.COMMA);
+                result.Add(Expr());
+            }
             Expect(TokenCategory.CLOSE_BRACKET);
             return result;
         }
@@ -166,20 +170,15 @@ namespace Tanis
         public Node Max (){
             var result = new Max();
             Expect(TokenCategory.OPEN_SQUARE_BRACKET);
-            result.Add(List());
-            Expect(TokenCategory.CLOSE_SQUARE_BRACKET);
-            return result;
-        }
-
-        public Node List(){
-            var result = new List();
             result.Add(Expr());
             while(CurrentToken == TokenCategory.COMMA){
                 Expect(TokenCategory.COMMA);
                 result.Add(Expr());
             }
+            Expect(TokenCategory.CLOSE_SQUARE_BRACKET);
             return result;
         }
+
 
     }
 
@@ -248,8 +247,6 @@ namespace Tanis
     public class Min : Node { }
 
     public class Float : Node {}
-
-    public class List: Node {}
 
     public class WatVisitor
     {
